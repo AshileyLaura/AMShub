@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>AMS - Acesso</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'AMSHub.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Bem-vindo ao AMS</h1>
+    <p>Escolha como deseja acessar o sistema:</p>
+
+    <div class="cards">
+        <a href="/login/aluno/" class="card">Aluno</a>
+        <a href="/login/coordenador/" class="card">Coordenador</a>
+        <a href="/login/professor/" class="card">Professor</a>
+        <a href="/login/supervisor/" class="card">Supervisor</a>
+    </div>
+</div>
+
+</body>
+</html>

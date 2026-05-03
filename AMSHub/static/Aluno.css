@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #4C1D95, #7B2CF5, #A855F7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu a {
+    text-decoration: none;
+    background: #7B2CF5;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.menu a:hover {
+    background: #4C1D95;
+}

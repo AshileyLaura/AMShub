@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #4C1D95, #7B2CF5, #A855F7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+}
+.menu a {
+    display: block;
+    margin: 10px 0;
+    padding: 15px;
+    background: #4C1D95;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+}
