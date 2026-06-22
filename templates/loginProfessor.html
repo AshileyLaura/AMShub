@@ -3,23 +3,30 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="whidt=device-whidt, initial-scale=1.0">
     <title>Login - Professor</title>
 <link rel="stylesheet" href="{% static 'loginProfessor.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/front-awesome/6.5.2/css/all.min.css">
+
 </head>
 <body>
 
 <div class="container">
-    <h1>Login - Professor</h1>
-
-    <form method="POST">
-        {% csrf_token %}
-
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="senha" placeholder="Senha" required>
-
-        <button type="submit">Entrar</button>
-    </form>
+    <div class="lado-esquerdo">
+        <img src="/static/imagens/logo.png" class="logo" alt="Logo">
+        <img src="/static/imagens/astronauta.png" class="astronauta" alt="Astronauta">
+    </div>
+    <div class="lado-direito">
+        <div class="card-login">
+            <h1>Professores</h1>
+            <div class="icone">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+        </div>
+    </div>
 </div>
-
 </body>
 </html>
