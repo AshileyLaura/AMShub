@@ -16,7 +16,6 @@ body{
     height:100vh;
 }
 
-/* LADO ESQUERDO */
 
 .lado-esquerdo{
     width:55%;
@@ -40,7 +39,6 @@ body{
     max-width:600px;
 }
 
-/* LADO DIREITO */
 
 .lado-direito{
     width:45%;
@@ -140,7 +138,6 @@ body{
     transform:scale(1.05);
 }
 
-/* RESPONSIVO */
 
 @media(max-width:900px){
 
