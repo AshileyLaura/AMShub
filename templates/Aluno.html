@@ -1,23 +1,139 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>AMS - Aluno</title>
-    <link rel="stylesheet" href="{% static 'Aluno.css' %}">
+
+<meta charset="UTF-8">
+
+<title>AMS HUB</title>
+
+<link rel="stylesheet" href="{% static 'Aluno.css' %}">
+
+<link
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+rel="stylesheet">
+
 </head>
+
 <body>
 
 <div class="container">
-    <h1>Área do Aluno</h1>
 
-    <div class="menu">
-        <a href="#">Enviar Portfólio</a>
-        <a href="#">Minhas Horas</a>
-        <a href="#">Mentorias</a>
-        <a href="#">Certificados</a>
-    </div>
+    <aside class="sidebar">
+
+        <img src="{% static 'imagens/logoaluno.png' %}" class="logo">
+
+        <ul>
+
+            <li class="ativo">
+                <i class="fa-solid fa-house"></i>
+                Ínicio
+            </li>
+
+            <li>
+                <i class="fa-solid fa-list-check"></i>
+                Tarefas
+            </li>
+
+            <li>
+                <i class="fa-solid fa-folder"></i>
+                Portfólios
+            </li>
+
+            <li>
+                <i class="fa-solid fa-comment"></i>
+                Comentarios
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="conteudo">
+
+        <header>
+
+            <input type="text" placeholder="Pesquisar">
+
+            <div class="usuario">
+
+                <img src="{% static 'imagens/aluno.png' %}">
+
+                <div>
+
+                    <h3>Manuela Squissato</h3>
+
+                    <p>Estudante</p>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <section class="boas-vindas">
+
+            <h1>Bem vinda, Manuela!</h1>
+
+            <p>Gerenciar suas tarefas, portfólios e comentarios.</p>
+
+        </section>
+
+        <section class="cards">
+
+            <div class="card roxo">
+
+                <h2>5</h2>
+
+                <p>Total Tarefas</p>
+
+            </div>
+
+            <div class="card">
+
+                <h2>3</h2>
+
+                <p>Total Portfólios</p>
+
+            </div>
+
+        </section>
+
+        <section class="tarefas">
+
+            <h2>Suas Tarefas</h2>
+
+            <div class="task">
+
+                Finalize seus portfólios
+
+                <progress value="5" max="100"></progress>
+
+            </div>
+
+            <div class="task">
+
+                Atualizar currículo
+
+            </div>
+
+            <div class="task">
+
+                Concluir a tarefa da mentoria
+
+            </div>
+
+        </section>
+
+    </main>
+
 </div>
 
 </body>
+
 </html>
+
+
+
+
