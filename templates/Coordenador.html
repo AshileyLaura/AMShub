@@ -1,20 +1,272 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
+
 <head>
-    <title>AMS - Coordenador</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMS Hub - Coordenador</title>
+
     <link rel="stylesheet" href="{% static 'Coordenador.css' %}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
+
 <body>
 
 <div class="container">
-    <h1>Área do Coordenador</h1>
 
-    <div class="menu">
-        <a href="#">Gerenciar Alunos</a>
-        <a href="#">Relatórios</a>
-        <a href="#">Empresas</a>
-    </div>
+    <!-- MENU LATERAL -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <img src="{% static 'imagens/logoprofessor.png' %}">
+        </div>
+
+        <ul>
+
+            <li class="active">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </li>
+
+            <li>
+                <i class="fa-solid fa-user-graduate"></i>
+                Gerenciar Alunos
+            </li>
+
+            <li>
+                <i class="fa-solid fa-building"></i>
+                Empresas
+            </li>
+
+            <li>
+                <i class="fa-solid fa-chart-column"></i>
+                Relatórios
+            </li>
+
+            <li>
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Sair
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+
+    <main class="content">
+
+
+        <header>
+
+            <div class="search">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text" placeholder="Pesquisar...">
+
+            </div>
+
+            <div class="top-icons">
+
+                <i class="fa-regular fa-bell"></i>
+
+                <i class="fa-solid fa-gear"></i>
+
+                <div class="perfil">
+
+                    <img src="{% static 'imagens/professor.png.png' %}">
+
+                    <div>
+
+                        <h3>Thiago Gonçalves Mendes</h3>
+
+                        <span>Coordenador</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <section class="welcome">
+
+            <h1>Bem-vindo, Thiago!</h1>
+
+            <p>Gerencie alunos, empresas e acompanhe os relatórios do sistema.</p>
+
+        </section>
+
+        <section class="cards">
+
+            <div class="card purple">
+
+                <i class="fa-solid fa-user-graduate"></i>
+
+                <h2>124</h2>
+
+                <p>Alunos</p>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-building"></i>
+
+                <h2>18</h2>
+
+                <p>Empresas</p>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <h2>9</h2>
+
+                <p>Relatórios</p>
+
+            </div>
+
+        </section>
+
+
+        <section class="grid">
+
+            
+
+            <div class="students">
+
+                <div class="title">
+
+                    <h2>Alunos</h2>
+
+                    <a href="#">Ver todos</a>
+
+                </div>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Nome</th>
+
+                            <th>Curso</th>
+
+                            <th>Tarefas</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>João Silva</td>
+
+                            <td>ADS</td>
+
+                            <td>Nenhuma Pendencia</td>
+
+                            <td><span class="status ativo">Completo</span></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Maria Souza</td>
+
+                            <td>ADS</td>
+
+                            <td>Portfólio</td>
+
+                            <td><span class="status estagio">Realizando</span></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Pedro Lima</td>
+
+                            <td>ADS</td>
+
+                            <td>Tarefa da Empresa</td>
+
+                            <td><span class="status pendente">Pendente</span></td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="right-panel">
+
+                <div class="box">
+
+                    <div class="title">
+
+                        <h2>Empresas</h2>
+
+                    </div>
+
+                    <ul>
+
+                        <li>TAB</li>
+
+                        <li>IBM</li>
+
+                        <li>DevCoo</li>
+
+                        <li>ioshp</li>
+
+                    </ul>
+
+                </div>
+
+                <div class="box">
+
+                    <div class="title">
+
+                        <h2>Relatórios Recentes</h2>
+
+                    </div>
+
+                    <ul>
+
+                        <li>✔ Estágio aprovado</li>
+
+                        <li>✔ Empresa cadastrada</li>
+
+                        <li>✔ Novo aluno</li>
+
+                        <li>✔ Relatório enviado</li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
 </div>
 
 </body>
