@@ -1,20 +1,237 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
+
 <head>
-    <title>AMS - Supervisor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMS Hub - Supervisor</title>
+
     <link rel="stylesheet" href="{% static 'Supervisor.css' %}">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
+
 <body>
 
 <div class="container">
-    <h1>Área do Supervisor</h1>
 
-    <div class="menu">
-        <a href="#">Acompanhar Horas</a>
-        <a href="#">Mentorias</a>
-        <a href="#">Relatórios Gerais</a>
-    </div>
+    <aside class="sidebar">
+
+        <div class="logo">
+            <img src="{% static 'imagens/logoprofessor.png' %}">
+        </div>
+
+        <ul>
+
+            <li class="active">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </li>
+
+            <li>
+                <i class="fa-solid fa-clock"></i>
+                Acompanhar Horas
+            </li>
+
+            <li>
+                <i class="fa-solid fa-book"></i>
+                Memórias
+            </li>
+
+            <li>
+                <i class="fa-solid fa-chart-line"></i>
+                Relatórios Gerais
+            </li>
+
+            <li>
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Sair
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="content">
+
+        <header>
+
+            <div class="search">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text" placeholder="Pesquisar...">
+
+            </div>
+
+            <div class="top-icons">
+
+                <i class="fa-regular fa-bell"></i>
+
+                <i class="fa-solid fa-gear"></i>
+
+                <div class="perfil">
+
+                    <img src="{% static 'imagens/professor.png.png' %}">
+
+                    <div>
+
+                        <h3>Maria Eduarda</h3>
+
+                        <span>Supervisor</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <section class="welcome">
+
+            <h1>Bem-vinda, Maria Eduarda!</h1>
+
+            <p>Acompanhe as horas dos alunos, registre memórias e consulte os relatórios gerais.</p>
+
+        </section>
+
+        <section class="cards">
+
+            <div class="card purple">
+
+                <i class="fa-solid fa-clock"></i>
+
+                <h2>220h</h2>
+
+                <p>Horas Necessarias</p>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-book"></i>
+
+                <h2>18</h2>
+
+                <p>Memórias Registradas</p>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                <h2>7</h2>
+
+                <p>Relatórios</p>
+
+            </div>
+
+        </section>
+
+        <section class="grid">
+
+            <div class="students">
+
+                <div class="title">
+
+                    <h2>Horas dos Alunos</h2>
+
+                    <a href="#">Ver todos</a>
+
+                </div>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Aluno</th>
+                            <th>Empresa</th>
+                            <th>Horas</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>João Padua</td>
+                            <td>Ibm</td>
+                            <td>180h</td>
+                            <td><span class="status ativo">Em dia</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>Leonardo</td>
+                            <td>Tab</td>
+                            <td>120h</td>
+                            <td><span class="status pendente">Atenção</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>Kauan</td>
+                            <td>DevCool</td>
+                            <td>210h</td>
+                            <td><span class="status ativo">Em dia</span></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="right-panel">
+
+                <div class="box">
+
+                    <div class="title">
+                        <h2>Memórias Recentes</h2>
+                    </div>
+
+                    <ul>
+
+                        <li>✔ Reunião com Thiago</li>
+
+                        <li>✔ Feedback da Tab</li>
+
+                        <li>✔ Visita Técnica</li>
+
+                    </ul>
+
+                </div>
+
+                <div class="box">
+
+                    <div class="title">
+                        <h2>Relatórios Gerais</h2>
+                    </div>
+
+                    <ul>
+
+                        <li>Horas do mês</li>
+
+                        <li>Alunos em estágio</li>
+
+                        <li>Empresas parceiras</li>
+
+                        <li>Desempenho geral</li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
 </div>
 
 </body>
