@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="whidt=device-whidt, initial-scale=1.0">
+    <title>Login - Empresa</title>
+<link rel="stylesheet" href="{% static 'loginEmpresa.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/front-awesome/6.5.2/css/all.min.css">
+
+</head>
+<body>
+
+<div class="container">
+    <div class="lado-esquerdo">
+        <img src="/static/imagens/logoempresa.png.png" class="logo" alt="Logo">
+        <img src="/static/imagens/empresa.png" class="astronauta" alt="Astronauta">
+    </div>
+    <div class="lado-direito">
+        <div class="card-login">
+            <h1>Empresa</h1>
+            <div class="icone">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+        
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="senha" placeholder="Senha" required>
+        
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

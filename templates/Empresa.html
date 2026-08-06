@@ -1,12 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMS Hub - Professor</title>
+    <title>AMS Hub - Empresa</title>
 
-    <link rel="stylesheet" href="{% static 'Professor.css' %}">
+    <link rel="stylesheet" href="{% static 'Empresa.css' %}">
 
     <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -19,7 +20,7 @@
     <aside class="sidebar">
 
         <div class="logo">
-            <img src="{% static 'imagens/logoprofessor.png' %}">
+            <img src="{% static 'imagens/logoempresa.png.png' %}">
         </div>
 
         <ul>
@@ -30,18 +31,18 @@
             </li>
 
             <li>
-                <i class="fa-solid fa-folder-open"></i>
-                Ver Portfólios
-            </li>
-
-            <li>
-                <i class="fa-solid fa-star"></i>
-                Avaliar Alunos
-            </li>
-
-            <li>
                 <i class="fa-solid fa-users"></i>
-                Monitorar Mentorias
+                Cadastrar Mentorias
+            </li>
+
+            <li>
+                <i class="fa-solid fa-list-check"></i>
+                Criar Tarefas
+            </li>
+
+            <li>
+                <i class="fa-solid fa-briefcase"></i>
+                Oportunidades
             </li>
 
             <li>
@@ -58,8 +59,11 @@
         <header>
 
             <div class="search">
+
                 <i class="fa-solid fa-magnifying-glass"></i>
+
                 <input type="text" placeholder="Pesquisar...">
+
             </div>
 
             <div class="top-icons">
@@ -70,11 +74,14 @@
 
                 <div class="perfil">
 
-                    <img src="{% static 'imagens/professor.png.png' %}">
+                    <img src="{% static 'imagens/empresa.png' %}">
 
                     <div>
-                        <h3>Laura</h3>
-                        <span>Professor</span>
+
+                        <h3>Tab</h3>
+
+                        <span>Empresa</span>
+
                     </div>
 
                 </div>
@@ -85,9 +92,9 @@
 
         <section class="welcome">
 
-            <h1>Bem-vinda, Laura!</h1>
+            <h1>Bem-vindo(a)!</h1>
 
-            <p>Acompanhe os portfólios, avaliações e mentorias dos alunos.</p>
+            <p>Gerencie mentorias, tarefas e oportunidades de emprego.</p>
 
         </section>
 
@@ -95,31 +102,31 @@
 
             <div class="card purple">
 
-                <i class="fa-solid fa-folder-open"></i>
-
-                <h2>42</h2>
-
-                <p>Portfólios</p>
-
-            </div>
-
-            <div class="card">
-
-                <i class="fa-solid fa-star"></i>
-
-                <h2>18</h2>
-
-                <p>Avaliações Pendentes</p>
-
-            </div>
-
-            <div class="card">
-
                 <i class="fa-solid fa-users"></i>
 
-                <h2>9</h2>
+                <h2>12</h2>
 
-                <p>Mentorias</p>
+                <p>Mentorias Ativas</p>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-list-check"></i>
+
+                <h2>28</h2>
+
+                <p>Tarefas Criadas</p>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-briefcase"></i>
+
+                <h2>7</h2>
+
+                <p>Vagas Abertas</p>
 
             </div>
 
@@ -131,9 +138,9 @@
 
                 <div class="title">
 
-                    <h2>Portfólios Recentes</h2>
+                    <h2>Oportunidades Publicadas</h2>
 
-                    <a href="#">Ver todos</a>
+                    <a href="#">Ver todas</a>
 
                 </div>
 
@@ -142,10 +149,15 @@
                     <thead>
 
                         <tr>
-                            <th>Aluno</th>
-                            <th>Curso</th>
-                            <th>Entrega</th>
+
+                            <th>Vaga</th>
+
+                            <th>Área</th>
+
+                            <th>Modelo</th>
+
                             <th>Status</th>
+
                         </tr>
 
                     </thead>
@@ -153,24 +165,39 @@
                     <tbody>
 
                         <tr>
-                            <td>Lohanny</td>
-                            <td>DS</td>
-                            <td>20/08/2026</td>
-                            <td><span class="status ativo">Enviado</span></td>
+
+                            <td>Desenvolvedor Java</td>
+
+                            <td>TI</td>
+
+                            <td>Híbrido</td>
+
+                            <td><span class="status ativo">Aberta</span></td>
+
                         </tr>
 
                         <tr>
-                            <td>João Vitor</td>
+
+                            <td>Estágio Front-end</td>
+
                             <td>DS</td>
-                            <td>22/08/2026</td>
-                            <td><span class="status pendente">Pendente</span></td>
+
+                            <td>Remoto</td>
+
+                            <td><span class="status ativo">Aberta</span></td>
+
                         </tr>
 
                         <tr>
-                            <td>Julia</td>
-                            <td>DS</td>
-                            <td>18/08/2026</td>
-                            <td><span class="status estagio">Avaliado</span></td>
+
+                            <td>Analista de Dados</td>
+
+                            <td>BI</td>
+
+                            <td>Presencial</td>
+
+                            <td><span class="status pendente">Em análise</span></td>
+
                         </tr>
 
                     </tbody>
@@ -184,16 +211,18 @@
                 <div class="box">
 
                     <div class="title">
+
                         <h2>Mentorias</h2>
+
                     </div>
 
                     <ul>
 
-                        <li>Mentoria DS - Segunda</li>
+                        <li>Mentoria Java</li>
 
-                        <li>Mentoria ADM - Quarta</li>
+                        <li>Mentoria Banco de Dados</li>
 
-                        <li>Mentoria DS + ADM - Sexta</li>
+                        <li>Mentoria Desenvolvimento Web</li>
 
                     </ul>
 
@@ -202,18 +231,20 @@
                 <div class="box">
 
                     <div class="title">
-                        <h2>Avaliações</h2>
+
+                        <h2>Tarefas Recentes</h2>
+
                     </div>
 
                     <ul>
 
-                        <li>✔ Stevan</li>
+                        <li>✔ API REST</li>
 
-                        <li>✔ Lohanny</li>
+                        <li>✔ Dashboard React</li>
 
-                        <li>✔ João vitor</li>
+                        <li>✔ Banco MySQL</li>
 
-                        <li>✔ Julia</li>
+                        <li>✔ Testes Unitários</li>
 
                     </ul>
 

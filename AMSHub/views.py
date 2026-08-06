@@ -15,6 +15,9 @@ def coordenador(request):
 def supervisor(request):
     return render(request, 'Supervisor.html')
 
+def empresa(request):
+    return render(request, 'Empresa.html')
+
 
 def login_aluno(request):
     if request.method == "POST":
@@ -55,3 +58,12 @@ def login_supervisor(request):
         if email == "supervisor@gmail.com" and senha == "123":
             return redirect('supervisor')
     return render(request, 'loginSupervisor.html')
+
+def login_empresa(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        senha = request.POST.get("senha")
+
+        if email == "empresa@gmail.com" and senha == "123":
+            return redirect('empresa')
+    return render(request, 'loginempresa.html')
