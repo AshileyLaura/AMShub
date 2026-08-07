@@ -1,24 +1,69 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
-    <title>AMS - Acesso</title>
-    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMS Hub</title>
+
     <link rel="stylesheet" href="{% static 'AMSHub.css' %}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
+
 <body>
 
-<div class="container">
-    <h1>Bem-vindo ao AMS</h1>
-    <p>Escolha como deseja acessar o sistema:</p>
+<div class="background">
 
-    <div class="cards">
-        <a href="/login/aluno/" class="card">Aluno</a>
-        <a href="/login/coordenador/" class="card">Coordenador</a>
-        <a href="/login/professor/" class="card">Professor</a>
-        <a href="/login/supervisor/" class="card">Supervisor</a>
-        <a href="/login/empresa/" class="card ">Empresa</a>
+    <div class="card">
+
+        <img src="{% static 'imagens/logoprofessor.png' %}" class="logo">
+
+        <h1>Bem-vindo ao AMS Hub</h1>
+
+        <p>Selecione o perfil para acessar o sistema.</p>
+
+        <div class="botoes">
+
+            <a href="/login/aluno/" class="botao">
+                <i class="fa-solid fa-user-graduate"></i>
+                <span>Aluno</span>
+            </a>
+
+            <a href="/login/professor/"  class="botao">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <span>Professor</span>
+            </a>
+
+            <a href="/login/coordenador/" class="botao">
+                <i class="fa-solid fa-user-tie"></i>
+                <span>Coordenador</span>
+            </a>
+
+            <a href="/login/supervisor/" class="botao">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Supervisor</span>
+            </a>
+
+            <a href="/login/empresa" class="botao empresa">
+                <i class="fa-solid fa-building"></i>
+                <span>Empresa</span>
+            </a>
+
+        </div>
+
+        <footer>
+
+            <p>AMS Hub © 2026</p>
+
+            <small>Sistema de Gestão Escolar</small>
+
+        </footer>
+
     </div>
+
 </div>
 
 </body>

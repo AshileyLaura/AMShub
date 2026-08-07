@@ -1,25 +1,27 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMS Hub - Professor</title>
+    <title>AMS Hub | Professor</title>
 
     <link rel="stylesheet" href="{% static 'Professor.css' %}">
 
     <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
-<div class="container">
+<div class="dashboard">
 
     <aside class="sidebar">
 
         <div class="logo">
-            <img src="{% static 'imagens/logoprofessor.png' %}">
+            <img src="{% static 'imagens/logo.png' %}" alt="">
+            <h2>AMS HUB</h2>
         </div>
 
         <ul>
@@ -31,17 +33,22 @@
 
             <li>
                 <i class="fa-solid fa-folder-open"></i>
-                Ver Portfólios
+                Portfólios
             </li>
 
             <li>
                 <i class="fa-solid fa-star"></i>
-                Avaliar Alunos
+                Avaliações
             </li>
 
             <li>
                 <i class="fa-solid fa-users"></i>
-                Monitorar Mentorias
+                Mentorias
+            </li>
+
+            <li>
+                <i class="fa-solid fa-calendar"></i>
+                Agenda
             </li>
 
             <li>
@@ -53,73 +60,99 @@
 
     </aside>
 
-    <main class="content">
+    <main>
 
         <header>
 
-            <div class="search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Pesquisar...">
+            <div>
+
+                <h1>Olá, Professora Laura 🐔</h1>
+
+                <p>Bem-vinda ao painel do professor.</p>
+
             </div>
 
-            <div class="top-icons">
+            <div class="top">
+
+                <div class="search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text" placeholder="Pesquisar">
+
+                </div>
 
                 <i class="fa-regular fa-bell"></i>
 
-                <i class="fa-solid fa-gear"></i>
-
-                <div class="perfil">
-
-                    <img src="{% static 'imagens/professor.png.png' %}">
-
-                    <div>
-                        <h3>Laura</h3>
-                        <span>Professor</span>
-                    </div>
-
-                </div>
+                <img src="{% static 'imagens/professor.png.png' %}" class="foto">
 
             </div>
 
         </header>
 
-        <section class="welcome">
-
-            <h1>Bem-vinda, Laura!</h1>
-
-            <p>Acompanhe os portfólios, avaliações e mentorias dos alunos.</p>
-
-        </section>
-
         <section class="cards">
-
-            <div class="card purple">
-
-                <i class="fa-solid fa-folder-open"></i>
-
-                <h2>42</h2>
-
-                <p>Portfólios</p>
-
-            </div>
 
             <div class="card">
 
-                <i class="fa-solid fa-star"></i>
+                <div class="icone">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+
+                <h3>Portfólios</h3>
 
                 <h2>18</h2>
 
-                <p>Avaliações Pendentes</p>
+                <p>Pendentes para avaliação</p>
+
+                <button>Visualizar →</button>
 
             </div>
 
             <div class="card">
 
-                <i class="fa-solid fa-users"></i>
+                <div class="icone">
+                    <i class="fa-solid fa-star"></i>
+                </div>
 
-                <h2>9</h2>
+                <h3>Avaliações</h3>
 
-                <p>Mentorias</p>
+                <h2>26</h2>
+
+                <p>Prontas para envio</p>
+
+                <button>Avaliar →</button>
+
+            </div>
+
+            <div class="card">
+
+                <div class="icone">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+
+                <h3>Feedbacks</h3>
+
+                <h2>41</h2>
+
+                <p>Realizados este mês</p>
+
+                <button>Consultar →</button>
+
+            </div>
+
+            <div class="card">
+
+                <div class="icone">
+                    <i class="fa-solid fa-user-group"></i>
+                </div>
+
+                <h3>Mentorias</h3>
+
+                <h2>08</h2>
+
+                <p>Agendadas</p>
+
+                <button>Acompanhar →</button>
 
             </div>
 
@@ -127,9 +160,9 @@
 
         <section class="grid">
 
-            <div class="students">
+            <div class="box">
 
-                <div class="title">
+                <div class="titulo">
 
                     <h2>Portfólios Recentes</h2>
 
@@ -137,85 +170,67 @@
 
                 </div>
 
-                <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>Aluno</th>
-                            <th>Curso</th>
-                            <th>Entrega</th>
-                            <th>Status</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-                            <td>Lohanny</td>
-                            <td>DS</td>
-                            <td>20/08/2026</td>
-                            <td><span class="status ativo">Enviado</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>João Vitor</td>
-                            <td>DS</td>
-                            <td>22/08/2026</td>
-                            <td><span class="status pendente">Pendente</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>Julia</td>
-                            <td>DS</td>
-                            <td>18/08/2026</td>
-                            <td><span class="status estagio">Avaliado</span></td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-            <div class="right-panel">
-
-                <div class="box">
-
-                    <div class="title">
-                        <h2>Mentorias</h2>
+                <div class="linha">
+                    <div>
+                        <h4>Maria Souza</h4>
+                        <span>Portfólio Front-end</span>
                     </div>
 
-                    <ul>
-
-                        <li>Mentoria DS - Segunda</li>
-
-                        <li>Mentoria ADM - Quarta</li>
-
-                        <li>Mentoria DS + ADM - Sexta</li>
-
-                    </ul>
+                    <button>Avaliar</button>
 
                 </div>
 
-                <div class="box">
-
-                    <div class="title">
-                        <h2>Avaliações</h2>
+                <div class="linha">
+                    <div>
+                        <h4>João Pedro</h4>
+                        <span>Portfólio Java</span>
                     </div>
 
-                    <ul>
+                    <button>Avaliar</button>
 
-                        <li>✔ Stevan</li>
+                </div>
 
-                        <li>✔ Lohanny</li>
+                <div class="linha">
+                    <div>
+                        <h4>Laura Queiroz</h4>
+                        <span>Portfólio Banco de Dados</span>
+                    </div>
 
-                        <li>✔ João vitor</li>
+                    <button>Avaliar</button>
 
-                        <li>✔ Julia</li>
+                </div>
 
-                    </ul>
+            </div>
+
+            <div class="box">
+
+                <div class="titulo">
+
+                    <h2>Próximas Mentorias</h2>
+
+                </div>
+
+                <div class="mentoria">
+
+                    <strong>Desenvolvimento Web</strong>
+
+                    <span>10:00 às 11:30</span>
+
+                </div>
+
+                <div class="mentoria">
+
+                    <strong>Banco de Dados</strong>
+
+                    <span>14:00 às 15:30</span>
+
+                </div>
+
+                <div class="mentoria">
+
+                    <strong>Java</strong>
+
+                    <span>19:00 às 20:30</span>
 
                 </div>
 
