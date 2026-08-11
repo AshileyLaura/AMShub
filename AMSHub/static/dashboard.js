@@ -5,13 +5,13 @@ new Chart(ctx,{
 
     data:{
 
-        labels:['Jan','Fev','Mar','Abr','Mai','Jun'],
+        labels:['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
 
         datasets:[{
 
             label:'Horas',
 
-            data:[4,12,7,3,2,16],
+            data:[4,0.5,1,3,2,0.5,1,3,2,0.5,1,1.5],
 
             borderRadius:8
 
