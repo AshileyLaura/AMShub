@@ -3,244 +3,393 @@
 <html lang="pt-br">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>AMS Hub | Professor</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{% static 'Professor.css' %}">
 
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
-<div class="dashboard">
+<div class="container-fluid p-0">
 
-    <aside class="sidebar">
+    <div class="row g-0 min-vh-100">
 
-        <div class="logo">
-            <img src="{% static 'imagens/logo.png' %}" alt="">
-            <h2>AMS HUB</h2>
-        </div>
-
-        <ul>
-
-            <li class="active">
-                <i class="fa-solid fa-house"></i>
-                Dashboard
-            </li>
-
-            <li>
-                <i class="fa-solid fa-folder-open"></i>
-                Portfólios
-            </li>
-
-            <li>
-                <i class="fa-solid fa-star"></i>
-                Avaliações
-            </li>
-
-            <li>
-                <i class="fa-solid fa-users"></i>
-                Mentorias
-            </li>
-
-            <li>
-                <i class="fa-solid fa-calendar"></i>
-                Agenda
-            </li>
-
-            <li>
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Sair
-            </li>
-
-        </ul>
-
-    </aside>
-
-    <main>
-
-        <header>
+        <aside class="sidebar col-lg-2">
 
             <div>
 
-                <h1>Olá, Professora Laura </h1>
+                <div class="logo text-center">
 
-                <p>Bem-vinda ao painel do professor.</p>
+                    <img src="{% static 'imagens/logoprofessor.png' %}"
+                         alt="Logo">
 
-            </div>
-
-            <div class="top">
-
-                <div class="search">
-
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                    <input type="text" placeholder="Pesquisar">
+                    <h2>AMS HUB</h2>
 
                 </div>
 
-                <i class="fa-regular fa-bell"></i>
 
-                <img src="{% static 'imagens/professor.png.png' %}" class="foto">
+                <ul class="nav flex-column">
+
+                    <li class="nav-item active">
+
+                        <a href="#" class="nav-link">
+
+                            <i class="fa-solid fa-house"></i>
+
+                            <span>Dashboard</span>
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a href="#" class="nav-link">
+
+                            <i class="fa-solid fa-folder-open"></i>
+
+                            <span>Portfólios</span>
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a href="#" class="nav-link">
+
+                            <i class="fa-solid fa-star"></i>
+
+                            <span>Avaliações</span>
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a href="#" class="nav-link">
+
+                            <i class="fa-solid fa-users"></i>
+
+                            <span>Mentorias</span>
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a href="#" class="nav-link">
+
+                            <i class="fa-solid fa-calendar"></i>
+
+                            <span>Agenda</span>
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a href="#" class="nav-link">
+
+                            <i class="fa-solid fa-right-from-bracket"></i>
+
+                            <span>Sair</span>
+
+                        </a>
+
+                    </li>
+
+                </ul>
 
             </div>
 
-        </header>
+        </aside>
 
-        <section class="cards">
+        <main class="content col-lg-10">
 
-            <div class="card">
+            <header class="d-flex flex-wrap justify-content-between align-items-center gap-3">
 
-                <div class="icone">
-                    <i class="fa-solid fa-folder-open"></i>
-                </div>
 
-                <h3>Portfólios</h3>
+                <div>
 
-                <h2>18</h2>
+                    <h1>Olá, Professora Laura!</h1>
 
-                <p>Pendentes para avaliação</p>
-
-                <button>Visualizar →</button>
-
-            </div>
-
-            <div class="card">
-
-                <div class="icone">
-                    <i class="fa-solid fa-star"></i>
-                </div>
-
-                <h3>Avaliações</h3>
-
-                <h2>26</h2>
-
-                <p>Prontas para envio</p>
-
-                <button>Avaliar →</button>
-
-            </div>
-
-            <div class="card">
-
-                <div class="icone">
-                    <i class="fa-solid fa-comments"></i>
-                </div>
-
-                <h3>Feedbacks</h3>
-
-                <h2>41</h2>
-
-                <p>Realizados este mês</p>
-
-                <button>Consultar →</button>
-
-            </div>
-
-            <div class="card">
-
-                <div class="icone">
-                    <i class="fa-solid fa-user-group"></i>
-                </div>
-
-                <h3>Mentorias</h3>
-
-                <h2>08</h2>
-
-                <p>Agendadas</p>
-
-                <button>Acompanhar →</button>
-
-            </div>
-
-        </section>
-
-        <section class="grid">
-
-            <div class="box">
-
-                <div class="titulo">
-
-                    <h2>Portfólios Recentes</h2>
-
-                    <a href="#">Ver todos</a>
+                    <p>Bem-vinda ao painel do professor.</p>
 
                 </div>
 
-                <div class="linha">
-                    <div>
-                        <h4>Lohanny Ayala</h4>
-                        <span>Portfólio - Atualizar</span>
+
+                <div class="top d-flex align-items-center gap-3">
+
+                    <div class="search">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input type="text"
+                               placeholder="Pesquisar">
+
                     </div>
 
-                    <button>Avaliar</button>
+
+                    <i class="fa-regular fa-bell notification"></i>
+
+
+                    <img src="{% static 'imagens/professor.png.png' %}"
+                         class="foto"
+                         alt="Professora">
 
                 </div>
 
-                <div class="linha">
-                    <div>
-                        <h4>João Vitor Medeiros</h4>
-                        <span>Portfólio - Atualizar</span>
+            </header>
+
+            <section class="cards row g-4 mb-4">
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="card h-100">
+
+                        <div class="icone">
+
+                            <i class="fa-solid fa-folder-open"></i>
+
+                        </div>
+
+                        <h3>Portfólios</h3>
+
+                        <h2>18</h2>
+
+                        <p>Pendentes para avaliação</p>
+
+                        <button>
+                            Visualizar →
+                        </button>
+
                     </div>
 
-                    <button>Avaliar</button>
-
                 </div>
 
-                <div class="linha">
-                    <div>
-                        <h4>Julia Castanheira</h4>
-                        <span>Portfólio - Atualizar</span>
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="card h-100">
+
+                        <div class="icone">
+
+                            <i class="fa-solid fa-star"></i>
+
+                        </div>
+
+                        <h3>Avaliações</h3>
+
+                        <h2>26</h2>
+
+                        <p>Prontas para envio</p>
+
+                        <button>
+                            Avaliar →
+                        </button>
+
                     </div>
 
-                    <button>Avaliar</button>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="card h-100">
+
+                        <div class="icone">
+
+                            <i class="fa-solid fa-comments"></i>
+
+                        </div>
+
+                        <h3>Feedbacks</h3>
+
+                        <h2>41</h2>
+
+                        <p>Realizados este mês</p>
+
+                        <button>
+                            Consultar →
+                        </button>
+
+                    </div>
 
                 </div>
 
-            </div>
+                <div class="col-xl-3 col-md-6">
 
-            <div class="box">
+                    <div class="card h-100">
 
-                <div class="titulo">
+                        <div class="icone">
 
-                    <h2>Próximas Mentorias</h2>
+                            <i class="fa-solid fa-user-group"></i>
 
-                </div>
+                        </div>
 
-                <div class="mentoria">
+                        <h3>Mentorias</h3>
 
-                    <strong>TAB - 3°DS</strong>
+                        <h2>08</h2>
 
-                    <span>10:00 às 11:30</span>
+                        <p>Agendadas</p>
 
-                </div>
+                        <button>
+                            Acompanhar →
+                        </button>
 
-                <div class="mentoria">
-
-                    <strong>Ioship - AMS Geral</strong>
-
-                    <span>14:00 às 15:30</span>
+                    </div>
 
                 </div>
 
-                <div class="mentoria">
+            </section>
 
-                    <strong>VIsita Tecnica 3°Anos</strong>
+            <section class="grid row g-4">
+                <div class="col-xl-8">
 
-                    <span>19:00 às 20:30</span>
+                    <div class="box h-100">
+
+                        <div class="titulo">
+
+                            <h2>Portfólios Recentes</h2>
+
+                            <a href="#">Ver todos</a>
+
+                        </div>
+
+
+                        <div class="linha">
+
+                            <div>
+
+                                <h4>Lohanny Ayala</h4>
+
+                                <span>
+                                    Portfólio - Atualizar
+                                </span>
+
+                            </div>
+
+                            <button>
+                                Avaliar
+                            </button>
+
+                        </div>
+
+
+                        <div class="linha">
+
+                            <div>
+
+                                <h4>João Vitor Medeiros</h4>
+
+                                <span>
+                                    Portfólio - Atualizar
+                                </span>
+
+                            </div>
+
+                            <button>
+                                Avaliar
+                            </button>
+
+                        </div>
+
+
+                        <div class="linha">
+
+                            <div>
+
+                                <h4>Julia Castanheira</h4>
+
+                                <span>
+                                    Portfólio - Atualizar
+                                </span>
+
+                            </div>
+
+                            <button>
+                                Avaliar
+                            </button>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-            </div>
+                <div class="col-xl-4">
 
-        </section>
+                    <div class="box h-100">
 
-    </main>
+                        <div class="titulo">
+
+                            <h2>Próximas Mentorias</h2>
+
+                        </div>
+
+
+                        <div class="mentoria">
+
+                            <strong>TAB - 3°DS</strong>
+
+                            <span>
+                                10:00 às 11:30
+                            </span>
+
+                        </div>
+
+
+                        <div class="mentoria">
+
+                            <strong>Ioship - AMS Geral</strong>
+
+                            <span>
+                                14:00 às 15:30
+                            </span>
+
+                        </div>
+
+
+                        <div class="mentoria">
+
+                            <strong>Visita Técnica 3° Anos</strong>
+
+                            <span>
+                                19:00 às 20:30
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>
