@@ -44,7 +44,7 @@ class Usuario(models.Model):
 class Aluno(models.Model):
     id_aluno = models.AutoField(primary_key=True)
     id_usuario= models.ForeignKey(
-        Professor,
+        Usuario,
         on_delete=models.CASCADE
     )
 
@@ -59,7 +59,7 @@ class Aluno(models.Model):
 class Professor(models.Model):
     id_professor = models.AutoField(primary_key=True)
     id_usuario = models.ForeignKey(
-        Professor,
+        Usuario,
         on_delete=models.CASCADE
     )
 
@@ -165,9 +165,9 @@ class Viagem(models.Model):
         Aluno,
         on_delete=models.CASCADE
     )
-    Empresa = CharField(max_length=200)
+    Empresa = models.CharField(max_length=200)
     data = models.DateField()
-    descricao = CharField(max_length=200)
+    descricao = models.CharField(max_length=200)
     horas = models.DecimalField(
     max_digits=5,
     decimal_places=2
@@ -184,9 +184,9 @@ class Vaga(models.Model):
         Empresa,
         on_delete=models.CASCADE
     )
-    cargo = CharField(max_length=200)
-    descricao = CharField(max_length=200)
-    requisitos = CharField()
+    cargo = models.CharField(max_length=200)
+    descricao = models.CharField(max_length=200)
+    requisitos = models.CharField()
     data_limite = models.DateField()
 
     def __str__(self):
@@ -199,7 +199,7 @@ class Horas(models.Model):
         Aluno,
         on_delete=models.CASCADE
     )
-    tipo = CharField()
+    tipo = models.CharField()
     quantidade = models.DecimalField
 
     def __str__(self):
