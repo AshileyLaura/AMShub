@@ -1,5 +1,10 @@
 asgiref==3.11.1
+distlib==0.4.3
 Django==6.0.4
+filelock==3.32.3
+platformdirs==4.11.3
+python-discovery==1.5.2
 python-dotenv==1.2.2
 sqlparse==0.5.5
 tzdata==2026.2
+virtualenv==21.7.4
