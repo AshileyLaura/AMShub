@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password
+
 
 # Create your models here.
 
@@ -34,8 +36,11 @@ class Usuario(models.Model):
 
     nome = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
-    senha = models.CharField(max_length=200)
+    senha = models.CharField(max_length=128)
     tipo = models.CharField(max_length=200)
+
+    def set_senha(self, senha):
+        self.senha = make_password(senha)
 
     def __str__(self):
         return str(self.id_usuario)
@@ -43,27 +48,30 @@ class Usuario(models.Model):
 
 class Aluno(models.Model):
     id_aluno = models.AutoField(primary_key=True)
-    id_usuario= models.ForeignKey(
+
+    id_usuario = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE
     )
 
-    curso = models.CharField(max_length=200)
+    curso = models.CharField(
+        max_length=200,
+        default="Não informado"
+    )
+
     turma = models.CharField(max_length=200)
 
     def __str__(self):
         return str(self.id_aluno)
 
 
-
 class Professor(models.Model):
     id_professor = models.AutoField(primary_key=True)
+
     id_usuario = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE
     )
-
-    #area = models.CharField(max_length=200)
 
     def __str__(self):
         return str(self.id_professor)
@@ -71,8 +79,9 @@ class Professor(models.Model):
 
 class Supervisor(models.Model):
     id_supervisor = models.AutoField(primary_key=True)
+
     id_usuario = models.ForeignKey(
-        Professor,
+        Usuario,
         on_delete=models.CASCADE
     )
 
@@ -82,13 +91,13 @@ class Supervisor(models.Model):
 
 class Empresa(models.Model):
     id_empresa = models.AutoField(primary_key=True)
+
     id_usuario = models.ForeignKey(
-        Professor,
+        Usuario,
         on_delete=models.CASCADE
     )
 
     nome = models.CharField(max_length=200)
-    #area = models.CharField(max_length=200)
 
     def __str__(self):
         return str(self.id_empresa)
@@ -103,18 +112,22 @@ class Atividade(models.Model):
 
 class Participacao(models.Model):
     id_participacao = models.AutoField(primary_key=True)
+
     id_aluno = models.ForeignKey(
-        Professor,
+        Aluno,
         on_delete=models.CASCADE
     )
+
     id_mentoria = models.ForeignKey(
-        Professor,
+        Mentoria,
         on_delete=models.CASCADE
     )
+
     horas = models.DecimalField(
-    max_digits=5,
-    decimal_places=2
+        max_digits=5,
+        decimal_places=2
     )
+
     presenca = models.BooleanField()
 
     def __str__(self):
@@ -145,6 +158,7 @@ class Portfolio(models.Model):
 
 class Certificado(models.Model):
     id_certificado = models.AutoField(primary_key=True)
+
     id_aluno = models.ForeignKey(
         Aluno,
         on_delete=models.CASCADE
@@ -154,25 +168,31 @@ class Certificado(models.Model):
     instituicao = models.CharField(max_length=200)
     carga_horaria = models.IntegerField()
     status = models.CharField(max_length=200)
-    
+
     def __str__(self):
         return str(self.id_certificado)
 
 
 class Viagem(models.Model):
     id_viagem = models.AutoField(primary_key=True)
+
     id_aluno = models.ForeignKey(
         Aluno,
         on_delete=models.CASCADE
     )
-    Empresa = models.CharField(max_length=200)
-    data = models.DateField()
-    descricao = models.CharField(max_length=200)
-    horas = models.DecimalField(
-    max_digits=5,
-    decimal_places=2
+
+    empresa = models.ForeignKey(
+        Empresa,
+        on_delete=models.CASCADE
     )
 
+    data = models.DateField()
+    descricao = models.CharField(max_length=200)
+
+    horas = models.DecimalField(
+        max_digits=5,
+        decimal_places=2
+    )
 
     def __str__(self):
         return str(self.id_viagem)
@@ -180,13 +200,15 @@ class Viagem(models.Model):
 
 class Vaga(models.Model):
     id_vaga = models.AutoField(primary_key=True)
+
     id_empresa = models.ForeignKey(
         Empresa,
         on_delete=models.CASCADE
     )
+
     cargo = models.CharField(max_length=200)
     descricao = models.CharField(max_length=200)
-    requisitos = models.CharField()
+    requisitos = models.CharField(max_length=500)
     data_limite = models.DateField()
 
     def __str__(self):
@@ -195,12 +217,18 @@ class Vaga(models.Model):
 
 class Horas(models.Model):
     id_horas = models.AutoField(primary_key=True)
+
     id_aluno = models.ForeignKey(
         Aluno,
         on_delete=models.CASCADE
     )
-    tipo = models.CharField()
-    quantidade = models.DecimalField
+
+    tipo = models.CharField(max_length=200)
+
+    quantidade = models.DecimalField(
+        max_digits=5,
+        decimal_places=2
+    )
 
     def __str__(self):
         return str(self.id_horas)
@@ -208,10 +236,12 @@ class Horas(models.Model):
 
 class Notificacao(models.Model):
     id_notificacao = models.AutoField(primary_key=True)
+
     id_usuario = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE
     )
+
     mensagem = models.CharField(max_length=200)
     data = models.DateField()
     lida = models.BooleanField()
