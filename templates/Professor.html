@@ -1,395 +1,289 @@
+{% extends "base.html" %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
 
-<head>
+{% block title %}
+AMS Hub - Professor
+{% endblock %}
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AMS Hub | Professor</title>
+{% block css %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'Professor.css' %}">
+<link rel="stylesheet" href="{% static 'Professor.css' %}">
 
-</head>
+{% endblock %}
 
-<body>
 
-<div class="container-fluid p-0">
+{% block menu %}
 
-    <div class="row g-0 min-vh-100">
+<ul>
 
-        <aside class="sidebar col-lg-2">
+    <li class="active">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+    </li>
 
-            <div>
+    <li>
+        <i class="fa-solid fa-folder-open"></i>
+        <span>Portfólios</span>
+    </li>
 
-                <div class="logo text-center">
+    <li>
+        <i class="fa-solid fa-star"></i>
+        <span>Avaliações</span>
+    </li>
 
-                    <img src="{% static 'imagens/logoprofessor.png' %}"
-                         alt="Logo">
+    <li>
+        <i class="fa-solid fa-users"></i>
+        <span>Mentorias</span>
+    </li>
 
-                    <h2>AMS HUB</h2>
+    <li>
+        <i class="fa-solid fa-calendar"></i>
+        <span>Agenda</span>
+    </li>
 
-                </div>
+    <li>
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sair</span>
+    </li>
 
+</ul>
 
-                <ul class="nav flex-column">
+{% endblock %}
 
-                    <li class="nav-item active">
 
-                        <a href="#" class="nav-link">
+{% block saudacao %}
 
-                            <i class="fa-solid fa-house"></i>
+Olá, Professora Laura!
 
-                            <span>Dashboard</span>
+{% endblock %}
 
-                        </a>
 
-                    </li>
+{% block descricao %}
 
+Bem-vinda ao painel do professor.
 
-                    <li class="nav-item">
+{% endblock %}
 
-                        <a href="#" class="nav-link">
 
-                            <i class="fa-solid fa-folder-open"></i>
+{% block perfil %}
 
-                            <span>Portfólios</span>
+<div class="perfil">
 
-                        </a>
+    <img src="{% static 'imagens/professor.png.png' %}"
+         alt="Professora">
 
-                    </li>
+    <div>
 
+        <strong>Laura</strong>
 
-                    <li class="nav-item">
-
-                        <a href="#" class="nav-link">
-
-                            <i class="fa-solid fa-star"></i>
-
-                            <span>Avaliações</span>
-
-                        </a>
-
-                    </li>
-
-
-                    <li class="nav-item">
-
-                        <a href="#" class="nav-link">
-
-                            <i class="fa-solid fa-users"></i>
-
-                            <span>Mentorias</span>
-
-                        </a>
-
-                    </li>
-
-
-                    <li class="nav-item">
-
-                        <a href="#" class="nav-link">
-
-                            <i class="fa-solid fa-calendar"></i>
-
-                            <span>Agenda</span>
-
-                        </a>
-
-                    </li>
-
-
-                    <li class="nav-item">
-
-                        <a href="#" class="nav-link">
-
-                            <i class="fa-solid fa-right-from-bracket"></i>
-
-                            <span>Sair</span>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </div>
-
-        </aside>
-
-        <main class="content col-lg-10">
-
-            <header class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-
-
-                <div>
-
-                    <h1>Olá, Professora Laura!</h1>
-
-                    <p>Bem-vinda ao painel do professor.</p>
-
-                </div>
-
-
-                <div class="top d-flex align-items-center gap-3">
-
-                    <div class="search">
-
-                        <i class="fa-solid fa-magnifying-glass"></i>
-
-                        <input type="text"
-                               placeholder="Pesquisar">
-
-                    </div>
-
-
-                    <i class="fa-regular fa-bell notification"></i>
-
-
-                    <img src="{% static 'imagens/professor.png.png' %}"
-                         class="foto"
-                         alt="Professora">
-
-                </div>
-
-            </header>
-
-            <section class="cards row g-4 mb-4">
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <div class="icone">
-
-                            <i class="fa-solid fa-folder-open"></i>
-
-                        </div>
-
-                        <h3>Portfólios</h3>
-
-                        <h2>18</h2>
-
-                        <p>Pendentes para avaliação</p>
-
-                        <button>
-                            Visualizar →
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <div class="icone">
-
-                            <i class="fa-solid fa-star"></i>
-
-                        </div>
-
-                        <h3>Avaliações</h3>
-
-                        <h2>26</h2>
-
-                        <p>Prontas para envio</p>
-
-                        <button>
-                            Avaliar →
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <div class="icone">
-
-                            <i class="fa-solid fa-comments"></i>
-
-                        </div>
-
-                        <h3>Feedbacks</h3>
-
-                        <h2>41</h2>
-
-                        <p>Realizados este mês</p>
-
-                        <button>
-                            Consultar →
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <div class="icone">
-
-                            <i class="fa-solid fa-user-group"></i>
-
-                        </div>
-
-                        <h3>Mentorias</h3>
-
-                        <h2>08</h2>
-
-                        <p>Agendadas</p>
-
-                        <button>
-                            Acompanhar →
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            <section class="grid row g-4">
-                <div class="col-xl-8">
-
-                    <div class="box h-100">
-
-                        <div class="titulo">
-
-                            <h2>Portfólios Recentes</h2>
-
-                            <a href="#">Ver todos</a>
-
-                        </div>
-
-
-                        <div class="linha">
-
-                            <div>
-
-                                <h4>Lohanny Ayala</h4>
-
-                                <span>
-                                    Portfólio - Atualizar
-                                </span>
-
-                            </div>
-
-                            <button>
-                                Avaliar
-                            </button>
-
-                        </div>
-
-
-                        <div class="linha">
-
-                            <div>
-
-                                <h4>João Vitor Medeiros</h4>
-
-                                <span>
-                                    Portfólio - Atualizar
-                                </span>
-
-                            </div>
-
-                            <button>
-                                Avaliar
-                            </button>
-
-                        </div>
-
-
-                        <div class="linha">
-
-                            <div>
-
-                                <h4>Julia Castanheira</h4>
-
-                                <span>
-                                    Portfólio - Atualizar
-                                </span>
-
-                            </div>
-
-                            <button>
-                                Avaliar
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="col-xl-4">
-
-                    <div class="box h-100">
-
-                        <div class="titulo">
-
-                            <h2>Próximas Mentorias</h2>
-
-                        </div>
-
-
-                        <div class="mentoria">
-
-                            <strong>TAB - 3°DS</strong>
-
-                            <span>
-                                10:00 às 11:30
-                            </span>
-
-                        </div>
-
-
-                        <div class="mentoria">
-
-                            <strong>Ioship - AMS Geral</strong>
-
-                            <span>
-                                14:00 às 15:30
-                            </span>
-
-                        </div>
-
-
-                        <div class="mentoria">
-
-                            <strong>Visita Técnica 3° Anos</strong>
-
-                            <span>
-                                19:00 às 20:30
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </main>
+        <small>Professor</small>
 
     </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
 
-</body>
 
-</html>
+{% block content %}
+
+<section class="cards">
+
+    <div class="card">
+
+        <div class="icone">
+            <i class="fa-solid fa-folder-open"></i>
+        </div>
+
+        <h3>Portfólios</h3>
+
+        <h2>18</h2>
+
+        <p>Pendentes para avaliação</p>
+
+        <button>
+            Visualizar →
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="icone">
+            <i class="fa-solid fa-star"></i>
+        </div>
+
+        <h3>Avaliações</h3>
+
+        <h2>26</h2>
+
+        <p>Prontas para envio</p>
+
+        <button>
+            Avaliar →
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="icone">
+            <i class="fa-solid fa-comments"></i>
+        </div>
+
+        <h3>Feedbacks</h3>
+
+        <h2>41</h2>
+
+        <p>Realizados este mês</p>
+
+        <button>
+            Consultar →
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="icone">
+            <i class="fa-solid fa-user-group"></i>
+        </div>
+
+        <h3>Mentorias</h3>
+
+        <h2>08</h2>
+
+        <p>Agendadas</p>
+
+        <button>
+            Acompanhar →
+        </button>
+
+    </div>
+
+</section>
+
+
+<section class="grid">
+
+    <div class="box">
+
+        <div class="titulo">
+
+            <h2>Portfólios Recentes</h2>
+
+            <a href="#">Ver todos</a>
+
+        </div>
+
+
+        <div class="linha">
+
+            <div>
+
+                <h4>Lohanny Ayala</h4>
+
+                <span>
+                    Portfólio - Atualizar
+                </span>
+
+            </div>
+
+            <button>
+                Avaliar
+            </button>
+
+        </div>
+
+
+        <div class="linha">
+
+            <div>
+
+                <h4>João Vitor Medeiros</h4>
+
+                <span>
+                    Portfólio - Atualizar
+                </span>
+
+            </div>
+
+            <button>
+                Avaliar
+            </button>
+
+        </div>
+
+
+        <div class="linha">
+
+            <div>
+
+                <h4>Julia Castanheira</h4>
+
+                <span>
+                    Portfólio - Atualizar
+                </span>
+
+            </div>
+
+            <button>
+                Avaliar
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="box">
+
+        <div class="titulo">
+
+            <h2>Próximas Mentorias</h2>
+
+        </div>
+
+
+        <div class="mentoria">
+
+            <strong>TAB - 3°DS</strong>
+
+            <span>
+                10:00 às 11:30
+            </span>
+
+        </div>
+
+
+        <div class="mentoria">
+
+            <strong>Ioship - AMS Geral</strong>
+
+            <span>
+                14:00 às 15:30
+            </span>
+
+        </div>
+
+
+        <div class="mentoria">
+
+            <strong>Visita Técnica 3° Anos</strong>
+
+            <span>
+                19:00 às 20:30
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

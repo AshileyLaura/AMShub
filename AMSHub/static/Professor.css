@@ -1,209 +1,18 @@
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    background: #f3f5fb;
-    color: #222;
-    font-family: "Segoe UI", sans-serif;
-}
-
-.sidebar {
-
-    min-height: 100vh;
-
-    background: linear-gradient(
-        180deg,
-        #1f1f1f,
-        #292929
-    );
-
-    color: white;
-
-    padding: 20px;
-
-    border-radius: 0 25px 25px 0;
-}
-
-
-.logo {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-
-.logo img {
-    width: 70px;
-    margin-bottom: 15px;
-}
-
-
-.logo h2 {
-
-    font-size: 24px;
-
-    letter-spacing: 2px;
-
-    margin: 0;
-
-}
-
-.sidebar .nav-item {
-    margin-bottom: 12px;
-}
-
-
-.sidebar .nav-link {
-
-    color: white;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-    padding: 14px;
-
-    border-radius: 12px;
-
-    transition: .3s;
-
-}
-
-
-.sidebar .nav-link i {
-
-    width: 25px;
-
-    text-align: center;
-
-}
-
-.sidebar .nav-link:hover,
-.sidebar .nav-item.active .nav-link {
-
-    background: rgba(255,255,255,.18);
-
-    color: white;
-
-}
-
-.content {
-
-    padding: 35px;
-
-}
-
-header h1 {
-
-    font-size: 34px;
-
-    margin-bottom: 8px;
-
-}
-
-
-header p {
-
-    color: #666;
-
-    margin: 0;
-
-}
-
-.search {
-
-    width: 320px;
-
-    background: white;
-
-    border-radius: 30px;
-
-    padding: 12px 18px;
-
-    display: flex;
-
-    align-items: center;
-
-    box-shadow: 0 8px 20px rgba(0,0,0,.08);
-
-}
-
-
-.search input {
-
-    width: 100%;
-
-    border: none;
-
-    outline: none;
-
-    margin-left: 10px;
-
-    font-size: 15px;
-
-}
-
-
-.search i {
-
-    color: #666;
-
-}
-
-
-.notification {
-
-    font-size: 22px;
-
-    color: #666;
-
-    cursor: pointer;
-
-}
-
-
-.foto {
-
-    width: 55px;
-
-    height: 55px;
-
-    border-radius: 50%;
-
-    object-fit: cover;
-
-}
-
 .card {
-
     border: none;
-
     background: white;
-
     border-radius: 22px;
-
     padding: 25px;
-
-    box-shadow: 0 10px 25px rgba(0,0,0,.08);
-
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
     transition: .3s;
-
 }
-
 
 .card:hover {
-
     transform: translateY(-6px);
-
 }
 
 .icone {
-
     width: 55px;
-
     height: 55px;
 
     border-radius: 18px;
@@ -211,174 +20,113 @@ header p {
     background: #1f1f1f;
 
     display: flex;
-
     justify-content: center;
-
     align-items: center;
 
     margin-bottom: 18px;
-
 }
 
-
 .icone i {
-
     color: #efeaff;
-
     font-size: 24px;
-
 }
 
 .card h3 {
-
     color: #555;
-
     font-size: 16px;
-
     margin-bottom: 8px;
-
 }
-
 
 .card h2 {
-
     font-size: 38px;
-
     color: #222;
-
     margin: 0;
-
 }
 
-
 .card p {
-
     color: #888;
-
     margin: 12px 0 18px;
-
     line-height: 1.5;
-
 }
 
 .card button {
-
     width: 100%;
 
     border: none;
-
     border-radius: 30px;
 
     background: #6b4df6;
-
     color: white;
 
     padding: 12px;
 
     cursor: pointer;
-
     transition: .3s;
 
     font-size: 15px;
-
 }
 
-
 .card button:hover {
-
     background: #5639d8;
-
 }
 
 .box {
-
     background: white;
 
     border-radius: 22px;
 
     padding: 25px;
 
-    box-shadow: 0 10px 25px rgba(0,0,0,.08);
-
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
 }
 
 .titulo {
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
 
     margin-bottom: 20px;
-
 }
-
 
 .titulo h2 {
-
     font-size: 22px;
-
     color: #222;
-
     margin: 0;
-
 }
 
-
 .titulo a {
-
     text-decoration: none;
-
     color: #6b4df6;
-
     font-weight: 600;
-
 }
 
 .linha {
-
     display: flex;
 
     justify-content: space-between;
-
     align-items: center;
 
     padding: 18px 0;
 
     border-bottom: 1px solid #ececec;
-
 }
-
 
 .linha:last-child {
-
     border-bottom: none;
-
 }
-
 
 .linha h4 {
-
     margin-bottom: 5px;
-
     font-size: 17px;
-
 }
 
-
 .linha span {
-
     color: #777;
-
     font-size: 14px;
-
 }
 
 .linha button {
-
     background: #6b4df6;
-
     color: white;
 
     border: none;
@@ -388,20 +136,14 @@ header p {
     border-radius: 25px;
 
     cursor: pointer;
-
     transition: .3s;
-
 }
 
-
 .linha button:hover {
-
-    background: #5639d8;
-
+    background: #5c45c2;
 }
 
 .mentoria {
-
     padding: 18px;
 
     border-radius: 15px;
@@ -411,113 +153,38 @@ header p {
     margin-bottom: 15px;
 
     border-left: 5px solid #6b4df6;
-
 }
 
-
 .mentoria strong {
-
     display: block;
 
     font-size: 16px;
 
     margin-bottom: 8px;
-
 }
-
 
 .mentoria span {
-
     color: #666;
-
     font-size: 14px;
-
 }
-
-@media (max-width: 991px) {
-
-    .sidebar {
-
-        min-height: auto;
-
-        border-radius: 0;
-
-    }
-
-    .content {
-
-        padding: 25px;
-
-    }
-
-}
-
-
-@media (max-width: 768px) {
-
-    header {
-
-        align-items: flex-start !important;
-
-    }
-
-    .top {
-
-        width: 100%;
-
-        flex-wrap: wrap;
-
-    }
-
-    .search {
-
-        width: 100%;
-
-    }
-
-}
-
 
 @media (max-width: 576px) {
 
-    .content {
-
-        padding: 20px;
-
-    }
-
-    header h1 {
-
-        font-size: 28px;
-
-    }
-
     .card h2 {
-
         font-size: 30px;
-
     }
 
     .box {
-
         padding: 18px;
-
     }
 
     .linha {
-
         flex-direction: column;
-
         align-items: flex-start;
-
         gap: 12px;
-
     }
 
     .linha button {
-
         width: 100%;
-
     }
-
 }
