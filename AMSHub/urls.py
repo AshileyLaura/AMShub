@@ -1,7 +1,13 @@
 from django.urls import path
 from AMSHub.views import (
-    index, aluno, professor, coordenador, supervisor, empresa,
-    login_aluno, login_professor, login_coordenador, login_supervisor, login_empresa
+    index,
+    aluno,
+    professor,
+    coordenador,
+    supervisor,
+    empresa,
+    login_view,
+    logout_view,
 )
 
 urlpatterns = [
@@ -15,9 +21,14 @@ urlpatterns = [
     path('empresa/', empresa, name='empresa'),
 
     # LOGIN
-    path('login/aluno/', login_aluno, name='login_aluno'),
-    path('login/professor/', login_professor, name='login_professor'),
-    path('login/coordenador/', login_coordenador, name='login_coordenador'),
-    path('login/supervisor/', login_supervisor, name='login_supervisor'),
-    path('login/empresa/', login_empresa, name='login_empresa'),
+    path('login/', login_view, name='login'),
+
+    path('login/aluno/', login_view, name='login_aluno'),
+    path('login/professor/', login_view, name='login_professor'),
+    path('login/coordenador/', login_view, name='login_coordenador'),
+    path('login/supervisor/', login_view, name='login_supervisor'),
+    path('login/empresa/', login_view, name='login_empresa'),
+
+    # LOGOUT
+    path('logout/', logout_view, name='logout'),
 ]

@@ -3,7 +3,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="whidt=device-whidt, initial-scale=1.0">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Aluno</title>
 <link rel="stylesheet" href="{% static 'loginAluno.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/front-awesome/6.5.2/css/all.min.css">
@@ -25,11 +25,15 @@
             <form method="POST">
                 {% csrf_token %}
         
-                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="username" placeholder="Usuário" required>
                 <input type="password" name="senha" placeholder="Senha" required>
         
                 <button type="submit">Entrar</button>
             </form>
+            {% if erro %}
+                <p>{{ erro }}</p>
+            {% endif %}
+
         </div>
     </div>
 </div>

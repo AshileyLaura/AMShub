@@ -1,8 +1,33 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password
-
+from django.contrib.auth.models import User
 
 # Create your models here.
+
+class Perfil(models.Model):
+
+    TIPOS = [
+        ('aluno', 'Aluno'),
+        ('professor', 'Professor'),
+        ('coordenador', 'Coordenador'),
+        ('supervisor', 'Supervisor'),
+        ('empresa', 'Empresa'),
+    ]
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='perfil'
+    )
+
+    tipo = models.CharField(
+        max_length=20,
+        choices=TIPOS
+    )
+
+    def __str__(self):
+        return f'{self.user.username} - {self.tipo}'
+
+
 
 
 class Mentoria(models.Model):
@@ -31,27 +56,14 @@ class Mentoria(models.Model):
         return self.tema
 
 
-class Usuario(models.Model):
-    id_usuario = models.AutoField(primary_key=True)
-
-    nome = models.CharField(max_length=200)
-    email = models.CharField(max_length=200)
-    senha = models.CharField(max_length=128)
-    tipo = models.CharField(max_length=200)
-
-    def set_senha(self, senha):
-        self.senha = make_password(senha)
-
-    def __str__(self):
-        return str(self.id_usuario)
-
 
 class Aluno(models.Model):
     id_aluno = models.AutoField(primary_key=True)
 
-    id_usuario = models.ForeignKey(
-        Usuario,
-        on_delete=models.CASCADE
+    perfil = models.OneToOneField(
+        Perfil,
+        on_delete=models.CASCADE,
+        related_name='aluno'
     )
 
     curso = models.CharField(
@@ -68,9 +80,10 @@ class Aluno(models.Model):
 class Professor(models.Model):
     id_professor = models.AutoField(primary_key=True)
 
-    id_usuario = models.ForeignKey(
-        Usuario,
-        on_delete=models.CASCADE
+    perfil = models.OneToOneField(
+        Perfil,
+        on_delete=models.CASCADE,
+        related_name='professor'
     )
 
     def __str__(self):
@@ -80,9 +93,10 @@ class Professor(models.Model):
 class Supervisor(models.Model):
     id_supervisor = models.AutoField(primary_key=True)
 
-    id_usuario = models.ForeignKey(
-        Usuario,
-        on_delete=models.CASCADE
+    perfil = models.OneToOneField(
+        Perfil,
+        on_delete=models.CASCADE,
+        related_name='supervisor'
     )
 
     def __str__(self):
@@ -92,9 +106,10 @@ class Supervisor(models.Model):
 class Empresa(models.Model):
     id_empresa = models.AutoField(primary_key=True)
 
-    id_usuario = models.ForeignKey(
-        Usuario,
-        on_delete=models.CASCADE
+    perfil = models.OneToOneField(
+        Perfil,
+        on_delete=models.CASCADE,
+        related_name='empresa'
     )
 
     nome = models.CharField(max_length=200)
@@ -237,8 +252,8 @@ class Horas(models.Model):
 class Notificacao(models.Model):
     id_notificacao = models.AutoField(primary_key=True)
 
-    id_usuario = models.ForeignKey(
-        Usuario,
+    user = models.ForeignKey(
+        User,
         on_delete=models.CASCADE
     )
 
