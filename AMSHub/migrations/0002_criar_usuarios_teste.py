@@ -5,6 +5,7 @@
 #TODOS OS USUSARIOS TEM A SENHA "123"
 
 from django.db import migrations
+from django.contrib.auth.hashers import make_password
 
 
 def criar_usuarios_teste(apps, schema_editor):
@@ -25,7 +26,7 @@ def criar_usuarios_teste(apps, schema_editor):
         )
 
         if criado:
-            usuario.set_password('123')
+            usuario.password = make_password('123')
             usuario.save()
 
         Perfil.objects.get_or_create(
@@ -60,4 +61,3 @@ class Migration(migrations.Migration):
             remover_usuarios_teste
         ),
     ]
-
