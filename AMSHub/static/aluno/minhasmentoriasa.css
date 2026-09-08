@@ -1,0 +1,375 @@
+/* ========================================
+   MINHAS MENTORIAS
+======================================== */
+
+
+/* TÍTULOS DAS SEÇÕES */
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-title h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #222;
+}
+
+.section-title p {
+    margin: 5px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+
+/* ========================================
+   PRÓXIMAS MENTORIAS
+======================================== */
+
+.proximas {
+    margin-bottom: 35px;
+}
+
+.mentorias-futuras {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mentoria-futura {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+
+/* DATA */
+
+.data-mentoria {
+    width: 65px;
+    height: 70px;
+    border-radius: 14px;
+    background: #f0eaff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.data-mentoria span {
+    font-size: 12px;
+    font-weight: bold;
+    color: #6528e0;
+}
+
+.data-mentoria strong {
+    font-size: 27px;
+    color: #6528e0;
+}
+
+
+/* INFORMAÇÕES */
+
+.mentoria-info {
+    flex: 1;
+}
+
+.mentoria-info h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: #222;
+}
+
+.mentoria-info p {
+    display: inline-block;
+    margin: 0 18px 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.mentoria-info i {
+    color: #6528e0;
+    margin-right: 5px;
+}
+
+
+/* STATUS */
+
+.status-breve {
+    padding: 10px 15px;
+    border-radius: 20px;
+    background: #fff4d6;
+    color: #9a6b00;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   MENTORIAS REALIZADAS
+======================================== */
+
+.realizadas {
+    margin-bottom: 30px;
+}
+
+.total-mentorias {
+    background: #f0eaff;
+    color: #6528e0;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* LISTA */
+
+.lista-mentorias {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+/* CARD */
+
+.mentoria-card {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+
+/* CABEÇALHO */
+
+.mentoria-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.icone-mentoria {
+    width: 55px;
+    height: 55px;
+    border-radius: 14px;
+    background: #f0eaff;
+    color: #6528e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.mentoria-header h3 {
+    margin: 0 0 5px;
+    font-size: 18px;
+    color: #222;
+}
+
+.mentoria-header span {
+    color: #777;
+    font-size: 13px;
+}
+
+
+/* HORAS */
+
+.horas {
+    margin-left: auto;
+    text-align: center;
+    min-width: 70px;
+}
+
+.horas strong {
+    display: block;
+    font-size: 24px;
+    color: #6528e0;
+}
+
+.horas small {
+    color: #777;
+    font-size: 12px;
+}
+
+
+/* ========================================
+   MATERIAIS
+======================================== */
+
+.materiais {
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid #eeeeee;
+}
+
+.materiais h4 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: #555;
+}
+
+.materiais h4 i {
+    color: #6528e0;
+    margin-right: 7px;
+}
+
+.arquivos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.arquivo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    background: #f7f7fb;
+    border-radius: 10px;
+    color: #555;
+    text-decoration: none;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.arquivo i {
+    color: #6528e0;
+}
+
+.arquivo:hover {
+    background: #eee9ff;
+    color: #6528e0;
+}
+
+
+/* ========================================
+   RODAPÉ DO CARD
+======================================== */
+
+.mentoria-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eeeeee;
+}
+
+.concluida {
+    color: #368a52;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.concluida i {
+    margin-right: 5px;
+}
+
+.btn-detalhes {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #6528e0;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.btn-detalhes:hover {
+    color: #4315a5;
+}
+
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 768px) {
+
+    .mentoria-futura {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .mentoria-info {
+        min-width: calc(100% - 85px);
+    }
+
+    .status-breve {
+        margin-left: 85px;
+    }
+
+    .mentoria-info p {
+        display: block;
+        margin: 5px 0;
+    }
+
+    .mentoria-header {
+        flex-wrap: wrap;
+    }
+
+    .horas {
+        margin-left: auto;
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .section-title {
+        align-items: flex-start;
+        gap: 10px;
+        flex-direction: column;
+    }
+
+    .mentoria-futura {
+        padding: 16px;
+    }
+
+    .status-breve {
+        margin-left: 0;
+    }
+
+    .mentoria-card {
+        padding: 18px;
+    }
+
+    .mentoria-header {
+        align-items: flex-start;
+    }
+
+    .horas {
+        width: 100%;
+        margin-left: 0;
+        text-align: left;
+        margin-top: 5px;
+    }
+
+    .arquivos {
+        flex-direction: column;
+    }
+
+    .arquivo {
+        width: 100%;
+    }
+
+    .mentoria-footer {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+
+}

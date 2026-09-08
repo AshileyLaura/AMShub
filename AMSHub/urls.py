@@ -8,6 +8,8 @@ from AMSHub.views import (
     empresa,
     login_view,
     logout_view,
+    minhasmentoriasa,
+    detalhesdamentoriaa,
 )
 
 urlpatterns = [
@@ -19,6 +21,10 @@ urlpatterns = [
     path('coordenador/', coordenador, name='coordenador'),
     path('supervisor/', supervisor, name='supervisor'),
     path('empresa/', empresa, name='empresa'),
+
+    #ALUNO
+    path('aluno/mentorias/', minhasmentoriasa, name='minhasmentoriasa'),
+    path('aluno/mentorias/detalhes/', detalhesdamentoriaa, name='detalhesdamentoriaa'),
 
     # LOGIN
     path('login/', login_view, name='login'),

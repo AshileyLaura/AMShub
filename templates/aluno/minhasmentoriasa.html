@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+AMS Hub - Minhas Mentorias
+{% endblock %}
+
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'aluno/minhasmentoriasa.css' %}">
+{% endblock %}
+
+
+{% block menu %}
+
+<ul>
+
+    <li>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <i class="fa-solid fa-users"></i>
+        <span>Mentorias</span>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-folder-open"></i>
+        <span>Portfólios</span>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-list-check"></i>
+        <span>Atividades</span>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-award"></i>
+        <span>Certificados</span>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>Pendências</span>
+    </li>
+
+</ul>
+
+{% endblock %}
+
+
+{% block saudacao %}
+Minhas Mentorias
+{% endblock %}
+
+
+{% block descricao %}
+Acompanhe suas mentorias realizadas e as próximas que acontecerão.
+{% endblock %}
+
+
+{% block perfil %}
+
+<div class="perfil">
+
+    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+
+    <div>
+        <strong>Manuela</strong>
+        <small>Aluno</small>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<!-- PRÓXIMAS MENTORIAS -->
+
+<section class="proximas">
+
+    <div class="section-title">
+        <div>
+            <h2>Próximas Mentorias</h2>
+            <p>Mentorias que acontecerão em breve.</p>
+        </div>
+    </div>
+
+
+    <div class="mentorias-futuras">
+
+        <div class="mentoria-futura">
+
+            <div class="data-mentoria">
+                <span>SET</span>
+                <strong>15</strong>
+            </div>
+
+            <div class="mentoria-info">
+
+                <h3>Desenvolvimento Web</h3>
+
+                <p>
+                    <i class="fa-regular fa-calendar"></i>
+                    15/09/2026
+                </p>
+
+                <p>
+                    <i class="fa-regular fa-clock"></i>
+                    14:00
+                </p>
+
+                <p>
+                    <i class="fa-solid fa-user"></i>
+                    Professor João
+                </p>
+
+            </div>
+
+            <div class="status-breve">
+                <i class="fa-regular fa-clock"></i>
+                Em breve
+            </div>
+
+        </div>
+
+
+        <div class="mentoria-futura">
+
+            <div class="data-mentoria">
+                <span>SET</span>
+                <strong>22</strong>
+            </div>
+
+            <div class="mentoria-info">
+
+                <h3>Banco de Dados</h3>
+
+                <p>
+                    <i class="fa-regular fa-calendar"></i>
+                    22/09/2026
+                </p>
+
+                <p>
+                    <i class="fa-regular fa-clock"></i>
+                    15:30
+                </p>
+
+                <p>
+                    <i class="fa-solid fa-user"></i>
+                    Professora Ana
+                </p>
+
+            </div>
+
+            <div class="status-breve">
+                <i class="fa-regular fa-clock"></i>
+                Em breve
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MENTORIAS REALIZADAS -->
+
+<section class="realizadas">
+
+    <div class="section-title">
+
+        <div>
+            <h2>Mentorias Realizadas</h2>
+            <p>Confira suas mentorias já concluídas.</p>
+        </div>
+
+        <span class="total-mentorias">
+            5 mentorias
+        </span>
+
+    </div>
+
+
+    <div class="lista-mentorias">
+
+
+        <!-- MENTORIA 1 -->
+
+        <div class="mentoria-card">
+
+            <div class="mentoria-header">
+
+                <div class="icone-mentoria">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+
+                <div>
+                    <h3>Desenvolvimento Web</h3>
+                    <span>27/05/2026 • Professor João</span>
+                </div>
+
+                <div class="horas">
+                    <strong>2h</strong>
+                    <small>Horas</small>
+                </div>
+
+            </div>
+
+
+            <div class="materiais">
+
+                <h4>
+                    <i class="fa-solid fa-paperclip"></i>
+                    Materiais utilizados
+                </h4>
+
+                <div class="arquivos">
+
+                    <a href="#" class="arquivo">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        Material de apoio.pdf
+                    </a>
+
+                    <a href="#" class="arquivo">
+                        <i class="fa-solid fa-file-lines"></i>
+                        Exercícios HTML
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="mentoria-footer">
+
+                <span class="concluida">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Concluída
+                </span>
+
+                <a href="{% url 'detalhesdamentoriaa' %}" class="btn-detalhes">
+                    Ver detalhes
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- MENTORIA 2 -->
+
+        <div class="mentoria-card">
+
+            <div class="mentoria-header">
+
+                <div class="icone-mentoria">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+
+                <div>
+                    <h3>Banco de Dados</h3>
+                    <span>14/04/2026 • Professora Ana</span>
+                </div>
+
+                <div class="horas">
+                    <strong>3h</strong>
+                    <small>Horas</small>
+                </div>
+
+            </div>
+
+
+            <div class="materiais">
+
+                <h4>
+                    <i class="fa-solid fa-paperclip"></i>
+                    Materiais utilizados
+                </h4>
+
+                <div class="arquivos">
+
+                    <a href="#" class="arquivo">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        Introdução ao SQL.pdf
+                    </a>
+
+                    <a href="#" class="arquivo">
+                        <i class="fa-solid fa-file-lines"></i>
+                        Exercícios SQL
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="mentoria-footer">
+
+                <span class="concluida">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Concluída
+                </span>
+
+                <a href="{% url 'detalhesdamentoriaa' %}" class="btn-detalhes">
+                    Ver detalhes
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- MENTORIA 3 -->
+
+        <div class="mentoria-card">
+
+            <div class="mentoria-header">
+
+                <div class="icone-mentoria">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+
+                <div>
+                    <h3>Programação Python</h3>
+                    <span>29/03/2026 • Professor Carlos</span>
+                </div>
+
+                <div class="horas">
+                    <strong>2h</strong>
+                    <small>Horas</small>
+                </div>
+
+            </div>
+
+
+            <div class="materiais">
+
+                <h4>
+                    <i class="fa-solid fa-paperclip"></i>
+                    Materiais utilizados
+                </h4>
+
+                <div class="arquivos">
+
+                    <a href="#" class="arquivo">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        Material Python.pdf
+                    </a>
+
+                    <a href="#" class="arquivo">
+                        <i class="fa-solid fa-file-code"></i>
+                        Exercícios Python
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="mentoria-footer">
+
+                <span class="concluida">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Concluída
+                </span>
+
+                <a href="{% url 'detalhesdamentoriaa' %}" class="btn-detalhes">
+                    Ver detalhes
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+{% endblock %}

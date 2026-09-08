@@ -1,0 +1,294 @@
+/* ========================================
+   DETALHES DA MENTORIA
+======================================== */
+
+
+/* ========================================
+   TOPO
+======================================== */
+
+.detalhes-topo {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+}
+
+.icone-principal {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    background: #f0eaff;
+    color: #6528e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+}
+
+.titulo-mentoria h2 {
+    margin: 8px 0 5px;
+    font-size: 25px;
+    color: #222;
+}
+
+.titulo-mentoria p {
+    margin: 0;
+    color: #777;
+}
+
+
+/* STATUS */
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #368a52;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   INFORMAÇÕES
+======================================== */
+
+.informacoes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+.info-card > i {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: #f0eaff;
+    color: #6528e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.info-card span {
+    display: block;
+    color: #777;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.info-card strong {
+    color: #222;
+    font-size: 14px;
+}
+
+
+/* ========================================
+   CONTEÚDO
+======================================== */
+
+.conteudo-mentoria,
+.materiais-mentoria {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+}
+
+.conteudo-mentoria h2,
+.materiais-mentoria h2 {
+    margin: 0 0 12px;
+    font-size: 21px;
+    color: #222;
+}
+
+.conteudo-mentoria p {
+    margin: 0;
+    color: #666;
+    line-height: 1.7;
+}
+
+
+/* ========================================
+   MATERIAIS
+======================================== */
+
+.titulo-secao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.titulo-secao h2 {
+    margin-bottom: 5px;
+}
+
+.titulo-secao p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.titulo-secao > i {
+    font-size: 22px;
+    color: #6528e0;
+}
+
+
+.lista-arquivos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.arquivo-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid #eeeeee;
+    border-radius: 13px;
+}
+
+.arquivo-icone {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    background: #f0eaff;
+    color: #6528e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.arquivo-icone.pdf {
+    background: #fff0f0;
+    color: #d64545;
+}
+
+.arquivo-info {
+    flex: 1;
+}
+
+.arquivo-info strong {
+    display: block;
+    color: #333;
+    font-size: 14px;
+}
+
+.arquivo-info small {
+    color: #888;
+    font-size: 12px;
+}
+
+.btn-arquivo {
+    color: #6528e0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.btn-arquivo:hover {
+    color: #4315a5;
+}
+
+
+/* ========================================
+   BOTÃO VOLTAR
+======================================== */
+
+.btn-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #6528e0;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.btn-voltar:hover {
+    color: #4315a5;
+}
+
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 1100px) {
+
+    .informacoes {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .detalhes-topo {
+        align-items: flex-start;
+    }
+
+    .arquivo-card {
+        flex-wrap: wrap;
+    }
+
+    .btn-arquivo {
+        width: 100%;
+        padding-left: 60px;
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .detalhes-topo {
+        padding: 18px;
+    }
+
+    .icone-principal {
+        width: 55px;
+        height: 55px;
+        font-size: 23px;
+    }
+
+    .titulo-mentoria h2 {
+        font-size: 20px;
+    }
+
+    .informacoes {
+        grid-template-columns: 1fr;
+    }
+
+    .conteudo-mentoria,
+    .materiais-mentoria {
+        padding: 18px;
+    }
+
+}

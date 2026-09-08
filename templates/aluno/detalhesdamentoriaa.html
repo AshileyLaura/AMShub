@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+AMS Hub - Detalhes da Mentoria
+{% endblock %}
+
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'aluno/detalhesdamentoriaa.css' %}">
+{% endblock %}
+
+
+{% block menu %}
+
+<ul>
+
+    <li>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'minhasmentoriasa' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-folder-open"></i>
+        <span>Portfólios</span>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-list-check"></i>
+        <span>Atividades</span>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-award"></i>
+        <span>Certificados</span>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>Pendências</span>
+    </li>
+
+</ul>
+
+{% endblock %}
+
+
+{% block saudacao %}
+Detalhes da Mentoria
+{% endblock %}
+
+
+{% block descricao %}
+Confira todas as informações e materiais utilizados na mentoria.
+{% endblock %}
+
+
+{% block perfil %}
+
+<div class="perfil">
+
+    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+
+    <div>
+        <strong>Manuela</strong>
+        <small>Aluno</small>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<!-- INFORMAÇÕES PRINCIPAIS -->
+
+<section class="detalhes-topo">
+
+    <div class="icone-principal">
+        <i class="fa-solid fa-code"></i>
+    </div>
+
+    <div class="titulo-mentoria">
+
+        <span class="status">
+            <i class="fa-solid fa-circle-check"></i>
+            Concluída
+        </span>
+
+        <h2>Desenvolvimento Web</h2>
+
+        <p>
+            Mentoria sobre desenvolvimento de aplicações web.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- INFORMAÇÕES -->
+
+<section class="informacoes">
+
+    <div class="info-card">
+
+        <i class="fa-regular fa-calendar"></i>
+
+        <div>
+            <span>Data</span>
+            <strong>27/05/2026</strong>
+        </div>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <i class="fa-regular fa-clock"></i>
+
+        <div>
+            <span>Horário</span>
+            <strong>14:00 - 16:00</strong>
+        </div>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <i class="fa-solid fa-user"></i>
+
+        <div>
+            <span>Mentor</span>
+            <strong>Professor João</strong>
+        </div>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <i class="fa-solid fa-hourglass-half"></i>
+
+        <div>
+            <span>Horas obtidas</span>
+            <strong>2 horas</strong>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CONTEÚDO DA MENTORIA -->
+
+<section class="conteudo-mentoria">
+
+    <h2>Conteúdo da Mentoria</h2>
+
+    <p>
+        Nesta mentoria foram abordados conceitos relacionados ao
+        desenvolvimento web, estrutura de páginas, HTML, CSS e
+        organização de projetos.
+    </p>
+
+</section>
+
+
+<!-- MATERIAIS -->
+
+<section class="materiais-mentoria">
+
+    <div class="titulo-secao">
+
+        <div>
+            <h2>Arquivos e Materiais</h2>
+            <p>Materiais utilizados durante esta mentoria.</p>
+        </div>
+
+        <i class="fa-solid fa-paperclip"></i>
+
+    </div>
+
+
+    <div class="lista-arquivos">
+
+        <div class="arquivo-card">
+
+            <div class="arquivo-icone pdf">
+                <i class="fa-solid fa-file-pdf"></i>
+            </div>
+
+            <div class="arquivo-info">
+                <strong>Material de apoio.pdf</strong>
+                <small>Material utilizado na mentoria</small>
+            </div>
+
+            <a href="#" class="btn-arquivo">
+                <i class="fa-solid fa-eye"></i>
+                Visualizar
+            </a>
+
+        </div>
+
+
+        <div class="arquivo-card">
+
+            <div class="arquivo-icone">
+                <i class="fa-solid fa-file-lines"></i>
+            </div>
+
+            <div class="arquivo-info">
+                <strong>Exercícios HTML</strong>
+                <small>Atividades realizadas durante a mentoria</small>
+            </div>
+
+            <a href="#" class="btn-arquivo">
+                <i class="fa-solid fa-eye"></i>
+                Visualizar
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- VOLTAR -->
+
+<a href="{% url 'minhasmentoriasa' %}" class="btn-voltar">
+    <i class="fa-solid fa-arrow-left"></i>
+    Voltar para minhas mentorias
+</a>
+
+{% endblock %}

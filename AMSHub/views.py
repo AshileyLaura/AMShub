@@ -107,3 +107,20 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def minhasmentoriasa(request):
+    return render(request, 'aluno/minhasmentoriasa.html')
+
+def CEportifoliosa(request):
+    return render(request, 'aluno/CEportifoliosa.html')
+
+def detalhesdamentoriaa(request):
+    return render(request, 'aluno/detalhesdamentoriaa.html')
+
+def meuperfila(request):
+    return render(request, 'aluno/meuperfila.html')
+
+def meusportifoliosa(request):
+    return render(request, 'aluno/meusportifoliosa.html')
+
+

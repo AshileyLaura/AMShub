@@ -1,271 +1,70 @@
-* {
-    box-sizing: border-box;
-}
+/* ========================================
+   CONTEÚDO ESPECÍFICO DO ALUNO
+======================================== */
 
-body {
-    margin: 0;
-    background: #efefef;
-    font-family: 'Segoe UI', sans-serif;
-    color: #222;
-}
 
-.sidebar {
-    min-height: 100vh;
+/* ========================================
+   CARDS
+======================================== */
 
-    background: linear-gradient(
-        180deg,
-        #2d1159,
-        #5c1fd1
-    );
-
-    color: white;
-
-    padding: 20px;
-
-    border-radius: 0 25px 25px 0;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.logo img {
-    width: 70px;
-    margin-bottom: 10px;
-}
-
-.logo h2 {
-    font-size: 22px;
-}
-
-.sidebar nav {
-    margin-top: 35px;
-}
-
-.sidebar .nav-item {
-    margin-bottom: 12px;
-}
-
-.sidebar .nav-link {
-    color: white;
-
-    display: flex;
-    align-items: center;
-
-    gap: 15px;
-
-    padding: 14px;
-
-    border-radius: 12px;
-
-    transition: 0.3s;
-}
-
-.sidebar .nav-link i {
-    width: 25px;
-    text-align: center;
-}
-
-.sidebar .nav-link:hover,
-.sidebar .nav-item.active .nav-link {
-
-    background: #7438ff;
-
-    color: white;
-}
-
-.bottom-menu {
-
-    border-top: 1px solid rgba(255,255,255,.3);
-
-    padding-top: 20px;
-}
-
-.bottom-menu a {
-
-    display: block;
-
-    color: white;
-
-    text-decoration: none;
-
-    margin: 15px 0;
-
-    transition: .3s;
-}
-
-.bottom-menu a:hover {
-
-    color: #d8c8ff;
-
-}
-
-.bottom-menu i {
-
-    width: 25px;
-
-    text-align: center;
-
-    margin-right: 5px;
-}
-
-main {
-
-    padding: 25px 35px;
-
-}
-
-header h1 {
-
-    font-size: 35px;
-
-    color: #222;
-
-    margin: 0;
-
-}
-
-header p {
-
-    color: #777;
-
-    margin-top: 5px;
-
-}
-
-.search {
-
-    width: 340px;
-
-    height: 45px;
-
-    background: white;
-
-    border-radius: 30px;
-
-    display: flex;
-
-    align-items: center;
-
-    padding: 0 18px;
-
-    box-shadow: 0 4px 10px rgba(0,0,0,.08);
-
-}
-
-.search i {
-
-    color: #666;
-
-}
-
-.search input {
-
-    border: none;
-
-    outline: none;
-
-    width: 100%;
-
-    margin-left: 10px;
-
-}
-
-.header-right > i {
-
-    color: #5d2dd6;
-
-    font-size: 20px;
-
-    cursor: pointer;
-
-}
-
-.perfil img {
-
-    width: 50px;
-
-    height: 50px;
-
-    border-radius: 50%;
-
-    object-fit: cover;
-
-}
-
-.perfil small {
-
-    display: block;
-
-    color: #777;
-
+.cards {
+    margin-bottom: 30px;
 }
 
 .card {
-
     border: none;
-
     background: white;
-
     border-radius: 18px;
 
     padding: 22px;
 
     display: flex;
-
     align-items: center;
 
     gap: 20px;
 
-    box-shadow: 0 8px 18px rgba(0,0,0,.08);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 
-    transition: .3s;
-
+    transition: 0.3s;
 }
 
 .card:hover {
-
     transform: translateY(-4px);
 
-    box-shadow: 0 12px 25px rgba(0,0,0,.12);
-
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
 }
 
 
 .card > i {
-
     font-size: 40px;
-
     color: #6528e0;
-
 }
 
 
 .card span {
-
     color: #666;
-
 }
 
 
 .card h2 {
-
     font-size: 32px;
 
     margin: 5px 0;
-
 }
 
 
 .card p {
-
     color: #555;
 
     font-size: 14px;
 
     margin: 0;
-
 }
+
+
+/* ========================================
+   ÚLTIMAS REALIZAÇÕES
+======================================== */
 
 .atividades,
 .grafico {
@@ -276,8 +75,7 @@ header p {
 
     padding: 25px;
 
-    box-shadow: 0 8px 18px rgba(0,0,0,.08);
-
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -287,9 +85,10 @@ header p {
     margin-bottom: 20px;
 
     color: #222;
-
 }
 
+
+/* LISTA DE REALIZAÇÕES */
 
 .atividades ul {
 
@@ -298,7 +97,6 @@ header p {
     padding: 0;
 
     margin: 0;
-
 }
 
 
@@ -314,52 +112,42 @@ header p {
 
     border-bottom: 1px solid #ececec;
 
-    transition: .3s;
-
+    transition: 0.3s;
 }
 
 
 .atividades li:hover {
 
     background: #f5f5ff;
-
 }
 
 
 .atividades li small {
 
     color: #777;
-
 }
+
+
+/* ========================================
+   GRÁFICO
+======================================== */
 
 #graficoHoras {
 
     width: 100% !important;
 
     height: 320px !important;
-
 }
+
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
 
 @media (max-width: 991px) {
 
-    .sidebar {
-
-        min-height: auto;
-
-        border-radius: 0;
-
-    }
-
-    .sidebar nav {
-
-        margin-top: 20px;
-
-    }
-
-    .bottom-menu {
-
-        margin-top: 20px;
-
+    .cards {
+        margin-bottom: 25px;
     }
 
 }
@@ -367,30 +155,12 @@ header p {
 
 @media (max-width: 768px) {
 
-    main {
-
-        padding: 20px;
-
+    .card {
+        padding: 18px;
     }
 
-    header {
-
-        align-items: flex-start !important;
-
-    }
-
-    .header-right {
-
-        width: 100%;
-
-        flex-wrap: wrap;
-
-    }
-
-    .search {
-
-        width: 100%;
-
+    .card > i {
+        font-size: 32px;
     }
 
 }
@@ -398,22 +168,15 @@ header p {
 
 @media (max-width: 576px) {
 
-    header h1 {
-
-        font-size: 28px;
-
-    }
-
-    .card {
-
+    .atividades,
+    .grafico {
         padding: 18px;
-
     }
 
-    .card > i {
-
-        font-size: 32px;
-
+    .atividades li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
     }
 
 }
