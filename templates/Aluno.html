@@ -149,7 +149,7 @@
 
                 <div>
 
-                    <h1>Olá, Manuela!</h1>
+                    <h1>Olá, {{ nome_usuario }}!</h1>
 
                     <p>Aqui você encontra tudo sobre seus portfólios.</p>
 
@@ -172,11 +172,11 @@
                     <div class="perfil d-flex align-items-center gap-2">
 
                         <img src="{% static 'imagens/aluno.png' %}"
-                             alt="Aluno">
+                            alt="Aluno">
 
                         <div>
 
-                            <strong>Manuela</strong>
+                            <strong>{{ nome_usuario }}</strong>
 
                             <small>Aluno</small>
 
