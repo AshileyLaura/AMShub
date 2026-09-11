@@ -10,6 +10,7 @@ from AMSHub.views import (
     logout_view,
     minhasmentoriasa,
     detalhesdamentoriaa,
+    meusportifoliosa,
 )
 
 urlpatterns = [
@@ -25,6 +26,7 @@ urlpatterns = [
     #ALUNO
     path('aluno/mentorias/', minhasmentoriasa, name='minhasmentoriasa'),
     path('aluno/mentorias/detalhes/', detalhesdamentoriaa, name='detalhesdamentoriaa'),
+    path('aluno/portifolios', meusportifoliosa, name='meusportifoliosa'),
 
     # LOGIN
     path('login/', login_view, name='login'),

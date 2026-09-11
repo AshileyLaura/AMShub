@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+AMS Hub - Meu Portfólio
+{% endblock %}
+
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'aluno/meusportfoliosa.css' %}">
+{% endblock %}
+
+
+{% block menu %}
+
+<ul>
+
+    <li>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'minhasmentoriasa' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'meusportfoliosa' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-list-check"></i>
+        <span>Atividades</span>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-award"></i>
+        <span>Certificados</span>
+    </li>
+
+    <li>
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>Pendências</span>
+    </li>
+
+</ul>
+
+{% endblock %}
+
+
+{% block saudacao %}
+Meu Portfólio
+{% endblock %}
+
+
+{% block descricao %}
+Visualize seu portfólio, suas versões e os comentários recebidos.
+{% endblock %}
+
+
+{% block perfil %}
+
+<div class="perfil">
+
+    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+
+    <div>
+        <strong>Manuela</strong>
+        <small>Aluno</small>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<!-- INFORMAÇÕES DO PORTFÓLIO -->
+
+<section class="portfolio-principal">
+
+    <div class="portfolio-cabecalho">
+
+        <div class="portfolio-icone">
+            <i class="fa-solid fa-folder-open"></i>
+        </div>
+
+        <div class="portfolio-titulo">
+
+            <span class="status-portfolio">
+                <i class="fa-solid fa-circle-check"></i>
+                Enviado
+            </span>
+
+            <h2>Meu Portfólio Profissional</h2>
+
+            <p>
+                Portfólio com meus projetos, atividades e experiências
+                desenvolvidas durante o curso.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="portfolio-info">
+
+        <div>
+            <span>Última atualização</span>
+            <strong>05/09/2026</strong>
+        </div>
+
+        <div>
+            <span>Versões enviadas</span>
+            <strong>3 versões</strong>
+        </div>
+
+        <div>
+            <span>Status</span>
+            <strong>Em avaliação</strong>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- LINK DO PORTFÓLIO -->
+
+<section class="link-portfolio">
+
+    <div class="titulo-secao">
+
+        <div>
+            <h2>Link do Portfólio</h2>
+            <p>Link disponibilizado para acesso ao seu portfólio.</p>
+        </div>
+
+        <i class="fa-solid fa-link"></i>
+
+    </div>
+
+
+    <div class="link-box">
+
+        <div class="link-icone">
+            <i class="fa-solid fa-globe"></i>
+        </div>
+
+        <div class="link-info">
+
+            <span>Endereço do portfólio</span>
+
+            <a href="#" target="_blank">
+                https://meuportfolio.com/manuela
+            </a>
+
+        </div>
+
+        <a href="#" target="_blank" class="btn-abrir">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Abrir
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- VERSÕES EM PDF -->
+
+<section class="versoes-pdf">
+
+    <div class="titulo-secao">
+
+        <div>
+            <h2>Versões em PDF</h2>
+            <p>Histórico dos arquivos enviados.</p>
+        </div>
+
+        <i class="fa-solid fa-file-pdf"></i>
+
+    </div>
+
+
+    <div class="lista-pdfs">
+
+
+        <!-- VERSÃO 3 -->
+
+        <div class="pdf-card">
+
+            <div class="pdf-icone">
+                <i class="fa-solid fa-file-pdf"></i>
+            </div>
+
+            <div class="pdf-info">
+
+                <strong>Portfolio - Versão 3.pdf</strong>
+
+                <small>
+                    Enviado em 05/09/2026
+                </small>
+
+            </div>
+
+            <span class="versao-atual">
+                Versão atual
+            </span>
+
+            <a href="#" class="btn-pdf">
+                <i class="fa-solid fa-eye"></i>
+                Visualizar
+            </a>
+
+        </div>
+
+
+        <!-- VERSÃO 2 -->
+
+        <div class="pdf-card">
+
+            <div class="pdf-icone">
+                <i class="fa-solid fa-file-pdf"></i>
+            </div>
+
+            <div class="pdf-info">
+
+                <strong>Portfolio - Versão 2.pdf</strong>
+
+                <small>
+                    Enviado em 20/08/2026
+                </small>
+
+            </div>
+
+            <a href="#" class="btn-pdf">
+                <i class="fa-solid fa-eye"></i>
+                Visualizar
+            </a>
+
+        </div>
+
+
+        <!-- VERSÃO 1 -->
+
+        <div class="pdf-card">
+
+            <div class="pdf-icone">
+                <i class="fa-solid fa-file-pdf"></i>
+            </div>
+
+            <div class="pdf-info">
+
+                <strong>Portfolio - Versão 1.pdf</strong>
+
+                <small>
+                    Enviado em 10/07/2026
+                </small>
+
+            </div>
+
+            <a href="#" class="btn-pdf">
+                <i class="fa-solid fa-eye"></i>
+                Visualizar
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- COMENTÁRIOS -->
+
+<section class="comentarios">
+
+    <div class="titulo-secao">
+
+        <div>
+            <h2>Comentários sobre o Portfólio</h2>
+            <p>Feedback recebido dos responsáveis pela avaliação.</p>
+        </div>
+
+        <i class="fa-regular fa-comments"></i>
+
+    </div>
+
+
+    <div class="lista-comentarios">
+
+
+        <!-- PROFESSOR -->
+
+        <div class="comentario-card">
+
+            <div class="comentario-icone professor">
+                <i class="fa-solid fa-chalkboard-user"></i>
+            </div>
+
+            <div class="comentario-conteudo">
+
+                <div class="comentario-topo">
+
+                    <strong>Professor</strong>
+
+                    <span>02/09/2026</span>
+
+                </div>
+
+                <p>
+                    O portfólio apresenta uma boa organização e demonstra
+                    a evolução dos projetos desenvolvidos durante o curso.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- COORDENADOR -->
+
+        <div class="comentario-card">
+
+            <div class="comentario-icone coordenador">
+                <i class="fa-solid fa-user-tie"></i>
+            </div>
+
+            <div class="comentario-conteudo">
+
+                <div class="comentario-topo">
+
+                    <strong>Coordenador</strong>
+
+                    <span>03/09/2026</span>
+
+                </div>
+
+                <p>
+                    O conteúdo apresentado está adequado aos objetivos
+                    do curso. Recomenda-se manter os projetos atualizados.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUPERVISOR -->
+
+        <div class="comentario-card">
+
+            <div class="comentario-icone supervisor">
+                <i class="fa-solid fa-user-check"></i>
+            </div>
+
+            <div class="comentario-conteudo">
+
+                <div class="comentario-topo">
+
+                    <strong>Supervisor</strong>
+
+                    <span>04/09/2026</span>
+
+                </div>
+
+                <p>
+                    Os projetos demonstram participação nas atividades
+                    e desenvolvimento das competências propostas.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- EMPRESA -->
+
+        <div class="comentario-card">
+
+            <div class="comentario-icone empresa">
+                <i class="fa-solid fa-building"></i>
+            </div>
+
+            <div class="comentario-conteudo">
+
+                <div class="comentario-topo">
+
+                    <strong>Empresa</strong>
+
+                    <span>05/09/2026</span>
+
+                </div>
+
+                <p>
+                    O portfólio demonstra conhecimentos interessantes
+                    para o ambiente profissional e apresenta bons projetos.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

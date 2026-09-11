@@ -53,19 +53,22 @@ body {
 .sidebar nav li {
     display: flex;
     align-items: center;
-
     gap: 15px;
-
     padding: 14px;
     margin-bottom: 12px;
-
     border-radius: 12px;
-
     cursor: pointer;
-
     transition: 0.3s;
 }
 
+.sidebar nav li a {
+    color: white !important;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
 .sidebar nav li i {
     width: 25px;
     text-align: center;

@@ -1,0 +1,371 @@
+/* ========================================
+   MEU PORTFÓLIO
+======================================== */
+
+
+/* ========================================
+   PORTFÓLIO PRINCIPAL
+======================================== */
+
+.portfolio-principal,
+.link-portfolio,
+.versoes-pdf,
+.comentarios {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+}
+
+
+/* CABEÇALHO */
+
+.portfolio-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.portfolio-icone {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    background: #f0eaff;
+    color: #6528e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+}
+
+.portfolio-titulo h2 {
+    margin: 8px 0 5px;
+    font-size: 25px;
+    color: #222;
+}
+
+.portfolio-titulo p {
+    margin: 0;
+    color: #777;
+    line-height: 1.5;
+}
+
+
+/* STATUS */
+
+.status-portfolio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #368a52;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* INFORMAÇÕES */
+
+.portfolio-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eeeeee;
+}
+
+.portfolio-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.portfolio-info span {
+    color: #777;
+    font-size: 12px;
+}
+
+.portfolio-info strong {
+    color: #333;
+    font-size: 15px;
+}
+
+
+/* ========================================
+   TÍTULOS DAS SEÇÕES
+======================================== */
+
+.titulo-secao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.titulo-secao h2 {
+    margin: 0 0 5px;
+    font-size: 21px;
+    color: #222;
+}
+
+.titulo-secao p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.titulo-secao > i {
+    color: #6528e0;
+    font-size: 22px;
+}
+
+
+/* ========================================
+   LINK
+======================================== */
+
+.link-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px;
+    background: #f8f7fc;
+    border-radius: 13px;
+}
+
+.link-icone {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    background: #f0eaff;
+    color: #6528e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.link-info {
+    flex: 1;
+}
+
+.link-info span {
+    display: block;
+    color: #777;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.link-info a {
+    color: #6528e0;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.link-info a:hover {
+    text-decoration: underline;
+}
+
+.btn-abrir {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #6528e0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   PDFS
+======================================== */
+
+.lista-pdfs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pdf-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid #eeeeee;
+    border-radius: 13px;
+}
+
+.pdf-icone {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    background: #fff0f0;
+    color: #d64545;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pdf-info {
+    flex: 1;
+}
+
+.pdf-info strong {
+    display: block;
+    color: #333;
+    font-size: 14px;
+}
+
+.pdf-info small {
+    color: #888;
+    font-size: 12px;
+}
+
+.versao-atual {
+    padding: 6px 10px;
+    background: #eaf7ee;
+    color: #368a52;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.btn-pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #6528e0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   COMENTÁRIOS
+======================================== */
+
+.lista-comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comentario-card {
+    display: flex;
+    gap: 15px;
+    padding: 18px;
+    border: 1px solid #eeeeee;
+    border-radius: 13px;
+}
+
+.comentario-icone {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #f0eaff;
+    color: #6528e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.comentario-conteudo {
+    flex: 1;
+}
+
+.comentario-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+.comentario-topo strong {
+    color: #333;
+    font-size: 14px;
+}
+
+.comentario-topo span {
+    color: #999;
+    font-size: 12px;
+}
+
+.comentario-conteudo p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 768px) {
+
+    .portfolio-info {
+        grid-template-columns: 1fr;
+    }
+
+    .link-box {
+        flex-wrap: wrap;
+    }
+
+    .btn-abrir {
+        width: 100%;
+        padding-left: 60px;
+    }
+
+    .pdf-card {
+        flex-wrap: wrap;
+    }
+
+    .btn-pdf {
+        width: 100%;
+        padding-left: 60px;
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .portfolio-principal,
+    .link-portfolio,
+    .versoes-pdf,
+    .comentarios {
+        padding: 18px;
+    }
+
+    .portfolio-cabecalho {
+        align-items: flex-start;
+    }
+
+    .portfolio-icone {
+        width: 55px;
+        height: 55px;
+        font-size: 23px;
+    }
+
+    .portfolio-titulo h2 {
+        font-size: 20px;
+    }
+
+    .comentario-card {
+        padding: 14px;
+    }
+
+    .comentario-topo {
+        align-items: flex-start;
+        gap: 10px;
+        flex-direction: column;
+    }
+
+}
