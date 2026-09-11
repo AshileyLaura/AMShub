@@ -1,41 +1,107 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from functools import wraps
 
 
 def index(request):
     return render(request, 'index.html')
 
 
-@login_required
+def tipo_permitido(tipo):
+    def decorator(view_func):
+
+        @wraps(view_func)
+        @login_required
+        def wrapper(request, *args, **kwargs):
+
+            if not hasattr(request.user, 'perfil'):
+                return redirect('login')
+
+            if request.user.perfil.tipo != tipo:
+                tipo_usuario = request.user.perfil.tipo
+
+                if tipo_usuario == 'aluno':
+                    return redirect('aluno')
+
+                elif tipo_usuario == 'professor':
+                    return redirect('professor')
+
+                elif tipo_usuario == 'coordenador':
+                    return redirect('coordenador')
+
+                elif tipo_usuario == 'supervisor':
+                    return redirect('supervisor')
+
+                elif tipo_usuario == 'empresa':
+                    return redirect('empresa')
+
+                return redirect('index')
+
+            return view_func(request, *args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
+@tipo_permitido('aluno')
 def aluno(request):
-    return render(request, 'Aluno.html')
+
+    contexto = {
+        'usuario': request.user,
+        'nome_usuario': request.user.get_full_name() or request.user.username,
+    }
+
+    return render(request, 'Aluno.html', contexto)
 
 
-@login_required
+@tipo_permitido('professor')
 def professor(request):
-    return render(request, 'Professor.html')
+
+    contexto = {
+        'usuario': request.user,
+        'nome_usuario': request.user.get_full_name() or request.user.username,
+    }
+
+    return render(request, 'Professor.html', contexto)
 
 
-@login_required
+@tipo_permitido('coordenador')
 def coordenador(request):
-    return render(request, 'Coordenador.html')
+
+    contexto = {
+        'usuario': request.user,
+        'nome_usuario': request.user.get_full_name() or request.user.username,
+    }
+
+    return render(request, 'Coordenador.html', contexto)
 
 
-@login_required
+@tipo_permitido('supervisor')
 def supervisor(request):
-    return render(request, 'Supervisor.html')
+
+    contexto = {
+        'usuario': request.user,
+        'nome_usuario': request.user.get_full_name() or request.user.username,
+    }
+
+    return render(request, 'Supervisor.html', contexto)
 
 
-@login_required
+@tipo_permitido('empresa')
 def empresa(request):
-    return render(request, 'Empresa.html')
+
+    contexto = {
+        'usuario': request.user,
+        'nome_usuario': request.user.get_full_name() or request.user.username,
+    }
+
+    return render(request, 'Empresa.html', contexto)
 
 
 def login_view(request):
 
-    # Define qual página de login será exibida
     pagina = 'loginAluno.html'
 
     if request.path == '/login/professor/':
@@ -50,13 +116,11 @@ def login_view(request):
     elif request.path == '/login/empresa/':
         pagina = 'loginempresa.html'
 
-    # Quando o formulário for enviado
     if request.method == 'POST':
 
         username = request.POST.get('username')
         senha = request.POST.get('senha')
 
-        # Django verifica usuário e senha
         usuario = authenticate(
             request,
             username=username,
@@ -65,33 +129,36 @@ def login_view(request):
 
         if usuario is not None:
 
-            # Cria a sessão do usuário
+            if not hasattr(usuario, 'perfil'):
+                return render(
+                    request,
+                    pagina,
+                    {
+                        'erro': 'Este usuário não possui um perfil cadastrado.'
+                    }
+                )
+
+            tipo = usuario.perfil.tipo
+
             login(request, usuario)
 
-            # Verifica se o usuário possui um Perfil
-            if hasattr(usuario, 'perfil'):
+            if tipo == 'aluno':
+                return redirect('aluno')
 
-                tipo = usuario.perfil.tipo
+            elif tipo == 'professor':
+                return redirect('professor')
 
-                if tipo == 'aluno':
-                    return redirect('aluno')
+            elif tipo == 'coordenador':
+                return redirect('coordenador')
 
-                elif tipo == 'professor':
-                    return redirect('professor')
+            elif tipo == 'supervisor':
+                return redirect('supervisor')
 
-                elif tipo == 'coordenador':
-                    return redirect('coordenador')
+            elif tipo == 'empresa':
+                return redirect('empresa')
 
-                elif tipo == 'supervisor':
-                    return redirect('supervisor')
-
-                elif tipo == 'empresa':
-                    return redirect('empresa')
-
-            # Caso o usuário não tenha perfil
             return redirect('index')
 
-        # Usuário ou senha incorretos
         return render(
             request,
             pagina,
@@ -100,7 +167,6 @@ def login_view(request):
             }
         )
 
-    # Primeira vez abrindo a página
     return render(request, pagina)
 
 
@@ -124,3 +190,4 @@ def meusportifoliosa(request):
     return render(request, 'aluno/meusportifoliosa.html')
 
 
+    return redirect('login')

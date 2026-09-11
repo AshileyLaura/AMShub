@@ -68,6 +68,300 @@ Aqui você encontra tudo sobre seus portfólios.
 <div class="perfil">
 
     <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+                                <span>Início</span>
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a href="#" class="nav-link">
+
+                                <i class="fa-solid fa-users"></i>
+
+                                <span>Mentorias</span>
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a href="#" class="nav-link">
+
+                                <i class="fa-solid fa-folder-open"></i>
+
+                                <span>Portfólios</span>
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a href="#" class="nav-link">
+
+                                <i class="fa-solid fa-list-check"></i>
+
+                                <span>Atividades</span>
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a href="#" class="nav-link">
+
+                                <i class="fa-solid fa-award"></i>
+
+                                <span>Certificados</span>
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a href="#" class="nav-link">
+
+                                <i class="fa-solid fa-circle-exclamation"></i>
+
+                                <span>Pendências</span>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+            <div class="bottom-menu">
+
+                <a href="#">
+
+                    <i class="fa-solid fa-bell"></i>
+
+                    Notificações
+
+                </a>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    Configurações
+
+                </a>
+
+            </div>
+
+        </aside>
+
+        <main class="col-lg-10">
+
+            <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+                <div>
+
+                    <h1>Olá, {{ nome_usuario }}!</h1>
+
+                    <p>Aqui você encontra tudo sobre seus portfólios.</p>
+
+                </div>
+
+                <div class="header-right d-flex align-items-center gap-3">
+
+                    <div class="search">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input type="text" placeholder="Pesquisar">
+
+                    </div>
+
+                    <i class="fa-solid fa-filter"></i>
+
+                    <i class="fa-solid fa-bell"></i>
+
+                    <div class="perfil d-flex align-items-center gap-2">
+
+                        <img src="{% static 'imagens/aluno.png' %}"
+                            alt="Aluno">
+
+                        <div>
+
+                            <strong>{{ nome_usuario }}</strong>
+
+                            <small>Aluno</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+            <section class="cards row g-4 mb-4">
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="card h-100">
+
+                        <i class="fa-solid fa-award"></i>
+
+                        <div>
+
+                            <span>Certificados</span>
+
+                            <h2>2</h2>
+
+                            <p>A serem aprovados</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="card h-100">
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        <div>
+
+                            <span>Pendências</span>
+
+                            <h2>93H</h2>
+
+                            <p>A serem resolvidas</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="card h-100">
+
+                        <i class="fa-solid fa-file-circle-check"></i>
+
+                        <div>
+
+                            <span>Atividades</span>
+
+                            <h2>4</h2>
+
+                            <p>Este mês</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="card h-100">
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        <div>
+
+                            <span>Horas Registradas</span>
+
+                            <h2>127H</h2>
+
+                            <p>No total</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+            <section class="content row g-4">
+                <div class="col-xl-7">
+
+                    <div class="atividades h-100">
+
+                        <h2>Últimas Realizações</h2>
+
+                        <ul>
+
+                            <li>
+
+                                <span>📘 Mentoria - 27/05</span>
+
+                                <small>29/05</small>
+
+                            </li>
+
+                            <li>
+
+                                <span>📘 Atividade - 13/05</span>
+
+                                <small>17/05</small>
+
+                            </li>
+
+                            <li>
+
+                                <span>📕 Palestra - 29/04</span>
+
+                                <small>01/05</small>
+
+                            </li>
+
+                            <li>
+
+                                <span>📘 Mentoria - 14/04</span>
+
+                                <small>14/04</small>
+
+                            </li>
+
+                            <li>
+
+                                <span>📘 Atividade - 03/03</span>
+
+                                <small>08/03</small>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+                <div class="col-xl-5">
+
+                    <div class="grafico h-100">
+
+                        <h2>Horas Complementares</h2>
+
+                        <canvas id="graficoHoras"></canvas>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
 
     <div>
         <strong>Manuela</strong>

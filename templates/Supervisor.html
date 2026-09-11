@@ -129,11 +129,11 @@
                     <div class="perfil d-flex align-items-center gap-2">
 
                         <img src="{% static 'imagens/professor.png.png' %}"
-                             alt="Supervisor">
+                            alt="Supervisor">
 
                         <div>
 
-                            <h3>Maria Eduarda</h3>
+                            <h3>{{ nome_usuario }}</h3>
 
                             <span>Supervisor</span>
 
@@ -147,7 +147,7 @@
 
             <section class="welcome">
 
-                <h1>Bem-vinda, Maria Eduarda!</h1>
+                <h1>Bem-vinda, {{ nome_usuario }}!</h1>
 
                 <p>
                     Acompanhe as horas dos alunos, registre memórias
