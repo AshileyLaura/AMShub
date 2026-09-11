@@ -23,14 +23,13 @@ urlpatterns = [
     path('supervisor/', supervisor, name='supervisor'),
     path('empresa/', empresa, name='empresa'),
 
-    #ALUNO
+    # ALUNO
     path('aluno/mentorias/', minhasmentoriasa, name='minhasmentoriasa'),
     path('aluno/mentorias/detalhes/', detalhesdamentoriaa, name='detalhesdamentoriaa'),
     path('aluno/portifolios', meusportifoliosa, name='meusportifoliosa'),
 
     # LOGIN
     path('login/', login_view, name='login'),
-
     path('login/aluno/', login_view, name='login_aluno'),
     path('login/professor/', login_view, name='login_professor'),
     path('login/coordenador/', login_view, name='login_coordenador'),

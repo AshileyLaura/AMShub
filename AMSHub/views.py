@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from functools import wraps
+from .models import Mentoria
 
 
 def index(request):
@@ -174,20 +175,32 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+
+@login_required
 def minhasmentoriasa(request):
-    return render(request, 'aluno/minhasmentoriasa.html')
+
+    mentorias = Mentoria.objects.all().order_by('data')
+
+    return render(
+        request,
+        'aluno/minhasmentoriasa.html',
+        {
+            'mentorias': mentorias
+        }
+    )
+
 
 def CEportifoliosa(request):
     return render(request, 'aluno/CEportifoliosa.html')
 
+
 def detalhesdamentoriaa(request):
     return render(request, 'aluno/detalhesdamentoriaa.html')
+
 
 def meuperfila(request):
     return render(request, 'aluno/meuperfila.html')
 
+
 def meusportifoliosa(request):
     return render(request, 'aluno/meusportifoliosa.html')
-
-
-    return redirect('login')
