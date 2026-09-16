@@ -204,3 +204,6 @@ def meuperfila(request):
 
 def meusportifoliosa(request):
     return render(request, 'aluno/meusportifoliosa.html')
+
+def cadastro(request):
+    return render(request, 'cadastro.html')

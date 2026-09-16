@@ -1,0 +1,150 @@
+/* ========================================
+   CADASTRO DE ALUNO
+======================================== */
+
+.cadastro-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.cadastro-card {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+
+/* ========================================
+   TÍTULO
+======================================== */
+
+.cadastro-titulo {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.cadastro-icone {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background: #eee6ff;
+    color: #6528e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+.cadastro-titulo h2 {
+    margin: 0 0 5px;
+    font-size: 24px;
+}
+
+.cadastro-titulo p {
+    margin: 0;
+    color: #777;
+}
+
+
+/* ========================================
+   CAMPOS
+======================================== */
+
+.campo {
+    margin-bottom: 20px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.input-box {
+    display: flex;
+    align-items: center;
+    background: #f7f7fb;
+    border: 1px solid #e4e4e8;
+    border-radius: 12px;
+    padding: 0 15px;
+    transition: 0.2s;
+}
+
+.input-box:focus-within {
+    border-color: #6528e0;
+    background: white;
+}
+
+.input-box i {
+    color: #777;
+    width: 22px;
+    text-align: center;
+}
+
+.input-box input,
+.input-box select {
+    width: 100%;
+    height: 48px;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding-left: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.input-box select {
+    cursor: pointer;
+}
+
+
+/* ========================================
+   BOTÃO
+======================================== */
+
+.btn-cadastrar {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 10px;
+    background: #6528e0;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-cadastrar:hover {
+    background: #5120b5;
+}
+
+.btn-cadastrar i {
+    margin-right: 8px;
+}
+
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .cadastro-card {
+        padding: 22px;
+    }
+
+    .cadastro-titulo {
+        align-items: flex-start;
+    }
+
+}

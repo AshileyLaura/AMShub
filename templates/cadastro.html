@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Cadastro - AMS Hub
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'cadastroa.css' %}">
+{% endblock %}
+
+
+{% block menu %}
+
+<ul>
+    
+    <li class="active">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>Cadastro</span>
+    </li>
+
+</ul>
+
+{% endblock %}
+
+
+{% block saudacao %}
+Cadastro de Aluno
+{% endblock %}
+
+
+{% block descricao %}
+Preencha seus dados para criar sua conta no AMS Hub.
+{% endblock %}
+
+
+{% block perfil %}
+{% endblock %}
+
+
+{% block content %}
+
+<section class="cadastro-container">
+
+    <div class="cadastro-card">
+
+        <div class="cadastro-titulo">
+            <div class="cadastro-icone">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+
+            <div>
+                <h2>Crie sua conta</h2>
+                <p>Informe seus dados acadêmicos.</p>
+            </div>
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <!-- NOME -->
+
+            <div class="campo">
+
+                <label for="nome">
+                    Nome completo
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        placeholder="Digite seu nome completo"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="campo">
+
+                <label for="email">
+                    E-mail institucional
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Digite seu e-mail institucional"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- RM -->
+
+            <div class="campo">
+
+                <label for="rm">
+                    RM
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-id-card"></i>
+
+                    <input
+                        type="text"
+                        id="rm"
+                        name="rm"
+                        placeholder="Digite seu RM"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- CURSO -->
+
+            <div class="campo">
+
+                <label for="curso">
+                    Curso
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-graduation-cap"></i>
+
+                    <select id="curso" name="curso" required>
+
+                        <option value="" selected disabled>
+                            Selecione seu curso
+                        </option>
+
+                        <option value="Desenvolvimento de Sistemas">
+                            Desenvolvimento de Sistemas
+                        </option>
+
+                        <option value="Administração">
+                            Administração
+                        </option>
+
+                        <option value="Meio Ambiente">
+                            Meio Ambiente
+                        </option>
+
+                        <option value="Nutrição">
+                            Nutrição
+                        </option>
+
+                        <option value="Mecatrônica">
+                            Mecatrônica
+                        </option>
+
+                        <option value="Química">
+                            Química
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- SENHA -->
+
+            <div class="campo">
+
+                <label for="senha">
+                    Senha
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Digite sua senha"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button type="submit" class="btn-cadastrar">
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                Criar minha conta
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

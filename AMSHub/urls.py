@@ -11,6 +11,7 @@ from AMSHub.views import (
     minhasmentoriasa,
     detalhesdamentoriaa,
     meusportifoliosa,
+    cadastro,
 )
 
 urlpatterns = [
@@ -38,4 +39,5 @@ urlpatterns = [
 
     # LOGOUT
     path('logout/', logout_view, name='logout'),
+    path('cadastro/', cadastro, name='cadastro'),
 ]
