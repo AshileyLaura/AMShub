@@ -14,7 +14,7 @@ Cadastro - AMS Hub
 {% block menu %}
 
 <ul>
-    
+
     <li class="active">
         <i class="fa-solid fa-user-plus"></i>
         <span>Cadastro</span>
@@ -26,7 +26,7 @@ Cadastro - AMS Hub
 
 
 {% block saudacao %}
-Cadastro de Aluno
+Cadastro de Usuário
 {% endblock %}
 
 
@@ -46,20 +46,32 @@ Preencha seus dados para criar sua conta no AMS Hub.
     <div class="cadastro-card">
 
         <div class="cadastro-titulo">
+
             <div class="cadastro-icone">
                 <i class="fa-solid fa-user-plus"></i>
             </div>
 
             <div>
                 <h2>Crie sua conta</h2>
-                <p>Informe seus dados acadêmicos.</p>
+                <p>Informe seus dados para realizar o cadastro.</p>
             </div>
+
         </div>
+
+
+        {% if erro %}
+
+        <div class="erro">
+            {{ erro }}
+        </div>
+
+        {% endif %}
 
 
         <form method="POST">
 
             {% csrf_token %}
+
 
             <!-- NOME -->
 
@@ -111,7 +123,7 @@ Preencha seus dados para criar sua conta no AMS Hub.
             </div>
 
 
-            <!-- RM -->
+            <!-- RM
 
             <div class="campo">
 
@@ -135,8 +147,10 @@ Preencha seus dados para criar sua conta no AMS Hub.
 
             </div>
 
+            -->
 
-            <!-- CURSO -->
+
+            <!-- CURSO
 
             <div class="campo">
 
@@ -184,6 +198,61 @@ Preencha seus dados para criar sua conta no AMS Hub.
 
             </div>
 
+            -->
+
+
+            <!-- TIPO -->
+
+            <div class="campo">
+
+                <label for="tipo">
+                    Tipo de Usuário
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-graduation-cap"></i>
+
+                    <select
+                        id="tipo"
+                        name="tipo"
+                        required
+                    >
+
+                        <option
+                            value=""
+                            selected
+                            disabled
+                        >
+                            Selecione o tipo do Usuário
+                        </option>
+
+                        <option value="Aluno">
+                            Aluno
+                        </option>
+
+                        <option value="Professor">
+                            Professor
+                        </option>
+
+                        <option value="Coordenador">
+                            Coordenador
+                        </option>
+
+                        <option value="Supervisor">
+                            Supervisor
+                        </option>
+
+                        <option value="Empresa">
+                            Empresa
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
 
             <!-- SENHA -->
 
@@ -210,7 +279,12 @@ Preencha seus dados para criar sua conta no AMS Hub.
             </div>
 
 
-            <button type="submit" class="btn-cadastrar">
+            <!-- BOTÃO -->
+
+            <button
+                type="submit"
+                class="btn-cadastrar"
+            >
 
                 <i class="fa-solid fa-user-plus"></i>
 

@@ -1,8 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from functools import wraps
-from .models import Mentoria
+
+from .models import (
+    Perfil,
+    Aluno,
+    Professor,
+    Supervisor,
+    Empresa,
+    Mentoria
+)
 
 
 def index(request):
@@ -206,4 +215,72 @@ def meusportifoliosa(request):
     return render(request, 'aluno/meusportifoliosa.html')
 
 def cadastro(request):
+
+    if request.method == 'POST':
+
+        nome = request.POST.get('nome', '').strip()
+        email = request.POST.get('email', '').strip()
+        senha = request.POST.get('senha', '').strip()
+        tipo = request.POST.get('tipo', '').strip().lower()
+
+        tipos_validos = [
+            'aluno',
+            'professor',
+            'coordenador',
+            'supervisor',
+            'empresa'
+        ]
+
+        if tipo not in tipos_validos:
+            return render(
+                request,
+                'cadastro.html',
+                {'erro': 'Tipo de usuário inválido.'}
+            )
+
+        if User.objects.filter(username=email).exists():
+            return render(
+                request,
+                'cadastro.html',
+                {'erro': 'Este e-mail já está cadastrado.'}
+            )
+
+        usuario = User.objects.create_user(
+            username=email,
+            email=email,
+            password=senha,
+            first_name=nome
+        )
+
+        perfil = Perfil.objects.create(
+            user=usuario,
+            tipo=tipo
+        )
+
+        if tipo == 'aluno':
+            Aluno.objects.create(
+                perfil=perfil,
+                turma='Não informado'
+            )
+
+        elif tipo == 'professor':
+            Professor.objects.create(
+                perfil=perfil
+            )
+
+        elif tipo == 'supervisor':
+            Supervisor.objects.create(
+                perfil=perfil
+            )
+
+        elif tipo == 'empresa':
+            Empresa.objects.create(
+                perfil=perfil,
+                nome=nome
+            )
+
+        return redirect('login')
+
+    return render(request, 'cadastro.html')
+
     return render(request, 'cadastro.html')
