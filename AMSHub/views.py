@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -10,7 +10,15 @@ from .models import (
     Professor,
     Supervisor,
     Empresa,
-    Mentoria
+    Mentoria,
+    Participacao,
+    Portfolio,
+    Certificado,
+    Viagem,
+    Vaga,
+    Horas,
+    Notificacao,
+    Atividade,
 )
 
 
@@ -58,9 +66,71 @@ def tipo_permitido(tipo):
 @tipo_permitido('aluno')
 def aluno(request):
 
+    aluno = get_object_or_404(
+        Aluno,
+        perfil__user=request.user
+    )
+
+    participacoes = Participacao.objects.filter(
+        id_aluno=aluno
+    )
+
+    horas_mentorias = sum(
+        participacao.horas
+        for participacao in participacoes
+    )
+
+    mentorias = participacoes.values_list(
+        'id_mentoria',
+        flat=True
+    )
+
+    horas_atividades = sum(
+        atividade.horas
+        for atividade in Atividade.objects.filter(
+            id_mentoria__in=mentorias
+        )
+    )
+
+    horas_certificados = sum(
+        certificado.carga_horaria
+        for certificado in Certificado.objects.filter(
+            id_aluno=aluno
+        )
+    )
+
+    horas_viagens = sum(
+        viagem.horas
+        for viagem in Viagem.objects.filter(
+            id_aluno=aluno
+        )
+    )
+
+    horas_complementares = sum(
+        hora.quantidade
+        for hora in Horas.objects.filter(
+            id_aluno=aluno
+        )
+    )
+
+    total_horas = (
+        horas_mentorias
+        + horas_atividades
+        + horas_certificados
+        + horas_viagens
+        + horas_complementares
+    )
+
     contexto = {
         'usuario': request.user,
+        'aluno': aluno,
         'nome_usuario': request.user.get_full_name() or request.user.username,
+        'horas_mentorias': horas_mentorias,
+        'horas_atividades': horas_atividades,
+        'horas_certificados': horas_certificados,
+        'horas_viagens': horas_viagens,
+        'horas_complementares': horas_complementares,
+        'total_horas': total_horas,
     }
 
     return render(request, 'Aluno.html', contexto)
@@ -185,16 +255,62 @@ def logout_view(request):
     return redirect('login')
 
 
-@login_required
+@tipo_permitido('aluno')
 def minhasmentoriasa(request):
 
-    mentorias = Mentoria.objects.all().order_by('data')
+    aluno = get_object_or_404(
+        Aluno,
+        perfil__user=request.user
+    )
+
+    participacoes = Participacao.objects.filter(
+        id_aluno=aluno
+    ).select_related(
+        'id_mentoria',
+        'id_mentoria__id_professor',
+        'id_mentoria__id_supervisor'
+    )
+
+    mentorias = [
+        participacao.id_mentoria
+        for participacao in participacoes
+    ]
 
     return render(
         request,
-        'aluno/minhasmentoriasa.html',
+        'minhasmentoriasa.html',
         {
-            'mentorias': mentorias
+            'aluno': aluno,
+            'mentorias': mentorias,
+            'nome_usuario': request.user.get_full_name() or request.user.username
+        }
+    )
+
+
+@tipo_permitido('aluno')
+def detalhesdamentoriaa(request, id_mentoria):
+
+    aluno = get_object_or_404(
+        Aluno,
+        perfil__user=request.user
+    )
+
+    participacao = get_object_or_404(
+        Participacao,
+        id_aluno=aluno,
+        id_mentoria_id=id_mentoria
+    )
+
+    mentoria = participacao.id_mentoria
+
+    return render(
+        request,
+        'detalhesdamentoriaa.html',
+        {
+            'aluno': aluno,
+            'mentoria': mentoria,
+            'participacao': participacao,
+            'nome_usuario': request.user.get_full_name() or request.user.username
         }
     )
 
@@ -203,25 +319,93 @@ def CEportifoliosa(request):
     return render(request, 'aluno/CEportifoliosa.html')
 
 
-def detalhesdamentoriaa(request):
-    return render(request, 'aluno/detalhesdamentoriaa.html')
-
-
 def meuperfila(request):
     return render(request, 'aluno/meuperfila.html')
 
 
+@tipo_permitido('aluno')
 def meusportifoliosa(request):
-    return render(request, 'aluno/meusportifoliosa.html')
 
+    aluno = get_object_or_404(
+        Aluno,
+        perfil__user=request.user
+    )
+
+    portfolios = Portfolio.objects.filter(
+        id_aluno=aluno
+    ).select_related(
+        'id_mentoria'
+    )
+
+    return render(
+        request,
+        'aluno/meusportifoliosa.html',
+        {
+            'aluno': aluno,
+            'portfolios': portfolios,
+            'nome_usuario': request.user.get_full_name() or request.user.username
+        }
+    )
+
+
+@tipo_permitido('aluno')
 def atividadesa(request):
-    return render(request, 'aluno/atividadesa.html')
+
+    aluno = get_object_or_404(
+        Aluno,
+        perfil__user=request.user
+    )
+
+    participacoes = Participacao.objects.filter(
+        id_aluno=aluno
+    ).values_list(
+        'id_mentoria',
+        flat=True
+    )
+
+    atividades = Atividade.objects.filter(
+        id_mentoria__in=participacoes
+    ).select_related(
+        'id_mentoria'
+    )
+
+    return render(
+        request,
+        'aluno/atividadesa.html',
+        {
+            'aluno': aluno,
+            'atividades': atividades,
+            'nome_usuario': request.user.get_full_name() or request.user.username
+        }
+    )
+
 
 def pendenciasa(request):
     return render(request, 'aluno/pendenciasa.html')
 
+
+@tipo_permitido('aluno')
 def certificadoa(request):
-    return render(request, 'aluno/certificadoa.html')
+
+    aluno = get_object_or_404(
+        Aluno,
+        perfil__user=request.user
+    )
+
+    certificados = Certificado.objects.filter(
+        id_aluno=aluno
+    )
+
+    return render(
+        request,
+        'aluno/certificadoa.html',
+        {
+            'aluno': aluno,
+            'certificados': certificados,
+            'nome_usuario': request.user.get_full_name() or request.user.username
+        }
+    )
+
 
 def cadastro(request):
 
@@ -231,6 +415,8 @@ def cadastro(request):
         email = request.POST.get('email', '').strip()
         senha = request.POST.get('senha', '').strip()
         tipo = request.POST.get('tipo', '').strip().lower()
+        curso = request.POST.get('curso', '').strip()
+        rm = request.POST.get('rm', '').strip()
 
         tipos_validos = [
             'aluno',
@@ -269,7 +455,8 @@ def cadastro(request):
         if tipo == 'aluno':
             Aluno.objects.create(
                 perfil=perfil,
-                turma='Não informado'
+                curso=curso or 'Não informado',
+                turma=rm or 'Não informado'
             )
 
         elif tipo == 'professor':
@@ -289,7 +476,5 @@ def cadastro(request):
             )
 
         return redirect('login')
-
-    return render(request, 'cadastro.html')
 
     return render(request, 'cadastro.html')

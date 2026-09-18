@@ -28,8 +28,6 @@ class Perfil(models.Model):
         return f'{self.user.username} - {self.tipo}'
 
 
-
-
 class Mentoria(models.Model):
     id_mentoria = models.AutoField(primary_key=True)
 
@@ -54,7 +52,6 @@ class Mentoria(models.Model):
 
     def __str__(self):
         return self.tema
-
 
 
 class Aluno(models.Model):
@@ -121,8 +118,34 @@ class Empresa(models.Model):
 class Atividade(models.Model):
     id_atividade = models.AutoField(primary_key=True)
 
+    id_mentoria = models.ForeignKey(
+        Mentoria,
+        on_delete=models.CASCADE,
+        related_name='atividades'
+    )
+
+    titulo = models.CharField(max_length=200)
+
+    descricao = models.TextField(default='')
+
+    data_entrega = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    horas = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0
+    )
+
+    status = models.CharField(
+        max_length=50,
+        default='Pendente'
+    )
+
     def __str__(self):
-        return str(self.id_atividade)
+        return self.titulo
 
 
 class Participacao(models.Model):

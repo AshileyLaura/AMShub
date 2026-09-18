@@ -40,9 +40,9 @@ urlpatterns = [
     ),
 
     path(
-        'aluno/mentorias/detalhes/',
-        detalhesdamentoriaa,
-        name='detalhesdamentoriaa'
+    'aluno/mentorias/detalhes/<int:id_mentoria>/',
+    detalhesdamentoriaa,
+    name='detalhesdamentoriaa'
     ),
 
     path(
