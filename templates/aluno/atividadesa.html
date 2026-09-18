@@ -17,8 +17,10 @@ AMS Hub - Aluno
 <ul>
 
     <li class="active">
-        <i class="fa-solid fa-house"></i>
-        <span>Início</span>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
     </li>
 
     <li>
@@ -43,13 +45,17 @@ AMS Hub - Aluno
     </li>
 
     <li>
-        <i class="fa-solid fa-award"></i>
-        <span>Certificados</span>
+        <a href="{% url 'certificadoa' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Certificados</span>
+        </a>
     </li>
 
     <li>
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <span>Pendências</span>
+        <a href="{% url 'pendenciasa' %}">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Pendências</span>
+        </a>
     </li>
 
 </ul>

@@ -29,23 +29,31 @@ AMS Hub - Minhas Mentorias
     </li>
 
     <li>
-        <i class="fa-solid fa-folder-open"></i>
-        <span>Portfólios</span>
+        <a href="{% url 'meusportifoliosa' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
     </li>
 
     <li>
-        <i class="fa-solid fa-list-check"></i>
-        <span>Atividades</span>
+        <a href="{% url 'atividadesa' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
     </li>
 
     <li>
-        <i class="fa-solid fa-award"></i>
-        <span>Certificados</span>
+        <a href="{% url 'certificadoa' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Certificados</span>
+        </a>
     </li>
 
     <li>
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <span>Pendências</span>
+        <a href="{% url 'pendenciasa' %}">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Pendências</span>
+        </a>
     </li>
 
 </ul>
