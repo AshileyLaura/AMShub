@@ -43,13 +43,17 @@ AMS Hub - Aluno
     </li>
 
     <li>
-        <i class="fa-solid fa-award"></i>
-        <span>Certificados</span>
+        <a href="{% url 'certificadoa' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Certificados</span>
+        </a>
     </li>
 
     <li>
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <span>Pendências</span>
+        <a href="{% url 'pendenciasa' %}">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Pendências</span>
+        </a>
     </li>
 
 </ul>
@@ -69,12 +73,15 @@ Aqui você encontra tudo sobre seus portfólios.
 
 {% block perfil %}
 
-<div class="perfil">
-
-    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
-                    </div>
-
-                </div>
+<a href="/aluno/perfil/" class="perfil-link">
+    <div class="perfil">
+        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>Aluno</small>
+        </div>
+    </div>
+</a>
 
             </header>
             <section class="cards row g-4 mb-4">

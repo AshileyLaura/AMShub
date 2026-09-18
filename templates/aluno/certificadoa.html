@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+AMS Hub - Certificados
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'aluno/certificadoa.css' %}">
+{% endblock %}
+
+
+{% block menu %}
+
+<ul>
+
+    <li>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'minhasmentoriasa' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'meusportifoliosa' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'atividadesa' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'certificadoa' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Certificados</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'pendenciasa' %}">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Pendências</span>
+        </a>
+    </li>
+
+</ul>
+
+{% endblock %}
+
+
+{% block saudacao %}
+Meus Certificados
+{% endblock %}
+
+{% block descricao %}
+Visualize seus certificados e envie novos documentos para aprovação.
+{% endblock %}
+
+
+{% block perfil %}
+
+<div class="perfil">
+
+    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+
+    <div>
+        <strong>Manuela</strong>
+        <small>Aluno</small>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="certificados-container">
+
+    <!-- RESUMO -->
+
+    <section class="resumo-certificados">
+
+        <div class="resumo-card aprovado">
+
+            <div class="icone">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div>
+                <span>Aprovados</span>
+                <strong>2</strong>
+            </div>
+
+        </div>
+
+
+        <div class="resumo-card analise">
+
+            <div class="icone">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div>
+                <span>Em análise</span>
+                <strong>1</strong>
+            </div>
+
+        </div>
+
+
+        <div class="resumo-card pendente">
+
+            <div class="icone">
+                <i class="fa-solid fa-file-circle-plus"></i>
+            </div>
+
+            <div>
+                <span>Pendentes</span>
+                <strong>0</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CABEÇALHO DA LISTA -->
+
+    <section class="certificados-lista">
+
+        <div class="lista-header">
+
+            <div>
+                <h2>Meus Certificados</h2>
+                <p>Todos os certificados enviados para o AMS Hub.</p>
+            </div>
+
+            <button class="btn-adicionar" type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCertificado">
+
+                <i class="fa-solid fa-plus"></i>
+                Adicionar certificado
+
+            </button>
+
+        </div>
+
+
+        <!-- CERTIFICADO 1 -->
+
+        <div class="certificado-card">
+
+            <div class="certificado-icone aprovado">
+                <i class="fa-solid fa-certificate"></i>
+            </div>
+
+            <div class="certificado-info">
+
+                <h3>Curso de Desenvolvimento Web</h3>
+
+                <p>
+                    Etec - Centro Paula Souza
+                </p>
+
+                <div class="certificado-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar"></i>
+                        15/08/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-clock"></i>
+                        40 horas
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="status aprovado">
+                Aprovado
+            </span>
+
+            <button class="btn-ver">
+                Ver certificado
+            </button>
+
+        </div>
+
+
+        <!-- CERTIFICADO 2 -->
+
+        <div class="certificado-card">
+
+            <div class="certificado-icone aprovado">
+                <i class="fa-solid fa-certificate"></i>
+            </div>
+
+            <div class="certificado-info">
+
+                <h3>Introdução à Programação</h3>
+
+                <p>
+                    Curso Online
+                </p>
+
+                <div class="certificado-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar"></i>
+                        02/07/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-clock"></i>
+                        20 horas
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="status aprovado">
+                Aprovado
+            </span>
+
+            <button class="btn-ver">
+                Ver certificado
+            </button>
+
+        </div>
+
+
+        <!-- CERTIFICADO EM ANÁLISE -->
+
+        <div class="certificado-card">
+
+            <div class="certificado-icone analise">
+                <i class="fa-solid fa-file-circle-check"></i>
+            </div>
+
+            <div class="certificado-info">
+
+                <h3>Curso de Banco de Dados</h3>
+
+                <p>
+                    Plataforma Online
+                </p>
+
+                <div class="certificado-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar"></i>
+                        10/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-clock"></i>
+                        30 horas
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="status analise">
+                Em análise
+            </span>
+
+            <button class="btn-ver">
+                Ver certificado
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- MODAL ADICIONAR CERTIFICADO -->
+
+<div class="modal fade" id="modalCertificado" tabindex="-1">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+                    <h2>Adicionar certificado</h2>
+                    <p>
+                        Envie um novo certificado para análise do coordenador.
+                    </p>
+                </div>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <form>
+
+                    <div class="campo">
+
+                        <label for="nomeCertificado">
+                            Nome do certificado
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nomeCertificado"
+                            placeholder="Ex: Curso de Desenvolvimento Web"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="campos-duplos">
+
+                        <div class="campo">
+
+                            <label for="instituicao">
+                                Instituição
+                            </label>
+
+                            <input
+                                type="text"
+                                id="instituicao"
+                                placeholder="Nome da instituição"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label for="cargaHoraria">
+                                Carga horária
+                            </label>
+
+                            <input
+                                type="number"
+                                id="cargaHoraria"
+                                placeholder="Ex: 40"
+                                min="1"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="campos-duplos">
+
+                        <div class="campo">
+
+                            <label for="dataCertificado">
+                                Data de conclusão
+                            </label>
+
+                            <input
+                                type="date"
+                                id="dataCertificado"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label for="categoria">
+                                Categoria
+                            </label>
+
+                            <select id="categoria">
+
+                                <option value="">
+                                    Selecione uma categoria
+                                </option>
+
+                                <option>
+                                    Curso
+                                </option>
+
+                                <option>
+                                    Palestra
+                                </option>
+
+                                <option>
+                                    Workshop
+                                </option>
+
+                                <option>
+                                    Evento
+                                </option>
+
+                                <option>
+                                    Outros
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="arquivo">
+                            Certificado
+                        </label>
+
+                        <div class="upload-area">
+
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                            <strong>
+                                Selecione o certificado
+                            </strong>
+
+                            <span>
+                                PDF, JPG ou PNG
+                            </span>
+
+                            <input
+                                type="file"
+                                id="arquivo"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="aviso">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        <span>
+                            Após o envio, o certificado ficará
+                            <strong>Em análise</strong>
+                            até ser avaliado pelo coordenador.
+                        </span>
+
+                    </div>
+
+
+                    <div class="modal-botoes">
+
+                        <button
+                            type="button"
+                            class="btn-cancelar"
+                            data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn-enviar">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            Enviar para aprovação
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

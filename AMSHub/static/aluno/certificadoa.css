@@ -1,0 +1,498 @@
+/* CONTAINER */
+
+.certificados-container {
+    width: 100%;
+}
+
+
+/* RESUMO */
+
+.resumo-certificados {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.resumo-card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+.resumo-card .icone {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+.resumo-card.aprovado .icone {
+    background: #e8f7ee;
+    color: #2e9b5b;
+}
+
+.resumo-card.analise .icone {
+    background: #eee8ff;
+    color: #7046c8;
+}
+
+.resumo-card.pendente .icone {
+    background: #fff4df;
+    color: #c48621;
+}
+
+.resumo-card span {
+    display: block;
+    color: #777;
+    font-size: 14px;
+}
+
+.resumo-card strong {
+    display: block;
+    color: #222;
+    font-size: 26px;
+}
+
+
+/* LISTA */
+
+.certificados-lista {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+
+/* HEADER */
+
+.lista-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.lista-header h2 {
+    margin: 0;
+    color: #222;
+    font-size: 21px;
+}
+
+.lista-header p {
+    margin: 5px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+
+/* BOTÃO ADICIONAR */
+
+.btn-adicionar {
+    border: none;
+    background: #7046c8;
+    color: white;
+
+    padding: 11px 17px;
+    border-radius: 9px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-adicionar:hover {
+    background: #5935a5;
+}
+
+.btn-adicionar i {
+    margin-right: 7px;
+}
+
+
+/* CERTIFICADO */
+
+.certificado-card {
+    border: 1px solid #eee;
+    border-radius: 13px;
+
+    padding: 18px;
+
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    margin-top: 14px;
+
+    transition: 0.2s;
+}
+
+.certificado-card:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ÍCONE */
+
+.certificado-icone {
+    min-width: 48px;
+    height: 48px;
+
+    border-radius: 11px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+.certificado-icone.aprovado {
+    background: #e8f7ee;
+    color: #2e9b5b;
+}
+
+.certificado-icone.analise {
+    background: #eee8ff;
+    color: #7046c8;
+}
+
+
+/* INFORMAÇÕES */
+
+.certificado-info {
+    flex: 1;
+}
+
+.certificado-info h3 {
+    margin: 0 0 5px;
+
+    color: #222;
+    font-size: 16px;
+}
+
+.certificado-info p {
+    margin: 0 0 9px;
+
+    color: #777;
+    font-size: 13px;
+}
+
+.certificado-detalhes {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.certificado-detalhes span {
+    color: #777;
+    font-size: 12px;
+}
+
+.certificado-detalhes i {
+    margin-right: 5px;
+}
+
+
+/* STATUS */
+
+.status {
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.status.aprovado {
+    background: #e8f7ee;
+    color: #2e9b5b;
+}
+
+.status.analise {
+    background: #eee8ff;
+    color: #7046c8;
+}
+
+
+/* BOTÃO VER */
+
+.btn-ver {
+    border: 1px solid #7046c8;
+    background: white;
+    color: #7046c8;
+
+    padding: 8px 14px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.btn-ver:hover {
+    background: #7046c8;
+    color: white;
+}
+
+
+/* MODAL */
+
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 24px 25px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 21px;
+    color: #222;
+}
+
+.modal-header p {
+    margin: 5px 0 0;
+    color: #777;
+    font-size: 13px;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+
+/* CAMPOS */
+
+.campo {
+    margin-bottom: 18px;
+}
+
+.campo label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #333;
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+
+    padding: 11px 13px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 13px;
+
+    background: white;
+}
+
+.campo input:focus,
+.campo select:focus {
+    border-color: #7046c8;
+    box-shadow: 0 0 0 3px rgba(112, 70, 200, 0.1);
+}
+
+
+/* DOIS CAMPOS */
+
+.campos-duplos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+
+/* UPLOAD */
+
+.upload-area {
+    border: 2px dashed #d8d8d8;
+    border-radius: 10px;
+
+    padding: 22px;
+
+    text-align: center;
+
+    position: relative;
+
+    cursor: pointer;
+}
+
+.upload-area i {
+    display: block;
+
+    color: #7046c8;
+
+    font-size: 28px;
+
+    margin-bottom: 8px;
+}
+
+.upload-area strong {
+    display: block;
+
+    color: #333;
+
+    font-size: 14px;
+}
+
+.upload-area span {
+    display: block;
+
+    color: #888;
+
+    font-size: 12px;
+
+    margin-top: 4px;
+}
+
+.upload-area input {
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0;
+
+    cursor: pointer;
+}
+
+
+/* AVISO */
+
+.aviso {
+    background: #f4f1ff;
+
+    border-radius: 9px;
+
+    padding: 13px;
+
+    display: flex;
+    gap: 10px;
+
+    color: #5c4b85;
+
+    font-size: 12px;
+
+    margin-bottom: 20px;
+}
+
+.aviso i {
+    color: #7046c8;
+    margin-top: 2px;
+}
+
+
+/* BOTÕES MODAL */
+
+.modal-botoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-cancelar,
+.btn-enviar {
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+.btn-cancelar {
+    border: 1px solid #ddd;
+    background: white;
+    color: #555;
+}
+
+.btn-enviar {
+    border: none;
+    background: #7046c8;
+    color: white;
+}
+
+.btn-enviar:hover {
+    background: #5935a5;
+}
+
+.btn-enviar i {
+    margin-right: 6px;
+}
+
+
+/* RESPONSIVO */
+
+@media (max-width: 900px) {
+
+    .resumo-certificados {
+        grid-template-columns: 1fr;
+    }
+
+    .certificado-card {
+        flex-wrap: wrap;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .lista-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .btn-adicionar {
+        width: 100%;
+    }
+
+    .campos-duplos {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .certificado-card {
+        align-items: flex-start;
+    }
+
+    .status {
+        margin-left: 66px;
+    }
+
+    .btn-ver {
+        margin-left: 66px;
+    }
+
+}
