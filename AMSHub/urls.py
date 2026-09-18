@@ -42,30 +42,34 @@ urlpatterns = [
     ),
 
     path(
-    'aluno/mentorias/detalhes/<int:id_mentoria>/',
-    detalhesdamentoriaa,
-    name='detalhesdamentoriaa'
+        'aluno/mentorias/detalhes/<int:id_mentoria>/',
+        detalhesdamentoriaa,
+        name='detalhesdamentoriaa'
     ),
 
     path(
-        'aluno/portifolios/',
+        'aluno/portifolios',
         meusportifoliosa,
         name='meusportifoliosa'
     ),
-    path(
-        'aluno/atividades/',
-         atividadesa, 
-         name='atividadesa'),
 
     path(
-        'aluno/pendenciasa/',
-         pendenciasa, 
-         name='pendenciasa'),
+        'aluno/atividadesa',
+        atividadesa,
+        name='atividadesa'
+    ),
 
     path(
-        'aluno/certificadoa/',
-         certificadoa, 
-         name='certificadoa'),
+        'aluno/pendenciasa',
+        pendenciasa,
+        name='pendenciasa'
+    ),
+
+    path(
+        'aluno/certificadoa',
+        certificadoa,
+        name='certificadoa'
+    ),
 
     path(
         'aluno/atividade/detalhes/',
@@ -76,6 +80,7 @@ urlpatterns = [
         'aluno/perfil/',
          meuperfila, 
          name='meuperfila'),
+
 
 
     # LOGIN

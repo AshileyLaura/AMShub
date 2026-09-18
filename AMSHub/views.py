@@ -315,10 +315,6 @@ def detalhesdamentoriaa(request, id_mentoria):
     )
 
 
-def CEportifoliosa(request):
-    return render(request, 'aluno/CEportifoliosa.html')
-
-
 def meuperfila(request):
     return render(request, 'aluno/meuperfila.html')
 
