@@ -214,6 +214,15 @@ def meuperfila(request):
 def meusportifoliosa(request):
     return render(request, 'aluno/meusportifoliosa.html')
 
+def atividadesa(request):
+    return render(request, 'aluno/atividadesa.html')
+
+def pendenciasa(request):
+    return render(request, 'aluno/pendenciasa.html')
+
+def certificadoa(request):
+    return render(request, 'aluno/certificadoa.html')
+
 def cadastro(request):
 
     if request.method == 'POST':

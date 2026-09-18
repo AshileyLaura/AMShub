@@ -13,6 +13,9 @@ from AMSHub.views import (
     detalhesdamentoriaa,
     meusportifoliosa,
     cadastro,
+    atividadesa,
+    pendenciasa,
+    certificadoa,
 )
 
 
@@ -47,6 +50,21 @@ urlpatterns = [
         meusportifoliosa,
         name='meusportifoliosa'
     ),
+    path(
+        'aluno/atividadesa',
+         atividadesa, 
+         name='atividadesa'),
+
+    path(
+        'aluno/pendenciasa',
+         pendenciasa, 
+         name='pendenciasa'),
+
+    path(
+        'aluno/certificadoa',
+         certificadoa, 
+         name='certificadoa'),
+
 
     # LOGIN
 
