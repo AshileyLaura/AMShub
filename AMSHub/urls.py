@@ -16,6 +16,8 @@ from AMSHub.views import (
     atividadesa,
     pendenciasa,
     certificadoa,
+    detalhesdaatividadea,
+    meuperfila,
 )
 
 
@@ -64,6 +66,17 @@ urlpatterns = [
         'aluno/certificadoa/',
          certificadoa, 
          name='certificadoa'),
+
+    path(
+        'aluno/atividade/detalhes/',
+         detalhesdaatividadea, 
+         name='detalhesdaatividadea'),
+
+    path(
+        'aluno/perfil/',
+         meuperfila, 
+         name='meuperfila'),
+
 
     # LOGIN
 

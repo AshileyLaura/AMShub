@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+AMS Hub - Meu Perfil
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'aluno/meuperfila.css' %}">
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'minhasmentoriasa' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'meusportifoliosa' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'atividadesa' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'certificadoa' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Certificados</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'pendenciasa' %}">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Pendências</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block saudacao %}
+Meu Perfil
+{% endblock %}
+
+{% block descricao %}
+Visualize e gerencie suas informações pessoais.
+{% endblock %}
+
+{% block perfil %}
+<a href="{% url 'meuperfila' %}" class="perfil-link">
+    <div class="perfil">
+        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+        <div>
+            <strong>Manuela</strong>
+            <small>Aluno</small>
+        </div>
+    </div>
+</a>
+{% endblock %}
+
+{% block content %}
+
+<section class="perfil-container">
+
+    <!-- CABEÇALHO DO PERFIL -->
+    <div class="perfil-card perfil-header">
+
+        <div class="foto-perfil">
+            <img src="{% static 'imagens/aluno.png' %}" alt="Foto do aluno">
+        </div>
+
+        <div class="dados-principais">
+            <h2>Manuela</h2>
+            <p>Aluno • Desenvolvimento de Sistemas</p>
+
+            <span class="status-aluno">
+                <i class="fa-solid fa-circle"></i>
+                Aluno ativo
+            </span>
+        </div>
+
+        <button class="btn-editar">
+            <i class="fa-solid fa-pen"></i>
+            Editar perfil
+        </button>
+
+    </div>
+
+
+    <!-- INFORMAÇÕES PESSOAIS -->
+    <div class="perfil-card">
+
+        <div class="titulo-secao">
+            <i class="fa-solid fa-user"></i>
+            <h3>Informações pessoais</h3>
+        </div>
+
+        <div class="informacoes-grid">
+
+            <div class="campo">
+                <span>Nome completo</span>
+                <strong>Manuela</strong>
+            </div>
+
+            <div class="campo">
+                <span>RM</span>
+                <strong>12345</strong>
+            </div>
+
+            <div class="campo">
+                <span>E-mail institucional</span>
+                <strong>manuela@etec.sp.gov.br</strong>
+            </div>
+
+            <div class="campo">
+                <span>Curso</span>
+                <strong>Desenvolvimento de Sistemas</strong>
+            </div>
+
+            <div class="campo">
+                <span>Turma</span>
+                <strong>3º Desenvolvimento de Sistemas</strong>
+            </div>
+
+            <div class="campo">
+                <span>Período</span>
+                <strong>Manhã</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- INFORMAÇÕES ACADÊMICAS -->
+    <div class="perfil-card">
+
+        <div class="titulo-secao">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <h3>Informações acadêmicas</h3>
+        </div>
+
+        <div class="informacoes-grid">
+
+            <div class="campo">
+                <span>Curso</span>
+                <strong>Desenvolvimento de Sistemas</strong>
+            </div>
+
+            <div class="campo">
+                <span>Instituição</span>
+                <strong>ETEC</strong>
+            </div>
+
+            <div class="campo">
+                <span>Situação</span>
+                <strong class="texto-verde">Matriculado</strong>
+            </div>
+
+            <div class="campo">
+                <span>Ano de ingresso</span>
+                <strong>2024</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEGURANÇA -->
+    <div class="perfil-card">
+
+        <div class="titulo-secao">
+            <i class="fa-solid fa-lock"></i>
+            <h3>Segurança da conta</h3>
+        </div>
+
+        <div class="seguranca-item">
+
+            <div>
+                <strong>Senha</strong>
+                <p>Última alteração realizada recentemente.</p>
+            </div>
+
+            <button class="btn-secundario">
+                Alterar senha
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

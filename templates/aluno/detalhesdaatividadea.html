@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+AMS Hub - Detalhes da Atividade
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'aluno/detalhesdaatividadea.css' %}">
+{% endblock %}
+
+
+{% block menu %}
+
+<ul>
+
+    <li>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'minhasmentoriasa' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'meusportifoliosa' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'atividadesa' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'certificadoa' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Certificados</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'pendenciasa' %}">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Pendências</span>
+        </a>
+    </li>
+
+</ul>
+
+{% endblock %}
+
+
+{% block saudacao %}
+Detalhes da Atividade
+{% endblock %}
+
+{% block descricao %}
+Visualize as informações e entregue sua atividade.
+{% endblock %}
+
+
+{% block perfil %}
+
+<div class="perfil">
+
+    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+
+    <div>
+        <strong>Manuela</strong>
+        <small>Aluno</small>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="detalhes-atividade-container">
+
+    <!-- BOTÃO VOLTAR -->
+
+    <a href="{% url 'atividadesa' %}" class="voltar">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar para atividades
+    </a>
+
+
+    <!-- CABEÇALHO DA ATIVIDADE -->
+
+    <section class="atividade-header">
+
+        <div class="atividade-titulo">
+
+            <div class="atividade-icon">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+
+            <div>
+
+                <span class="categoria">
+                    Atividade
+                </span>
+
+                <h2>
+                    Entrega do Portfólio
+                </h2>
+
+                <p>
+                    Atividade referente à mentoria do mês de setembro.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <span class="status pendente">
+            Pendente
+        </span>
+
+    </section>
+
+
+    <!-- INFORMAÇÕES -->
+
+    <section class="informacoes-atividade">
+
+        <div class="info-item">
+
+            <i class="fa-solid fa-user"></i>
+
+            <div>
+                <span>Professor</span>
+                <strong>Prof. Carlos</strong>
+            </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <i class="fa-solid fa-calendar-plus"></i>
+
+            <div>
+                <span>Publicada em</span>
+                <strong>10/09/2026</strong>
+            </div>
+
+        </div>
+
+
+        <div class="info-item prazo">
+
+            <i class="fa-solid fa-calendar-xmark"></i>
+
+            <div>
+                <span>Prazo de entrega</span>
+                <strong>20/09/2026</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DESCRIÇÃO -->
+
+    <section class="conteudo-card">
+
+        <h2>
+            Descrição da atividade
+        </h2>
+
+        <p>
+            Desenvolva e organize seu portfólio com os projetos,
+            atividades e experiências realizadas durante o período.
+        </p>
+
+        <p>
+            O portfólio deve apresentar os principais trabalhos
+            desenvolvidos pelo aluno e demonstrar sua evolução
+            durante o curso.
+        </p>
+
+        <h3>
+            Orientações
+        </h3>
+
+        <ul>
+            <li>Organize os projetos em ordem de realização.</li>
+            <li>Adicione uma breve descrição para cada projeto.</li>
+            <li>Inclua os conhecimentos utilizados.</li>
+            <li>Revise o conteúdo antes de realizar o envio.</li>
+        </ul>
+
+    </section>
+
+
+    <!-- ARQUIVOS -->
+
+    <section class="conteudo-card">
+
+        <div class="card-titulo">
+
+            <div>
+
+                <h2>
+                    Materiais da atividade
+                </h2>
+
+                <p>
+                    Arquivos disponibilizados pelo professor.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="arquivo">
+
+            <div class="arquivo-icon">
+                <i class="fa-solid fa-file-pdf"></i>
+            </div>
+
+            <div class="arquivo-info">
+
+                <strong>
+                    Orientações_Portfólio.pdf
+                </strong>
+
+                <span>
+                    PDF • 1,2 MB
+                </span>
+
+            </div>
+
+            <button class="btn-download">
+                <i class="fa-solid fa-download"></i>
+                Baixar
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ENTREGA -->
+
+    <section class="entrega-card">
+
+        <div class="entrega-header">
+
+            <div>
+
+                <h2>
+                    Entregar atividade
+                </h2>
+
+                <p>
+                    Envie o arquivo da sua atividade para avaliação.
+                </p>
+
+            </div>
+
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+
+        </div>
+
+
+        <div class="upload">
+
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+
+            <strong>
+                Clique para selecionar seu arquivo
+            </strong>
+
+            <span>
+                PDF, DOC, DOCX, JPG ou PNG
+            </span>
+
+            <input
+                type="file"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+            >
+
+        </div>
+
+
+        <div class="observacao">
+
+            <label for="observacao">
+                Observação para o professor
+            </label>
+
+            <textarea
+                id="observacao"
+                placeholder="Digite uma observação, se necessário..."
+            ></textarea>
+
+        </div>
+
+
+        <button class="btn-enviar">
+
+            <i class="fa-solid fa-paper-plane"></i>
+
+            Enviar atividade
+
+        </button>
+
+    </section>
+
+</div>
+
+{% endblock %}

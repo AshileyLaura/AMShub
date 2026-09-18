@@ -1,0 +1,492 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+AMS Hub - Pendências
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'aluno/pendenciasa.css' %}">
+{% endblock %}
+
+
+{% block menu %}
+
+<ul>
+
+    <li>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'minhasmentoriasa' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'meusportifoliosa' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'atividadesa' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'certificadoa' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Certificados</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>Pendências</span>
+    </li>
+
+</ul>
+
+{% endblock %}
+
+
+{% block saudacao %}
+Minhas Pendências
+{% endblock %}
+
+{% block descricao %}
+Acompanhe tudo o que precisa ser resolvido.
+{% endblock %}
+
+
+{% block perfil %}
+
+<div class="perfil">
+
+    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+
+    <div>
+        <strong>Manuela</strong>
+        <small>Aluno</small>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="pendencias-container">
+
+
+    <!-- RESUMO -->
+
+    <section class="resumo-pendencias">
+
+        <div class="resumo-card total">
+
+            <div class="icone">
+                <i class="fa-solid fa-list"></i>
+            </div>
+
+            <div>
+                <span>Total de pendências</span>
+                <strong>5</strong>
+            </div>
+
+        </div>
+
+
+        <div class="resumo-card atraso">
+
+            <div class="icone">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div>
+                <span>Em atraso</span>
+                <strong>2</strong>
+            </div>
+
+        </div>
+
+
+        <div class="resumo-card urgente">
+
+            <div class="icone">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div>
+                <span>Próximas do prazo</span>
+                <strong>3</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ALERTA -->
+
+    <div class="alerta-pendencias">
+
+        <div class="alerta-icone">
+            <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+
+        <div>
+            <strong>Você possui pendências para resolver</strong>
+
+            <p>
+                Verifique os prazos e regularize suas atividades
+                para manter seu acompanhamento em dia.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- PENDÊNCIAS EM ATRASO -->
+
+    <section class="lista-pendencias">
+
+        <div class="titulo-secao">
+
+            <div>
+                <h2>Pendências em atraso</h2>
+
+                <p>
+                    Estas pendências já passaram do prazo.
+                </p>
+            </div>
+
+            <span class="contador atraso">
+                2 pendências
+            </span>
+
+        </div>
+
+
+        <!-- PENDÊNCIA -->
+
+        <div class="pendencia-card">
+
+            <div class="pendencia-icone atraso">
+                <i class="fa-solid fa-file-circle-exclamation"></i>
+            </div>
+
+            <div class="pendencia-info">
+
+                <div class="titulo-pendencia">
+
+                    <h3>Entrega do relatório da mentoria</h3>
+
+                    <span class="tipo">
+                        Mentoria
+                    </span>
+
+                </div>
+
+                <p>
+                    O relatório da última mentoria ainda não foi enviado.
+                </p>
+
+                <div class="pendencia-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                        Prazo: 12/09/2026
+                    </span>
+
+                    <span class="texto-atrasado">
+                        <i class="fa-solid fa-clock"></i>
+                        Em atraso
+                    </span>
+
+                </div>
+
+            </div>
+
+            <button class="btn-resolver atraso">
+                Resolver
+            </button>
+
+        </div>
+
+
+        <!-- PENDÊNCIA 2 -->
+
+        <div class="pendencia-card">
+
+            <div class="pendencia-icone atraso">
+                <i class="fa-solid fa-file-circle-exclamation"></i>
+            </div>
+
+            <div class="pendencia-info">
+
+                <div class="titulo-pendencia">
+
+                    <h3>Portfólio não enviado</h3>
+
+                    <span class="tipo">
+                        Portfólio
+                    </span>
+
+                </div>
+
+                <p>
+                    O portfólio precisa ser enviado para avaliação.
+                </p>
+
+                <div class="pendencia-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                        Prazo: 15/09/2026
+                    </span>
+
+                    <span class="texto-atrasado">
+                        <i class="fa-solid fa-clock"></i>
+                        Em atraso
+                    </span>
+
+                </div>
+
+            </div>
+
+            <button class="btn-resolver atraso">
+                Resolver
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- PRÓXIMAS DO PRAZO -->
+
+    <section class="lista-pendencias">
+
+        <div class="titulo-secao">
+
+            <div>
+                <h2>Próximas do prazo</h2>
+
+                <p>
+                    Resolva estas pendências antes da data de entrega.
+                </p>
+            </div>
+
+            <span class="contador urgente">
+                3 pendências
+            </span>
+
+        </div>
+
+
+        <!-- PENDÊNCIA -->
+
+        <div class="pendencia-card">
+
+            <div class="pendencia-icone urgente">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div class="pendencia-info">
+
+                <div class="titulo-pendencia">
+
+                    <h3>Finalizar atividade de programação</h3>
+
+                    <span class="tipo">
+                        Atividade
+                    </span>
+
+                </div>
+
+                <p>
+                    Finalizar e enviar a atividade solicitada pelo professor.
+                </p>
+
+                <div class="pendencia-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar"></i>
+                        Prazo: 20/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        2 dias restantes
+                    </span>
+
+                </div>
+
+            </div>
+
+            <button class="btn-resolver urgente">
+                Resolver
+            </button>
+
+        </div>
+
+
+        <!-- PENDÊNCIA 2 -->
+
+        <div class="pendencia-card">
+
+            <div class="pendencia-icone urgente">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div class="pendencia-info">
+
+                <div class="titulo-pendencia">
+
+                    <h3>Enviar certificado</h3>
+
+                    <span class="tipo">
+                        Certificado
+                    </span>
+
+                </div>
+
+                <p>
+                    Adicione o certificado da atividade realizada.
+                </p>
+
+                <div class="pendencia-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar"></i>
+                        Prazo: 22/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        4 dias restantes
+                    </span>
+
+                </div>
+
+            </div>
+
+            <button class="btn-resolver urgente">
+                Resolver
+            </button>
+
+        </div>
+
+
+        <!-- PENDÊNCIA 3 -->
+
+        <div class="pendencia-card">
+
+            <div class="pendencia-icone urgente">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div class="pendencia-info">
+
+                <div class="titulo-pendencia">
+
+                    <h3>Atualizar informações do portfólio</h3>
+
+                    <span class="tipo">
+                        Portfólio
+                    </span>
+
+                </div>
+
+                <p>
+                    Atualize as informações solicitadas pelo coordenador.
+                </p>
+
+                <div class="pendencia-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar"></i>
+                        Prazo: 25/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        7 dias restantes
+                    </span>
+
+                </div>
+
+            </div>
+
+            <button class="btn-resolver urgente">
+                Resolver
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- OUTRAS PENDÊNCIAS -->
+
+    <section class="lista-pendencias">
+
+        <div class="titulo-secao">
+
+            <div>
+                <h2>Outras pendências</h2>
+
+                <p>
+                    Itens que precisam da sua atenção.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="pendencia-card simples">
+
+            <div class="pendencia-icone geral">
+                <i class="fa-solid fa-circle-info"></i>
+            </div>
+
+            <div class="pendencia-info">
+
+                <div class="titulo-pendencia">
+
+                    <h3>Atualizar dados do perfil</h3>
+
+                    <span class="tipo">
+                        Perfil
+                    </span>
+
+                </div>
+
+                <p>
+                    Verifique se suas informações pessoais estão atualizadas.
+                </p>
+
+            </div>
+
+            <button class="btn-resolver geral">
+                Ver
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

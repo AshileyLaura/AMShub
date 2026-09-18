@@ -223,6 +223,13 @@ def pendenciasa(request):
 def certificadoa(request):
     return render(request, 'aluno/certificadoa.html')
 
+def detalhesdaatividadea(request):
+    return render(request, 'aluno/detalhesdaatividadea.html')
+
+def meuperfila(request):
+    return render(request, 'aluno/meuperfila.html')
+
+
 def cadastro(request):
 
     if request.method == 'POST':

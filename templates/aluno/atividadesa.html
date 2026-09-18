@@ -1,14 +1,12 @@
 {% extends "base.html" %}
-
 {% load static %}
 
 {% block title %}
-AMS Hub - Aluno
+AMS Hub - Atividades
 {% endblock %}
 
-
 {% block css %}
-<link rel="stylesheet" href="{% static 'Aluno.css' %}">
+<link rel="stylesheet" href="{% static 'aluno/atividadesa.css' %}">
 {% endblock %}
 
 
@@ -16,7 +14,7 @@ AMS Hub - Aluno
 
 <ul>
 
-    <li class="active">
+    <li>
         <a href="{% url 'aluno' %}">
             <i class="fa-solid fa-house"></i>
             <span>Início</span>
@@ -24,8 +22,8 @@ AMS Hub - Aluno
     </li>
 
     <li>
-        <a href="{% url 'minhasmentoriasa' %}" style="color: white !important; text-decoration: none !important;">
-            <i class="fa-solid fa-users" style="color: white !important;"></i>
+        <a href="{% url 'minhasmentoriasa' %}">
+            <i class="fa-solid fa-users"></i>
             <span>Mentorias</span>
         </a>
     </li>
@@ -37,11 +35,9 @@ AMS Hub - Aluno
         </a>
     </li>
 
-    <li>
-        <a href="{% url 'atividadesa' %}">
-            <i class="fa-solid fa-list-check"></i>
-            <span>Atividades</span>
-        </a>
+    <li class="active">
+        <i class="fa-solid fa-list-check"></i>
+        <span>Atividades</span>
     </li>
 
     <li>
@@ -64,12 +60,11 @@ AMS Hub - Aluno
 
 
 {% block saudacao %}
-<h1>Olá, {{ nome_usuario }}!</h1>
+Minhas Atividades
 {% endblock %}
 
-
 {% block descricao %}
-Aqui você encontra tudo sobre seus portfólios.
+Acompanhe suas tarefas, prazos e atividades.
 {% endblock %}
 
 
@@ -78,170 +73,9 @@ Aqui você encontra tudo sobre seus portfólios.
 <div class="perfil">
 
     <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
-                    </div>
-
-                </div>
-
-            </header>
-            <section class="cards row g-4 mb-4">
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <i class="fa-solid fa-award"></i>
-
-                        <div>
-
-                            <span>Certificados</span>
-
-                            <h2>2</h2>
-
-                            <p>A serem aprovados</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <i class="fa-regular fa-clock"></i>
-
-                        <div>
-
-                            <span>Pendências</span>
-
-                            <h2>93H</h2>
-
-                            <p>A serem resolvidas</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <i class="fa-solid fa-file-circle-check"></i>
-
-                        <div>
-
-                            <span>Atividades</span>
-
-                            <h2>4</h2>
-
-                            <p>Este mês</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <i class="fa-regular fa-clock"></i>
-
-                        <div>
-
-                            <span>Horas Registradas</span>
-
-                            <h2>127H</h2>
-
-                            <p>No total</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-            <section class="content row g-4">
-                <div class="col-xl-7">
-
-                    <div class="atividades h-100">
-
-                        <h2>Últimas Realizações</h2>
-
-                        <ul>
-
-                            <li>
-
-                                <span>📘 Mentoria - 27/05</span>
-
-                                <small>29/05</small>
-
-                            </li>
-
-                            <li>
-
-                                <span>📘 Atividade - 13/05</span>
-
-                                <small>17/05</small>
-
-                            </li>
-
-                            <li>
-
-                                <span>📕 Palestra - 29/04</span>
-
-                                <small>01/05</small>
-
-                            </li>
-
-                            <li>
-
-                                <span>📘 Mentoria - 14/04</span>
-
-                                <small>14/04</small>
-
-                            </li>
-
-                            <li>
-
-                                <span>📘 Atividade - 03/03</span>
-
-                                <small>08/03</small>
-
-                            </li>
-
-                        </ul>
-
-                    </div>
-
-                </div>
-
-                <div class="col-xl-5">
-
-                    <div class="grafico h-100">
-
-                        <h2>Horas Complementares</h2>
-
-                        <canvas id="graficoHoras"></canvas>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </main>
 
     <div>
-        <strong>{{ nome_usuario }}</strong>
+        <strong>Manuela</strong>
         <small>Aluno</small>
     </div>
 
@@ -249,9 +83,382 @@ Aqui você encontra tudo sobre seus portfólios.
 
 {% endblock %}
 
-{% block js %}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'dashboard.js' %}"></script>
+{% block content %}
+
+<div class="atividades-container">
+
+
+    <!-- RESUMO -->
+
+    <section class="resumo-atividades">
+
+        <div class="resumo-card pendente">
+
+            <div class="icone">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div>
+                <span>Pendentes</span>
+                <strong>4</strong>
+            </div>
+
+        </div>
+
+
+        <div class="resumo-card concluida">
+
+            <div class="icone">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div>
+                <span>Concluídas</span>
+                <strong>8</strong>
+            </div>
+
+        </div>
+
+
+        <div class="resumo-card atraso">
+
+            <div class="icone">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div>
+                <span>Em atraso</span>
+                <strong>2</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ATIVIDADES PENDENTES -->
+
+    <section class="lista-atividades">
+
+        <div class="titulo-secao">
+
+            <div>
+                <h2>Atividades Pendentes</h2>
+
+                <p>
+                    Atividades que ainda precisam ser realizadas.
+                </p>
+            </div>
+
+            <span class="contador pendente">
+                4 atividades
+            </span>
+
+        </div>
+
+
+        <!-- ATIVIDADE 1 -->
+
+        <div class="atividade-card">
+
+            <div class="status-icon pendente">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div class="atividade-info">
+
+                <h3>Entrega do Portfólio</h3>
+
+                <p>
+                    Finalizar e enviar o portfólio referente à mentoria.
+                </p>
+
+                <div class="atividade-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar"></i>
+                        Entrega: 20/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-users"></i>
+                        Mentoria
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="status pendente">
+                Pendente
+            </span>
+
+            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade">
+                Ver tarefa
+            </a>
+
+        </div>
+
+
+        <!-- ATIVIDADE 2 -->
+
+        <div class="atividade-card">
+
+            <div class="status-icon pendente">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div class="atividade-info">
+
+                <h3>Relatório da Mentoria</h3>
+
+                <p>
+                    Elaborar o relatório da última mentoria realizada.
+                </p>
+
+                <div class="atividade-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar"></i>
+                        Entrega: 22/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-users"></i>
+                        Mentoria
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="status pendente">
+                Pendente
+            </span>
+
+            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade">
+                Ver tarefa
+            </a>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ATIVIDADES CONCLUÍDAS -->
+
+    <section class="lista-atividades">
+
+        <div class="titulo-secao">
+
+            <div>
+                <h2>Atividades Concluídas</h2>
+
+                <p>
+                    Atividades que você já finalizou.
+                </p>
+            </div>
+
+            <span class="contador concluida">
+                8 atividades
+            </span>
+
+        </div>
+
+
+        <!-- ATIVIDADE CONCLUÍDA -->
+
+        <div class="atividade-card">
+
+            <div class="status-icon concluida">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div class="atividade-info">
+
+                <h3>Pesquisa sobre Tecnologia</h3>
+
+                <p>
+                    Pesquisa realizada para a atividade da mentoria.
+                </p>
+
+                <div class="atividade-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Concluída: 10/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-users"></i>
+                        Mentoria
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="status concluida">
+                Concluída
+            </span>
+
+            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade">
+                Ver tarefa
+            </a>
+        </div>
+
+
+        <div class="atividade-card">
+
+            <div class="status-icon concluida">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div class="atividade-info">
+
+                <h3>Exercício de Banco de Dados</h3>
+
+                <p>
+                    Exercício prático realizado durante a aula.
+                </p>
+
+                <div class="atividade-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Concluída: 05/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        Curso
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="status concluida">
+                Concluída
+            </span>
+
+            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade">
+                Ver tarefa
+            </a>
+        </div>
+
+    </section>
+
+
+    <!-- ATIVIDADES EM ATRASO -->
+
+    <section class="lista-atividades">
+
+        <div class="titulo-secao">
+
+            <div>
+                <h2>Atividades em Atraso</h2>
+
+                <p>
+                    Atividades que passaram do prazo de entrega.
+                </p>
+            </div>
+
+            <span class="contador atraso">
+                2 atividades
+            </span>
+
+        </div>
+
+
+        <!-- ATIVIDADE ATRASADA -->
+
+        <div class="atividade-card">
+
+            <div class="status-icon atraso">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div class="atividade-info">
+
+                <h3>Atividade de Desenvolvimento</h3>
+
+                <p>
+                    Finalizar a atividade prática solicitada pelo professor.
+                </p>
+
+                <div class="atividade-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                        Prazo: 12/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Prazo excedido
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="status atraso">
+                Em atraso
+            </span>
+
+            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade atraso">
+                Ver tarefa
+            </a>
+
+        </div>
+
+
+        <div class="atividade-card">
+
+            <div class="status-icon atraso">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div class="atividade-info">
+
+                <h3>Entrega de Documentação</h3>
+
+                <p>
+                    Documento solicitado para completar o acompanhamento.
+                </p>
+
+                <div class="atividade-detalhes">
+
+                    <span>
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                        Prazo: 14/09/2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Prazo excedido
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="status atraso">
+                Em atraso
+            </span>
+
+            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade atraso">
+                Ver tarefa
+            </a>
+
+        </div>
+
+    </section>
+
+
+</div>
 
 {% endblock %}
