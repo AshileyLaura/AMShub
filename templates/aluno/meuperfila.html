@@ -56,11 +56,11 @@ AMS Hub - Meu Perfil
 {% endblock %}
 
 {% block saudacao %}
-Meu Perfil
+<h1>Meu Perfil</h1>
 {% endblock %}
 
 {% block descricao %}
-Visualize e gerencie suas informações pessoais.
+Visualize suas informações pessoais.
 {% endblock %}
 
 {% block perfil %}
@@ -68,7 +68,7 @@ Visualize e gerencie suas informações pessoais.
     <div class="perfil">
         <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
         <div>
-            <strong>Manuela</strong>
+            <strong>{{ nome_usuario }}</strong>
             <small>Aluno</small>
         </div>
     </div>
@@ -87,19 +87,14 @@ Visualize e gerencie suas informações pessoais.
         </div>
 
         <div class="dados-principais">
-            <h2>Manuela</h2>
-            <p>Aluno • Desenvolvimento de Sistemas</p>
+            <h2>{{ nome_usuario }}</h2>
+            <p>Aluno • {{ aluno.curso }}</p>
 
             <span class="status-aluno">
                 <i class="fa-solid fa-circle"></i>
-                Aluno ativo
+                {% if usuario.is_active %}Conta ativa{% else %}Conta inativa{% endif %}
             </span>
         </div>
-
-        <button class="btn-editar">
-            <i class="fa-solid fa-pen"></i>
-            Editar perfil
-        </button>
 
     </div>
 
@@ -116,32 +111,22 @@ Visualize e gerencie suas informações pessoais.
 
             <div class="campo">
                 <span>Nome completo</span>
-                <strong>Manuela</strong>
+                <strong>{{ nome_usuario }}</strong>
             </div>
 
             <div class="campo">
-                <span>RM</span>
-                <strong>12345</strong>
+                <span>Usuário de acesso</span>
+                <strong>{{ usuario.username }}</strong>
             </div>
 
             <div class="campo">
-                <span>E-mail institucional</span>
-                <strong>manuela@etec.sp.gov.br</strong>
+                <span>E-mail</span>
+                <strong>{{ usuario.email|default:"Não informado" }}</strong>
             </div>
 
             <div class="campo">
-                <span>Curso</span>
-                <strong>Desenvolvimento de Sistemas</strong>
-            </div>
-
-            <div class="campo">
-                <span>Turma</span>
-                <strong>3º Desenvolvimento de Sistemas</strong>
-            </div>
-
-            <div class="campo">
-                <span>Período</span>
-                <strong>Manhã</strong>
+                <span>Cadastrado em</span>
+                <strong>{{ usuario.date_joined|date:"d/m/Y" }}</strong>
             </div>
 
         </div>
@@ -161,47 +146,13 @@ Visualize e gerencie suas informações pessoais.
 
             <div class="campo">
                 <span>Curso</span>
-                <strong>Desenvolvimento de Sistemas</strong>
+                <strong>{{ aluno.curso }}</strong>
             </div>
 
             <div class="campo">
-                <span>Instituição</span>
-                <strong>ETEC</strong>
+                <span>Turma / RM</span>
+                <strong>{{ aluno.turma }}</strong>
             </div>
-
-            <div class="campo">
-                <span>Situação</span>
-                <strong class="texto-verde">Matriculado</strong>
-            </div>
-
-            <div class="campo">
-                <span>Ano de ingresso</span>
-                <strong>2024</strong>
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- SEGURANÇA -->
-    <div class="perfil-card">
-
-        <div class="titulo-secao">
-            <i class="fa-solid fa-lock"></i>
-            <h3>Segurança da conta</h3>
-        </div>
-
-        <div class="seguranca-item">
-
-            <div>
-                <strong>Senha</strong>
-                <p>Última alteração realizada recentemente.</p>
-            </div>
-
-            <button class="btn-secundario">
-                Alterar senha
-            </button>
 
         </div>
 

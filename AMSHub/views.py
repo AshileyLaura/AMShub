@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.urls import reverse
+from django.utils import timezone
 from functools import wraps
 
 from .models import (
@@ -22,95 +25,261 @@ from .models import (
 )
 
 
-def index(request):
-    return render(request, 'index.html')
+# ---------------------------------------------------------------------
+# FUNÇÕES AUXILIARES
+# ---------------------------------------------------------------------
+
+# Status de atividade que contam como "concluída".
+# Qualquer outro status (ex.: "Pendente") é tratado como não concluída.
+STATUS_CONCLUIDO = ('concluída', 'concluida', 'concluído', 'concluido')
+
+
+def nome_do_usuario(request):
+    return request.user.get_full_name() or request.user.username
+
+
+def obter_aluno(request):
+    return get_object_or_404(
+        Aluno,
+        perfil__user=request.user
+    )
+
+
+def atividades_do_aluno(aluno):
+    """Atividades das mentorias em que o aluno participa."""
+
+    mentorias = Participacao.objects.filter(
+        id_aluno=aluno
+    ).values_list(
+        'id_mentoria',
+        flat=True
+    )
+
+    return Atividade.objects.filter(
+        id_mentoria__in=mentorias
+    ).select_related(
+        'id_mentoria__id_professor__perfil__user',
+        'id_mentoria__id_supervisor__perfil__user'
+    ).order_by(
+        'data_entrega',
+        'id_atividade'
+    )
+
+
+def atividade_concluida(atividade):
+    return (atividade.status or '').strip().lower() in STATUS_CONCLUIDO
+
+
+def classificar_atividades(atividades, hoje):
+    """Separa as atividades em pendentes, concluídas e em atraso."""
+
+    pendentes = []
+    concluidas = []
+    atrasadas = []
+
+    for atividade in atividades:
+
+        if atividade_concluida(atividade):
+            concluidas.append(atividade)
+
+        elif atividade.data_entrega and atividade.data_entrega < hoje:
+            atrasadas.append(atividade)
+
+        else:
+            pendentes.append(atividade)
+
+    return pendentes, concluidas, atrasadas
+
+
+def situacao_atividade(atividade, hoje):
+    """Devolve (classe_css, texto) da situação de uma atividade."""
+
+    if atividade_concluida(atividade):
+        return 'concluida', 'Concluída'
+
+    if atividade.data_entrega and atividade.data_entrega < hoje:
+        return 'atraso', 'Em atraso'
+
+    return 'pendente', 'Pendente'
+
+
+def classe_certificado(status):
+    """Converte o texto do status do certificado em classe do CSS."""
+
+    texto = (status or '').strip().lower()
+
+    if texto.startswith('aprov'):
+        return 'aprovado'
+
+    if 'anális' in texto or 'analis' in texto:
+        return 'analise'
+
+    return 'pendente'
+
+
+def portfolio_pendente(portfolio):
+    return (portfolio.status or '').strip().lower() == 'pendente'
+
+
+def montar_pendencias(aluno, hoje):
+    """Monta as listas da tela de pendências a partir do banco."""
+
+    pendentes, _, atrasadas = classificar_atividades(
+        atividades_do_aluno(aluno),
+        hoje
+    )
+
+    em_atraso = []
+    proximas = []
+    outras = []
+
+    for atividade in atrasadas:
+        em_atraso.append({
+            'titulo': atividade.titulo,
+            'tipo': 'Atividade',
+            'descricao': atividade.descricao,
+            'prazo': atividade.data_entrega,
+            'dias': (hoje - atividade.data_entrega).days,
+            'url': reverse(
+                'detalhesdaatividadea',
+                args=[atividade.id_atividade]
+            ),
+        })
+
+    for atividade in pendentes:
+
+        item = {
+            'titulo': atividade.titulo,
+            'tipo': 'Atividade',
+            'descricao': atividade.descricao,
+            'prazo': atividade.data_entrega,
+            'dias': None,
+            'url': reverse(
+                'detalhesdaatividadea',
+                args=[atividade.id_atividade]
+            ),
+        }
+
+        if atividade.data_entrega:
+            item['dias'] = (atividade.data_entrega - hoje).days
+            proximas.append(item)
+        else:
+            outras.append(item)
+
+    for certificado in Certificado.objects.filter(id_aluno=aluno):
+
+        if classe_certificado(certificado.status) == 'pendente':
+            outras.append({
+                'titulo': certificado.curso,
+                'tipo': 'Certificado',
+                'descricao': certificado.instituicao,
+                'prazo': None,
+                'dias': None,
+                'url': reverse('certificadoa'),
+            })
+
+    portfolios = Portfolio.objects.filter(
+        id_aluno=aluno
+    ).select_related('id_mentoria')
+
+    for portfolio in portfolios:
+
+        if portfolio_pendente(portfolio):
+            outras.append({
+                'titulo': portfolio.id_mentoria.tema,
+                'tipo': 'Portfólio',
+                'descricao': portfolio.resumo,
+                'prazo': None,
+                'dias': None,
+                'url': reverse('meusportifoliosa'),
+            })
+
+    return em_atraso, proximas, outras
+
+
+def redirecionar_por_tipo(tipo):
+    destinos = {
+        'aluno': 'aluno',
+        'professor': 'professor',
+        'coordenador': 'coordenador',
+        'supervisor': 'supervisor',
+        'empresa': 'empresa',
+    }
+    return redirect(destinos.get(tipo, 'index'))
 
 
 def tipo_permitido(tipo):
     def decorator(view_func):
 
         @wraps(view_func)
-        @login_required
         def wrapper(request, *args, **kwargs):
 
             if not hasattr(request.user, 'perfil'):
                 return redirect('login')
 
             if request.user.perfil.tipo != tipo:
-                tipo_usuario = request.user.perfil.tipo
-
-                if tipo_usuario == 'aluno':
-                    return redirect('aluno')
-
-                elif tipo_usuario == 'professor':
-                    return redirect('professor')
-
-                elif tipo_usuario == 'coordenador':
-                    return redirect('coordenador')
-
-                elif tipo_usuario == 'supervisor':
-                    return redirect('supervisor')
-
-                elif tipo_usuario == 'empresa':
-                    return redirect('empresa')
-
-                return redirect('index')
+                return redirecionar_por_tipo(request.user.perfil.tipo)
 
             return view_func(request, *args, **kwargs)
 
-        return wrapper
+        return login_required(wrapper)
 
     return decorator
 
 
+def index(request):
+    return render(request, 'index.html')
+
+
+# ---------------------------------------------------------------------
+# TELAS PRINCIPAIS
+# ---------------------------------------------------------------------
+
 @tipo_permitido('aluno')
 def aluno(request):
 
-    aluno = get_object_or_404(
-        Aluno,
-        perfil__user=request.user
+    aluno = obter_aluno(request)
+    hoje = timezone.localdate()
+
+    atividades = list(atividades_do_aluno(aluno))
+
+    pendentes, concluidas, atrasadas = classificar_atividades(
+        atividades,
+        hoje
     )
 
-    participacoes = Participacao.objects.filter(
-        id_aluno=aluno
-    )
-
+    # Horas contabilizadas
     horas_mentorias = sum(
         participacao.horas
-        for participacao in participacoes
-    )
-
-    mentorias = participacoes.values_list(
-        'id_mentoria',
-        flat=True
+        for participacao in Participacao.objects.filter(
+            id_aluno=aluno,
+            presenca=True
+        )
     )
 
     horas_atividades = sum(
         atividade.horas
-        for atividade in Atividade.objects.filter(
-            id_mentoria__in=mentorias
-        )
+        for atividade in concluidas
+    )
+
+    certificados = list(
+        Certificado.objects.filter(id_aluno=aluno)
     )
 
     horas_certificados = sum(
         certificado.carga_horaria
-        for certificado in Certificado.objects.filter(
-            id_aluno=aluno
-        )
+        for certificado in certificados
+        if classe_certificado(certificado.status) == 'aprovado'
     )
 
     horas_viagens = sum(
         viagem.horas
-        for viagem in Viagem.objects.filter(
-            id_aluno=aluno
-        )
+        for viagem in Viagem.objects.filter(id_aluno=aluno)
     )
 
     horas_complementares = sum(
         hora.quantidade
-        for hora in Horas.objects.filter(
-            id_aluno=aluno
-        )
+        for hora in Horas.objects.filter(id_aluno=aluno)
     )
 
     total_horas = (
@@ -121,16 +290,44 @@ def aluno(request):
         + horas_complementares
     )
 
+    # Cards do dashboard
+    certificados_pendentes = sum(
+        1 for certificado in certificados
+        if classe_certificado(certificado.status) != 'aprovado'
+    )
+
+    horas_pendentes = sum(
+        atividade.horas
+        for atividade in pendentes + atrasadas
+    )
+
+    atividades_mes = sum(
+        1 for atividade in atividades
+        if atividade.data_entrega
+        and atividade.data_entrega.year == hoje.year
+        and atividade.data_entrega.month == hoje.month
+    )
+
+    ultimas_atividades = sorted(
+        concluidas,
+        key=lambda atividade: atividade.id_atividade,
+        reverse=True
+    )[:5]
+
     contexto = {
         'usuario': request.user,
         'aluno': aluno,
-        'nome_usuario': request.user.get_full_name() or request.user.username,
+        'nome_usuario': nome_do_usuario(request),
         'horas_mentorias': horas_mentorias,
         'horas_atividades': horas_atividades,
         'horas_certificados': horas_certificados,
         'horas_viagens': horas_viagens,
         'horas_complementares': horas_complementares,
         'total_horas': total_horas,
+        'certificados_pendentes': certificados_pendentes,
+        'horas_pendentes': horas_pendentes,
+        'atividades_mes': atividades_mes,
+        'ultimas_atividades': ultimas_atividades,
     }
 
     return render(request, 'Aluno.html', contexto)
@@ -141,7 +338,7 @@ def professor(request):
 
     contexto = {
         'usuario': request.user,
-        'nome_usuario': request.user.get_full_name() or request.user.username,
+        'nome_usuario': nome_do_usuario(request),
     }
 
     return render(request, 'Professor.html', contexto)
@@ -152,7 +349,7 @@ def coordenador(request):
 
     contexto = {
         'usuario': request.user,
-        'nome_usuario': request.user.get_full_name() or request.user.username,
+        'nome_usuario': nome_do_usuario(request),
     }
 
     return render(request, 'Coordenador.html', contexto)
@@ -163,7 +360,7 @@ def supervisor(request):
 
     contexto = {
         'usuario': request.user,
-        'nome_usuario': request.user.get_full_name() or request.user.username,
+        'nome_usuario': nome_do_usuario(request),
     }
 
     return render(request, 'Supervisor.html', contexto)
@@ -174,11 +371,15 @@ def empresa(request):
 
     contexto = {
         'usuario': request.user,
-        'nome_usuario': request.user.get_full_name() or request.user.username,
+        'nome_usuario': nome_do_usuario(request),
     }
 
     return render(request, 'Empresa.html', contexto)
 
+
+# ---------------------------------------------------------------------
+# LOGIN / LOGOUT
+# ---------------------------------------------------------------------
 
 def login_view(request):
 
@@ -218,26 +419,9 @@ def login_view(request):
                     }
                 )
 
-            tipo = usuario.perfil.tipo
-
             login(request, usuario)
 
-            if tipo == 'aluno':
-                return redirect('aluno')
-
-            elif tipo == 'professor':
-                return redirect('professor')
-
-            elif tipo == 'coordenador':
-                return redirect('coordenador')
-
-            elif tipo == 'supervisor':
-                return redirect('supervisor')
-
-            elif tipo == 'empresa':
-                return redirect('empresa')
-
-            return redirect('index')
+            return redirecionar_por_tipo(usuario.perfil.tipo)
 
         return render(
             request,
@@ -255,34 +439,44 @@ def logout_view(request):
     return redirect('login')
 
 
+# ---------------------------------------------------------------------
+# ÁREA DO ALUNO
+# ---------------------------------------------------------------------
+
 @tipo_permitido('aluno')
 def minhasmentoriasa(request):
 
-    aluno = get_object_or_404(
-        Aluno,
-        perfil__user=request.user
-    )
+    aluno = obter_aluno(request)
 
     participacoes = Participacao.objects.filter(
         id_aluno=aluno
     ).select_related(
         'id_mentoria',
-        'id_mentoria__id_professor',
-        'id_mentoria__id_supervisor'
-    )
+        'id_mentoria__id_professor__perfil__user',
+        'id_mentoria__id_supervisor__perfil__user'
+    ).order_by('id_mentoria__data')
 
-    mentorias = [
-        participacao.id_mentoria
-        for participacao in participacoes
+    hoje = timezone.localdate()
+
+    proximas = [
+        p for p in participacoes
+        if p.id_mentoria.data >= hoje
     ]
+
+    realizadas = [
+        p for p in participacoes
+        if p.id_mentoria.data < hoje
+    ]
+    realizadas.reverse()
 
     return render(
         request,
-        'minhasmentoriasa.html',
+        'aluno/minhasmentoriasa.html',
         {
             'aluno': aluno,
-            'mentorias': mentorias,
-            'nome_usuario': request.user.get_full_name() or request.user.username
+            'proximas': proximas,
+            'realizadas': realizadas,
+            'nome_usuario': nome_do_usuario(request)
         }
     )
 
@@ -290,42 +484,64 @@ def minhasmentoriasa(request):
 @tipo_permitido('aluno')
 def detalhesdamentoriaa(request, id_mentoria):
 
-    aluno = get_object_or_404(
-        Aluno,
-        perfil__user=request.user
-    )
+    aluno = obter_aluno(request)
 
     participacao = get_object_or_404(
-        Participacao,
+        Participacao.objects.select_related(
+            'id_mentoria__id_professor__perfil__user',
+            'id_mentoria__id_supervisor__perfil__user'
+        ),
         id_aluno=aluno,
         id_mentoria_id=id_mentoria
     )
 
     mentoria = participacao.id_mentoria
+    hoje = timezone.localdate()
+
+    atividades = list(
+        mentoria.atividades.all().order_by('data_entrega', 'id_atividade')
+    )
+
+    for atividade in atividades:
+        atividade.situacao, atividade.situacao_texto = situacao_atividade(
+            atividade,
+            hoje
+        )
 
     return render(
         request,
-        'detalhesdamentoriaa.html',
+        'aluno/detalhesdamentoriaa.html',
         {
             'aluno': aluno,
             'mentoria': mentoria,
             'participacao': participacao,
-            'nome_usuario': request.user.get_full_name() or request.user.username
+            'atividades': atividades,
+            'realizada': mentoria.data < hoje,
+            'nome_usuario': nome_do_usuario(request)
         }
     )
 
 
+@tipo_permitido('aluno')
 def meuperfila(request):
-    return render(request, 'aluno/meuperfila.html')
+
+    aluno = obter_aluno(request)
+
+    return render(
+        request,
+        'aluno/meuperfila.html',
+        {
+            'aluno': aluno,
+            'usuario': request.user,
+            'nome_usuario': nome_do_usuario(request)
+        }
+    )
 
 
 @tipo_permitido('aluno')
 def meusportifoliosa(request):
 
-    aluno = get_object_or_404(
-        Aluno,
-        perfil__user=request.user
-    )
+    aluno = obter_aluno(request)
 
     portfolios = Portfolio.objects.filter(
         id_aluno=aluno
@@ -339,7 +555,7 @@ def meusportifoliosa(request):
         {
             'aluno': aluno,
             'portfolios': portfolios,
-            'nome_usuario': request.user.get_full_name() or request.user.username
+            'nome_usuario': nome_do_usuario(request)
         }
     )
 
@@ -347,22 +563,12 @@ def meusportifoliosa(request):
 @tipo_permitido('aluno')
 def atividadesa(request):
 
-    aluno = get_object_or_404(
-        Aluno,
-        perfil__user=request.user
-    )
+    aluno = obter_aluno(request)
+    hoje = timezone.localdate()
 
-    participacoes = Participacao.objects.filter(
-        id_aluno=aluno
-    ).values_list(
-        'id_mentoria',
-        flat=True
-    )
-
-    atividades = Atividade.objects.filter(
-        id_mentoria__in=participacoes
-    ).select_related(
-        'id_mentoria'
+    pendentes, concluidas, atrasadas = classificar_atividades(
+        atividades_do_aluno(aluno),
+        hoje
     )
 
     return render(
@@ -370,27 +576,113 @@ def atividadesa(request):
         'aluno/atividadesa.html',
         {
             'aluno': aluno,
-            'atividades': atividades,
-            'nome_usuario': request.user.get_full_name() or request.user.username
+            'pendentes': pendentes,
+            'concluidas': concluidas,
+            'atrasadas': atrasadas,
+            'nome_usuario': nome_do_usuario(request)
         }
     )
 
 
+@tipo_permitido('aluno')
+def detalhesdaatividadea(request, id_atividade):
+
+    aluno = obter_aluno(request)
+
+    atividade = get_object_or_404(
+        atividades_do_aluno(aluno),
+        id_atividade=id_atividade
+    )
+
+    situacao, situacao_texto = situacao_atividade(
+        atividade,
+        timezone.localdate()
+    )
+
+    return render(
+        request,
+        'aluno/detalhesdaatividadea.html',
+        {
+            'aluno': aluno,
+            'atividade': atividade,
+            'mentoria': atividade.id_mentoria,
+            'situacao': situacao,
+            'situacao_texto': situacao_texto,
+            'nome_usuario': nome_do_usuario(request)
+        }
+    )
+
+
+@tipo_permitido('aluno')
 def pendenciasa(request):
-    return render(request, 'aluno/pendenciasa.html')
+
+    aluno = obter_aluno(request)
+
+    em_atraso, proximas, outras = montar_pendencias(
+        aluno,
+        timezone.localdate()
+    )
+
+    return render(
+        request,
+        'aluno/pendenciasa.html',
+        {
+            'aluno': aluno,
+            'em_atraso': em_atraso,
+            'proximas': proximas,
+            'outras': outras,
+            'total_pendencias': len(em_atraso) + len(proximas) + len(outras),
+            'nome_usuario': nome_do_usuario(request)
+        }
+    )
 
 
 @tipo_permitido('aluno')
 def certificadoa(request):
 
-    aluno = get_object_or_404(
-        Aluno,
-        perfil__user=request.user
+    aluno = obter_aluno(request)
+
+    if request.method == 'POST':
+
+        curso = request.POST.get('curso', '').strip()[:200]
+        instituicao = request.POST.get('instituicao', '').strip()[:200]
+        carga_horaria = request.POST.get('carga_horaria', '').strip()
+
+        if (
+            not curso
+            or not instituicao
+            or not carga_horaria.isdigit()
+            or int(carga_horaria) < 1
+        ):
+            messages.error(
+                request,
+                'Preencha todos os campos corretamente.'
+            )
+
+        else:
+            Certificado.objects.create(
+                id_aluno=aluno,
+                curso=curso,
+                instituicao=instituicao,
+                carga_horaria=int(carga_horaria),
+                status='Em análise'
+            )
+
+            messages.success(
+                request,
+                'Certificado enviado para análise.'
+            )
+
+        return redirect('certificadoa')
+
+    certificados = list(
+        Certificado.objects.filter(
+            id_aluno=aluno
+        ).order_by('-id_certificado')
     )
 
-    certificados = Certificado.objects.filter(
-        id_aluno=aluno
-    )
+    for certificado in certificados:
+        certificado.classe = classe_certificado(certificado.status)
 
     return render(
         request,
@@ -398,17 +690,23 @@ def certificadoa(request):
         {
             'aluno': aluno,
             'certificados': certificados,
-            'nome_usuario': request.user.get_full_name() or request.user.username
+            'total_aprovados': sum(
+                1 for c in certificados if c.classe == 'aprovado'
+            ),
+            'total_analise': sum(
+                1 for c in certificados if c.classe == 'analise'
+            ),
+            'total_pendentes': sum(
+                1 for c in certificados if c.classe == 'pendente'
+            ),
+            'nome_usuario': nome_do_usuario(request)
         }
     )
 
 
-def detalhesdaatividadea(request):
-    return render(request, 'aluno/detalhesdaatividadea.html')
-
-def meuperfila(request):
-    return render(request, 'aluno/meuperfila.html')
-
+# ---------------------------------------------------------------------
+# CADASTRO
+# ---------------------------------------------------------------------
 
 def cadastro(request):
 

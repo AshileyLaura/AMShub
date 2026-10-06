@@ -48,40 +48,40 @@ urlpatterns = [
     ),
 
     path(
-        'aluno/portifolios',
+        'aluno/portifolios/',
         meusportifoliosa,
         name='meusportifoliosa'
     ),
 
     path(
-        'aluno/atividadesa',
+        'aluno/atividadesa/',
         atividadesa,
         name='atividadesa'
     ),
 
     path(
-        'aluno/pendenciasa',
+        'aluno/pendenciasa/',
         pendenciasa,
         name='pendenciasa'
     ),
 
     path(
-        'aluno/certificadoa',
+        'aluno/certificadoa/',
         certificadoa,
         name='certificadoa'
     ),
 
     path(
-        'aluno/atividade/detalhes/',
-         detalhesdaatividadea, 
-         name='detalhesdaatividadea'),
+        'aluno/atividade/detalhes/<int:id_atividade>/',
+        detalhesdaatividadea,
+        name='detalhesdaatividadea'
+    ),
 
     path(
         'aluno/perfil/',
-         meuperfila, 
-         name='meuperfila'),
-
-
+        meuperfila,
+        name='meuperfila'
+    ),
 
     # LOGIN
 

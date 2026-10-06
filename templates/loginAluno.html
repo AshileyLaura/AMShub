@@ -3,18 +3,17 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Aluno</title>
-<link rel="stylesheet" href="{% static 'loginAluno.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/front-awesome/6.5.2/css/all.min.css">
-
+    <link rel="stylesheet" href="{% static 'loginAluno.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
 <div class="container">
     <div class="lado-esquerdo">
-        <img src="/static/imagens/logoaluno.png" class="logo" alt="Logo">
-        <img src="/static/imagens/aluno.png" class="astronauta" alt="Astronauta">
+        <img src="{% static 'imagens/logoaluno.png' %}" class="logo" alt="Logo">
+        <img src="{% static 'imagens/aluno.png' %}" class="astronauta" alt="Astronauta">
     </div>
     <div class="lado-direito">
         <div class="card-login">
@@ -24,10 +23,10 @@
             </div>
             <form method="POST">
                 {% csrf_token %}
-        
+
                 <input type="text" name="username" placeholder="Usuário" required>
                 <input type="password" name="senha" placeholder="Senha" required>
-        
+
                 <button type="submit">Entrar</button>
             </form>
             {% if erro %}

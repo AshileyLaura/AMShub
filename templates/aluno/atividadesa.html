@@ -60,7 +60,7 @@ AMS Hub - Atividades
 
 
 {% block saudacao %}
-Minhas Atividades
+<h1>Minhas Atividades</h1>
 {% endblock %}
 
 {% block descricao %}
@@ -70,16 +70,18 @@ Acompanhe suas tarefas, prazos e atividades.
 
 {% block perfil %}
 
-<div class="perfil">
+<a href="{% url 'meuperfila' %}" class="perfil-link">
+    <div class="perfil">
 
-    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
 
-    <div>
-        <strong>Manuela</strong>
-        <small>Aluno</small>
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>Aluno</small>
+        </div>
+
     </div>
-
-</div>
+</a>
 
 {% endblock %}
 
@@ -101,7 +103,7 @@ Acompanhe suas tarefas, prazos e atividades.
 
             <div>
                 <span>Pendentes</span>
-                <strong>4</strong>
+                <strong>{{ pendentes|length }}</strong>
             </div>
 
         </div>
@@ -115,7 +117,7 @@ Acompanhe suas tarefas, prazos e atividades.
 
             <div>
                 <span>Concluídas</span>
-                <strong>8</strong>
+                <strong>{{ concluidas|length }}</strong>
             </div>
 
         </div>
@@ -129,7 +131,7 @@ Acompanhe suas tarefas, prazos e atividades.
 
             <div>
                 <span>Em atraso</span>
-                <strong>2</strong>
+                <strong>{{ atrasadas|length }}</strong>
             </div>
 
         </div>
@@ -152,14 +154,12 @@ Acompanhe suas tarefas, prazos e atividades.
             </div>
 
             <span class="contador pendente">
-                4 atividades
+                {{ pendentes|length }} atividade{{ pendentes|length|pluralize }}
             </span>
 
         </div>
 
-
-        <!-- ATIVIDADE 1 -->
-
+        {% for atividade in pendentes %}
         <div class="atividade-card">
 
             <div class="status-icon pendente">
@@ -168,22 +168,26 @@ Acompanhe suas tarefas, prazos e atividades.
 
             <div class="atividade-info">
 
-                <h3>Entrega do Portfólio</h3>
+                <h3>{{ atividade.titulo }}</h3>
 
-                <p>
-                    Finalizar e enviar o portfólio referente à mentoria.
-                </p>
+                {% if atividade.descricao %}
+                <p>{{ atividade.descricao|truncatechars:140 }}</p>
+                {% endif %}
 
                 <div class="atividade-detalhes">
 
                     <span>
                         <i class="fa-solid fa-calendar"></i>
-                        Entrega: 20/09/2026
+                        {% if atividade.data_entrega %}
+                            Entrega: {{ atividade.data_entrega|date:"d/m/Y" }}
+                        {% else %}
+                            Sem prazo definido
+                        {% endif %}
                     </span>
 
                     <span>
                         <i class="fa-solid fa-users"></i>
-                        Mentoria
+                        {{ atividade.id_mentoria.tema }}
                     </span>
 
                 </div>
@@ -194,55 +198,14 @@ Acompanhe suas tarefas, prazos e atividades.
                 Pendente
             </span>
 
-            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade">
+            <a href="{% url 'detalhesdaatividadea' atividade.id_atividade %}" class="btn-atividade">
                 Ver tarefa
             </a>
 
         </div>
-
-
-        <!-- ATIVIDADE 2 -->
-
-        <div class="atividade-card">
-
-            <div class="status-icon pendente">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-
-            <div class="atividade-info">
-
-                <h3>Relatório da Mentoria</h3>
-
-                <p>
-                    Elaborar o relatório da última mentoria realizada.
-                </p>
-
-                <div class="atividade-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar"></i>
-                        Entrega: 22/09/2026
-                    </span>
-
-                    <span>
-                        <i class="fa-solid fa-users"></i>
-                        Mentoria
-                    </span>
-
-                </div>
-
-            </div>
-
-            <span class="status pendente">
-                Pendente
-            </span>
-
-            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade">
-                Ver tarefa
-            </a>
-
-        </div>
-
+        {% empty %}
+        <p>Nenhuma atividade pendente.</p>
+        {% endfor %}
 
     </section>
 
@@ -262,14 +225,12 @@ Acompanhe suas tarefas, prazos e atividades.
             </div>
 
             <span class="contador concluida">
-                8 atividades
+                {{ concluidas|length }} atividade{{ concluidas|length|pluralize }}
             </span>
 
         </div>
 
-
-        <!-- ATIVIDADE CONCLUÍDA -->
-
+        {% for atividade in concluidas %}
         <div class="atividade-card">
 
             <div class="status-icon concluida">
@@ -278,22 +239,24 @@ Acompanhe suas tarefas, prazos e atividades.
 
             <div class="atividade-info">
 
-                <h3>Pesquisa sobre Tecnologia</h3>
+                <h3>{{ atividade.titulo }}</h3>
 
-                <p>
-                    Pesquisa realizada para a atividade da mentoria.
-                </p>
+                {% if atividade.descricao %}
+                <p>{{ atividade.descricao|truncatechars:140 }}</p>
+                {% endif %}
 
                 <div class="atividade-detalhes">
 
+                    {% if atividade.data_entrega %}
                     <span>
                         <i class="fa-solid fa-calendar-check"></i>
-                        Concluída: 10/09/2026
+                        Prazo: {{ atividade.data_entrega|date:"d/m/Y" }}
                     </span>
+                    {% endif %}
 
                     <span>
                         <i class="fa-solid fa-users"></i>
-                        Mentoria
+                        {{ atividade.id_mentoria.tema }}
                     </span>
 
                 </div>
@@ -304,50 +267,14 @@ Acompanhe suas tarefas, prazos e atividades.
                 Concluída
             </span>
 
-            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade">
+            <a href="{% url 'detalhesdaatividadea' atividade.id_atividade %}" class="btn-atividade">
                 Ver tarefa
             </a>
+
         </div>
-
-
-        <div class="atividade-card">
-
-            <div class="status-icon concluida">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-
-            <div class="atividade-info">
-
-                <h3>Exercício de Banco de Dados</h3>
-
-                <p>
-                    Exercício prático realizado durante a aula.
-                </p>
-
-                <div class="atividade-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar-check"></i>
-                        Concluída: 05/09/2026
-                    </span>
-
-                    <span>
-                        <i class="fa-solid fa-graduation-cap"></i>
-                        Curso
-                    </span>
-
-                </div>
-
-            </div>
-
-            <span class="status concluida">
-                Concluída
-            </span>
-
-            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade">
-                Ver tarefa
-            </a>
-        </div>
+        {% empty %}
+        <p>Nenhuma atividade concluída ainda.</p>
+        {% endfor %}
 
     </section>
 
@@ -367,14 +294,12 @@ Acompanhe suas tarefas, prazos e atividades.
             </div>
 
             <span class="contador atraso">
-                2 atividades
+                {{ atrasadas|length }} atividade{{ atrasadas|length|pluralize }}
             </span>
 
         </div>
 
-
-        <!-- ATIVIDADE ATRASADA -->
-
+        {% for atividade in atrasadas %}
         <div class="atividade-card">
 
             <div class="status-icon atraso">
@@ -383,17 +308,17 @@ Acompanhe suas tarefas, prazos e atividades.
 
             <div class="atividade-info">
 
-                <h3>Atividade de Desenvolvimento</h3>
+                <h3>{{ atividade.titulo }}</h3>
 
-                <p>
-                    Finalizar a atividade prática solicitada pelo professor.
-                </p>
+                {% if atividade.descricao %}
+                <p>{{ atividade.descricao|truncatechars:140 }}</p>
+                {% endif %}
 
                 <div class="atividade-detalhes">
 
                     <span>
                         <i class="fa-solid fa-calendar-xmark"></i>
-                        Prazo: 12/09/2026
+                        Prazo: {{ atividade.data_entrega|date:"d/m/Y" }}
                     </span>
 
                     <span>
@@ -409,52 +334,14 @@ Acompanhe suas tarefas, prazos e atividades.
                 Em atraso
             </span>
 
-            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade atraso">
+            <a href="{% url 'detalhesdaatividadea' atividade.id_atividade %}" class="btn-atividade atraso">
                 Ver tarefa
             </a>
 
         </div>
-
-
-        <div class="atividade-card">
-
-            <div class="status-icon atraso">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-
-            <div class="atividade-info">
-
-                <h3>Entrega de Documentação</h3>
-
-                <p>
-                    Documento solicitado para completar o acompanhamento.
-                </p>
-
-                <div class="atividade-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar-xmark"></i>
-                        Prazo: 14/09/2026
-                    </span>
-
-                    <span>
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        Prazo excedido
-                    </span>
-
-                </div>
-
-            </div>
-
-            <span class="status atraso">
-                Em atraso
-            </span>
-
-            <a href="{% url 'detalhesdaatividadea' %}" class="btn-atividade atraso">
-                Ver tarefa
-            </a>
-
-        </div>
+        {% empty %}
+        <p>Nenhuma atividade em atraso.</p>
+        {% endfor %}
 
     </section>
 

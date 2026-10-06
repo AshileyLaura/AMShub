@@ -64,27 +64,29 @@ AMS Hub - Detalhes da Mentoria
 
 
 {% block saudacao %}
-Detalhes da Mentoria
+<h1>Detalhes da Mentoria</h1>
 {% endblock %}
 
 
 {% block descricao %}
-Confira todas as informações e materiais utilizados na mentoria.
+Confira todas as informações da mentoria.
 {% endblock %}
 
 
 {% block perfil %}
 
-<div class="perfil">
+<a href="{% url 'meuperfila' %}" class="perfil-link">
+    <div class="perfil">
 
-    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
 
-    <div>
-        <strong>Manuela</strong>
-        <small>Aluno</small>
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>Aluno</small>
+        </div>
+
     </div>
-
-</div>
+</a>
 
 {% endblock %}
 
@@ -102,15 +104,16 @@ Confira todas as informações e materiais utilizados na mentoria.
     <div class="titulo-mentoria">
 
         <span class="status">
-            <i class="fa-solid fa-circle-check"></i>
-            Concluída
+            {% if realizada %}
+                <i class="fa-solid fa-circle-check"></i>
+                Realizada
+            {% else %}
+                <i class="fa-regular fa-clock"></i>
+                Em breve
+            {% endif %}
         </span>
 
-        <h2>Desenvolvimento Web</h2>
-
-        <p>
-            Mentoria sobre desenvolvimento de aplicações web.
-        </p>
+        <h2>{{ mentoria.tema }}</h2>
 
     </div>
 
@@ -127,10 +130,38 @@ Confira todas as informações e materiais utilizados na mentoria.
 
         <div>
             <span>Data</span>
-            <strong>27/05/2026</strong>
+            <strong>{{ mentoria.data|date:"d/m/Y" }}</strong>
         </div>
 
     </div>
+
+
+    {% if mentoria.id_professor %}
+    <div class="info-card">
+
+        <i class="fa-solid fa-user"></i>
+
+        <div>
+            <span>Professor</span>
+            <strong>{{ mentoria.id_professor.nome }}</strong>
+        </div>
+
+    </div>
+    {% endif %}
+
+
+    {% if mentoria.id_supervisor %}
+    <div class="info-card">
+
+        <i class="fa-solid fa-user-tie"></i>
+
+        <div>
+            <span>Supervisor</span>
+            <strong>{{ mentoria.id_supervisor.nome }}</strong>
+        </div>
+
+    </div>
+    {% endif %}
 
 
     <div class="info-card">
@@ -138,20 +169,8 @@ Confira todas as informações e materiais utilizados na mentoria.
         <i class="fa-regular fa-clock"></i>
 
         <div>
-            <span>Horário</span>
-            <strong>14:00 - 16:00</strong>
-        </div>
-
-    </div>
-
-
-    <div class="info-card">
-
-        <i class="fa-solid fa-user"></i>
-
-        <div>
-            <span>Mentor</span>
-            <strong>Professor João</strong>
+            <span>Carga horária</span>
+            <strong>{{ mentoria.carga_horaria }}h</strong>
         </div>
 
     </div>
@@ -163,7 +182,21 @@ Confira todas as informações e materiais utilizados na mentoria.
 
         <div>
             <span>Horas obtidas</span>
-            <strong>2 horas</strong>
+            <strong>{{ participacao.horas|floatformat:"-2" }}h</strong>
+        </div>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <i class="fa-solid fa-clipboard-check"></i>
+
+        <div>
+            <span>Presença</span>
+            <strong>
+                {% if participacao.presenca %}Presente{% else %}Ausente{% endif %}
+            </strong>
         </div>
 
     </div>
@@ -177,52 +210,34 @@ Confira todas as informações e materiais utilizados na mentoria.
 
     <h2>Conteúdo da Mentoria</h2>
 
-    <p>
-        Nesta mentoria foram abordados conceitos relacionados ao
-        desenvolvimento web, estrutura de páginas, HTML, CSS e
-        organização de projetos.
-    </p>
+    {% if mentoria.descricao %}
+        {{ mentoria.descricao|linebreaks }}
+    {% else %}
+        <p>Esta mentoria não possui descrição.</p>
+    {% endif %}
 
 </section>
 
 
-<!-- MATERIAIS -->
+<!-- ATIVIDADES -->
 
 <section class="materiais-mentoria">
 
     <div class="titulo-secao">
 
         <div>
-            <h2>Arquivos e Materiais</h2>
-            <p>Materiais utilizados durante esta mentoria.</p>
+            <h2>Atividades da Mentoria</h2>
+            <p>Atividades vinculadas a esta mentoria.</p>
         </div>
 
-        <i class="fa-solid fa-paperclip"></i>
+        <i class="fa-solid fa-list-check"></i>
 
     </div>
 
 
     <div class="lista-arquivos">
 
-        <div class="arquivo-card">
-
-            <div class="arquivo-icone pdf">
-                <i class="fa-solid fa-file-pdf"></i>
-            </div>
-
-            <div class="arquivo-info">
-                <strong>Material de apoio.pdf</strong>
-                <small>Material utilizado na mentoria</small>
-            </div>
-
-            <a href="#" class="btn-arquivo">
-                <i class="fa-solid fa-eye"></i>
-                Visualizar
-            </a>
-
-        </div>
-
-
+        {% for atividade in atividades %}
         <div class="arquivo-card">
 
             <div class="arquivo-icone">
@@ -230,16 +245,24 @@ Confira todas as informações e materiais utilizados na mentoria.
             </div>
 
             <div class="arquivo-info">
-                <strong>Exercícios HTML</strong>
-                <small>Atividades realizadas durante a mentoria</small>
+                <strong>{{ atividade.titulo }}</strong>
+                <small>
+                    {{ atividade.situacao_texto }}
+                    {% if atividade.data_entrega %}
+                        • Prazo: {{ atividade.data_entrega|date:"d/m/Y" }}
+                    {% endif %}
+                </small>
             </div>
 
-            <a href="#" class="btn-arquivo">
+            <a href="{% url 'detalhesdaatividadea' atividade.id_atividade %}" class="btn-arquivo">
                 <i class="fa-solid fa-eye"></i>
-                Visualizar
+                Ver atividade
             </a>
 
         </div>
+        {% empty %}
+        <p>Esta mentoria ainda não possui atividades.</p>
+        {% endfor %}
 
     </div>
 

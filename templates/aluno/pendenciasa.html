@@ -60,7 +60,7 @@ AMS Hub - Pendências
 
 
 {% block saudacao %}
-Minhas Pendências
+<h1>Minhas Pendências</h1>
 {% endblock %}
 
 {% block descricao %}
@@ -70,16 +70,18 @@ Acompanhe tudo o que precisa ser resolvido.
 
 {% block perfil %}
 
-<div class="perfil">
+<a href="{% url 'meuperfila' %}" class="perfil-link">
+    <div class="perfil">
 
-    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
 
-    <div>
-        <strong>Manuela</strong>
-        <small>Aluno</small>
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>Aluno</small>
+        </div>
+
     </div>
-
-</div>
+</a>
 
 {% endblock %}
 
@@ -101,7 +103,7 @@ Acompanhe tudo o que precisa ser resolvido.
 
             <div>
                 <span>Total de pendências</span>
-                <strong>5</strong>
+                <strong>{{ total_pendencias }}</strong>
             </div>
 
         </div>
@@ -115,7 +117,7 @@ Acompanhe tudo o que precisa ser resolvido.
 
             <div>
                 <span>Em atraso</span>
-                <strong>2</strong>
+                <strong>{{ em_atraso|length }}</strong>
             </div>
 
         </div>
@@ -129,13 +131,15 @@ Acompanhe tudo o que precisa ser resolvido.
 
             <div>
                 <span>Próximas do prazo</span>
-                <strong>3</strong>
+                <strong>{{ proximas|length }}</strong>
             </div>
 
         </div>
 
     </section>
 
+
+    {% if total_pendencias %}
 
     <!-- ALERTA -->
 
@@ -159,6 +163,7 @@ Acompanhe tudo o que precisa ser resolvido.
 
     <!-- PENDÊNCIAS EM ATRASO -->
 
+    {% if em_atraso %}
     <section class="lista-pendencias">
 
         <div class="titulo-secao">
@@ -172,14 +177,12 @@ Acompanhe tudo o que precisa ser resolvido.
             </div>
 
             <span class="contador atraso">
-                2 pendências
+                {{ em_atraso|length }} pendência{{ em_atraso|length|pluralize }}
             </span>
 
         </div>
 
-
-        <!-- PENDÊNCIA -->
-
+        {% for pendencia in em_atraso %}
         <div class="pendencia-card">
 
             <div class="pendencia-icone atraso">
@@ -190,92 +193,49 @@ Acompanhe tudo o que precisa ser resolvido.
 
                 <div class="titulo-pendencia">
 
-                    <h3>Entrega do relatório da mentoria</h3>
+                    <h3>{{ pendencia.titulo }}</h3>
 
                     <span class="tipo">
-                        Mentoria
+                        {{ pendencia.tipo }}
                     </span>
 
                 </div>
 
-                <p>
-                    O relatório da última mentoria ainda não foi enviado.
-                </p>
+                {% if pendencia.descricao %}
+                <p>{{ pendencia.descricao|truncatechars:140 }}</p>
+                {% endif %}
 
                 <div class="pendencia-detalhes">
 
                     <span>
                         <i class="fa-solid fa-calendar-xmark"></i>
-                        Prazo: 12/09/2026
+                        Prazo: {{ pendencia.prazo|date:"d/m/Y" }}
                     </span>
 
                     <span class="texto-atrasado">
                         <i class="fa-solid fa-clock"></i>
-                        Em atraso
+                        Em atraso há {{ pendencia.dias }} dia{{ pendencia.dias|pluralize }}
                     </span>
 
                 </div>
 
             </div>
 
-            <button class="btn-resolver atraso">
+            <button type="button" class="btn-resolver atraso"
+                    onclick="window.location.href='{{ pendencia.url }}'">
                 Resolver
             </button>
 
         </div>
-
-
-        <!-- PENDÊNCIA 2 -->
-
-        <div class="pendencia-card">
-
-            <div class="pendencia-icone atraso">
-                <i class="fa-solid fa-file-circle-exclamation"></i>
-            </div>
-
-            <div class="pendencia-info">
-
-                <div class="titulo-pendencia">
-
-                    <h3>Portfólio não enviado</h3>
-
-                    <span class="tipo">
-                        Portfólio
-                    </span>
-
-                </div>
-
-                <p>
-                    O portfólio precisa ser enviado para avaliação.
-                </p>
-
-                <div class="pendencia-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar-xmark"></i>
-                        Prazo: 15/09/2026
-                    </span>
-
-                    <span class="texto-atrasado">
-                        <i class="fa-solid fa-clock"></i>
-                        Em atraso
-                    </span>
-
-                </div>
-
-            </div>
-
-            <button class="btn-resolver atraso">
-                Resolver
-            </button>
-
-        </div>
+        {% endfor %}
 
     </section>
+    {% endif %}
 
 
     <!-- PRÓXIMAS DO PRAZO -->
 
+    {% if proximas %}
     <section class="lista-pendencias">
 
         <div class="titulo-secao">
@@ -289,14 +249,12 @@ Acompanhe tudo o que precisa ser resolvido.
             </div>
 
             <span class="contador urgente">
-                3 pendências
+                {{ proximas|length }} pendência{{ proximas|length|pluralize }}
             </span>
 
         </div>
 
-
-        <!-- PENDÊNCIA -->
-
+        {% for pendencia in proximas %}
         <div class="pendencia-card">
 
             <div class="pendencia-icone urgente">
@@ -307,139 +265,53 @@ Acompanhe tudo o que precisa ser resolvido.
 
                 <div class="titulo-pendencia">
 
-                    <h3>Finalizar atividade de programação</h3>
+                    <h3>{{ pendencia.titulo }}</h3>
 
                     <span class="tipo">
-                        Atividade
+                        {{ pendencia.tipo }}
                     </span>
 
                 </div>
 
-                <p>
-                    Finalizar e enviar a atividade solicitada pelo professor.
-                </p>
+                {% if pendencia.descricao %}
+                <p>{{ pendencia.descricao|truncatechars:140 }}</p>
+                {% endif %}
 
                 <div class="pendencia-detalhes">
 
                     <span>
                         <i class="fa-solid fa-calendar"></i>
-                        Prazo: 20/09/2026
+                        Prazo: {{ pendencia.prazo|date:"d/m/Y" }}
                     </span>
 
                     <span>
                         <i class="fa-solid fa-hourglass-half"></i>
-                        2 dias restantes
+                        {% if pendencia.dias == 0 %}
+                            Vence hoje
+                        {% else %}
+                            {{ pendencia.dias }} dia{{ pendencia.dias|pluralize }} restante{{ pendencia.dias|pluralize }}
+                        {% endif %}
                     </span>
 
                 </div>
 
             </div>
 
-            <button class="btn-resolver urgente">
+            <button type="button" class="btn-resolver urgente"
+                    onclick="window.location.href='{{ pendencia.url }}'">
                 Resolver
             </button>
 
         </div>
-
-
-        <!-- PENDÊNCIA 2 -->
-
-        <div class="pendencia-card">
-
-            <div class="pendencia-icone urgente">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-
-            <div class="pendencia-info">
-
-                <div class="titulo-pendencia">
-
-                    <h3>Enviar certificado</h3>
-
-                    <span class="tipo">
-                        Certificado
-                    </span>
-
-                </div>
-
-                <p>
-                    Adicione o certificado da atividade realizada.
-                </p>
-
-                <div class="pendencia-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar"></i>
-                        Prazo: 22/09/2026
-                    </span>
-
-                    <span>
-                        <i class="fa-solid fa-hourglass-half"></i>
-                        4 dias restantes
-                    </span>
-
-                </div>
-
-            </div>
-
-            <button class="btn-resolver urgente">
-                Resolver
-            </button>
-
-        </div>
-
-
-        <!-- PENDÊNCIA 3 -->
-
-        <div class="pendencia-card">
-
-            <div class="pendencia-icone urgente">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-
-            <div class="pendencia-info">
-
-                <div class="titulo-pendencia">
-
-                    <h3>Atualizar informações do portfólio</h3>
-
-                    <span class="tipo">
-                        Portfólio
-                    </span>
-
-                </div>
-
-                <p>
-                    Atualize as informações solicitadas pelo coordenador.
-                </p>
-
-                <div class="pendencia-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar"></i>
-                        Prazo: 25/09/2026
-                    </span>
-
-                    <span>
-                        <i class="fa-solid fa-hourglass-half"></i>
-                        7 dias restantes
-                    </span>
-
-                </div>
-
-            </div>
-
-            <button class="btn-resolver urgente">
-                Resolver
-            </button>
-
-        </div>
+        {% endfor %}
 
     </section>
+    {% endif %}
 
 
     <!-- OUTRAS PENDÊNCIAS -->
 
+    {% if outras %}
     <section class="lista-pendencias">
 
         <div class="titulo-secao">
@@ -454,7 +326,7 @@ Acompanhe tudo o que precisa ser resolvido.
 
         </div>
 
-
+        {% for pendencia in outras %}
         <div class="pendencia-card simples">
 
             <div class="pendencia-icone geral">
@@ -465,27 +337,50 @@ Acompanhe tudo o que precisa ser resolvido.
 
                 <div class="titulo-pendencia">
 
-                    <h3>Atualizar dados do perfil</h3>
+                    <h3>{{ pendencia.titulo }}</h3>
 
                     <span class="tipo">
-                        Perfil
+                        {{ pendencia.tipo }}
                     </span>
 
                 </div>
 
-                <p>
-                    Verifique se suas informações pessoais estão atualizadas.
-                </p>
+                {% if pendencia.descricao %}
+                <p>{{ pendencia.descricao|truncatechars:140 }}</p>
+                {% endif %}
 
             </div>
 
-            <button class="btn-resolver geral">
+            <button type="button" class="btn-resolver geral"
+                    onclick="window.location.href='{{ pendencia.url }}'">
                 Ver
             </button>
 
         </div>
+        {% endfor %}
 
     </section>
+    {% endif %}
+
+    {% else %}
+
+    <section class="lista-pendencias">
+
+        <div class="titulo-secao">
+
+            <div>
+                <h2>Tudo em dia</h2>
+
+                <p>
+                    Você não possui pendências no momento.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
 
 </div>
 

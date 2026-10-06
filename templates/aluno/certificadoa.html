@@ -62,7 +62,7 @@ AMS Hub - Certificados
 
 
 {% block saudacao %}
-Meus Certificados
+<h1>Meus Certificados</h1>
 {% endblock %}
 
 {% block descricao %}
@@ -72,16 +72,18 @@ Visualize seus certificados e envie novos documentos para aprovação.
 
 {% block perfil %}
 
-<div class="perfil">
+<a href="{% url 'meuperfila' %}" class="perfil-link">
+    <div class="perfil">
 
-    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
 
-    <div>
-        <strong>Manuela</strong>
-        <small>Aluno</small>
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>Aluno</small>
+        </div>
+
     </div>
-
-</div>
+</a>
 
 {% endblock %}
 
@@ -89,6 +91,15 @@ Visualize seus certificados e envie novos documentos para aprovação.
 {% block content %}
 
 <div class="certificados-container">
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="aviso">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+    {% endif %}
 
     <!-- RESUMO -->
 
@@ -102,7 +113,7 @@ Visualize seus certificados e envie novos documentos para aprovação.
 
             <div>
                 <span>Aprovados</span>
-                <strong>2</strong>
+                <strong>{{ total_aprovados }}</strong>
             </div>
 
         </div>
@@ -116,7 +127,7 @@ Visualize seus certificados e envie novos documentos para aprovação.
 
             <div>
                 <span>Em análise</span>
-                <strong>1</strong>
+                <strong>{{ total_analise }}</strong>
             </div>
 
         </div>
@@ -130,7 +141,7 @@ Visualize seus certificados e envie novos documentos para aprovação.
 
             <div>
                 <span>Pendentes</span>
-                <strong>0</strong>
+                <strong>{{ total_pendentes }}</strong>
             </div>
 
         </div>
@@ -138,7 +149,7 @@ Visualize seus certificados e envie novos documentos para aprovação.
     </section>
 
 
-    <!-- CABEÇALHO DA LISTA -->
+    <!-- LISTA -->
 
     <section class="certificados-lista">
 
@@ -161,133 +172,46 @@ Visualize seus certificados e envie novos documentos para aprovação.
         </div>
 
 
-        <!-- CERTIFICADO 1 -->
-
+        {% for certificado in certificados %}
         <div class="certificado-card">
 
-            <div class="certificado-icone aprovado">
-                <i class="fa-solid fa-certificate"></i>
+            <div class="certificado-icone {{ certificado.classe }}">
+                {% if certificado.classe == 'aprovado' %}
+                    <i class="fa-solid fa-certificate"></i>
+                {% elif certificado.classe == 'analise' %}
+                    <i class="fa-solid fa-file-circle-check"></i>
+                {% else %}
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                {% endif %}
             </div>
 
             <div class="certificado-info">
 
-                <h3>Curso de Desenvolvimento Web</h3>
+                <h3>{{ certificado.curso }}</h3>
 
                 <p>
-                    Etec - Centro Paula Souza
+                    {{ certificado.instituicao }}
                 </p>
 
                 <div class="certificado-detalhes">
 
                     <span>
-                        <i class="fa-solid fa-calendar"></i>
-                        15/08/2026
-                    </span>
-
-                    <span>
                         <i class="fa-solid fa-clock"></i>
-                        40 horas
+                        {{ certificado.carga_horaria }} hora{{ certificado.carga_horaria|pluralize }}
                     </span>
 
                 </div>
 
             </div>
 
-            <span class="status aprovado">
-                Aprovado
+            <span class="status {{ certificado.classe }}">
+                {{ certificado.status }}
             </span>
 
-            <button class="btn-ver">
-                Ver certificado
-            </button>
-
         </div>
-
-
-        <!-- CERTIFICADO 2 -->
-
-        <div class="certificado-card">
-
-            <div class="certificado-icone aprovado">
-                <i class="fa-solid fa-certificate"></i>
-            </div>
-
-            <div class="certificado-info">
-
-                <h3>Introdução à Programação</h3>
-
-                <p>
-                    Curso Online
-                </p>
-
-                <div class="certificado-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar"></i>
-                        02/07/2026
-                    </span>
-
-                    <span>
-                        <i class="fa-solid fa-clock"></i>
-                        20 horas
-                    </span>
-
-                </div>
-
-            </div>
-
-            <span class="status aprovado">
-                Aprovado
-            </span>
-
-            <button class="btn-ver">
-                Ver certificado
-            </button>
-
-        </div>
-
-
-        <!-- CERTIFICADO EM ANÁLISE -->
-
-        <div class="certificado-card">
-
-            <div class="certificado-icone analise">
-                <i class="fa-solid fa-file-circle-check"></i>
-            </div>
-
-            <div class="certificado-info">
-
-                <h3>Curso de Banco de Dados</h3>
-
-                <p>
-                    Plataforma Online
-                </p>
-
-                <div class="certificado-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar"></i>
-                        10/09/2026
-                    </span>
-
-                    <span>
-                        <i class="fa-solid fa-clock"></i>
-                        30 horas
-                    </span>
-
-                </div>
-
-            </div>
-
-            <span class="status analise">
-                Em análise
-            </span>
-
-            <button class="btn-ver">
-                Ver certificado
-            </button>
-
-        </div>
+        {% empty %}
+        <p>Você ainda não enviou nenhum certificado.</p>
+        {% endfor %}
 
     </section>
 
@@ -321,7 +245,9 @@ Visualize seus certificados e envie novos documentos para aprovação.
 
             <div class="modal-body">
 
-                <form>
+                <form method="POST" action="{% url 'certificadoa' %}">
+
+                    {% csrf_token %}
 
                     <div class="campo">
 
@@ -332,6 +258,8 @@ Visualize seus certificados e envie novos documentos para aprovação.
                         <input
                             type="text"
                             id="nomeCertificado"
+                            name="curso"
+                            maxlength="200"
                             placeholder="Ex: Curso de Desenvolvimento Web"
                             required
                         >
@@ -350,6 +278,8 @@ Visualize seus certificados e envie novos documentos para aprovação.
                             <input
                                 type="text"
                                 id="instituicao"
+                                name="instituicao"
+                                maxlength="200"
                                 placeholder="Nome da instituição"
                                 required
                             >
@@ -366,94 +296,9 @@ Visualize seus certificados e envie novos documentos para aprovação.
                             <input
                                 type="number"
                                 id="cargaHoraria"
+                                name="carga_horaria"
                                 placeholder="Ex: 40"
                                 min="1"
-                                required
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="campos-duplos">
-
-                        <div class="campo">
-
-                            <label for="dataCertificado">
-                                Data de conclusão
-                            </label>
-
-                            <input
-                                type="date"
-                                id="dataCertificado"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="campo">
-
-                            <label for="categoria">
-                                Categoria
-                            </label>
-
-                            <select id="categoria">
-
-                                <option value="">
-                                    Selecione uma categoria
-                                </option>
-
-                                <option>
-                                    Curso
-                                </option>
-
-                                <option>
-                                    Palestra
-                                </option>
-
-                                <option>
-                                    Workshop
-                                </option>
-
-                                <option>
-                                    Evento
-                                </option>
-
-                                <option>
-                                    Outros
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="campo">
-
-                        <label for="arquivo">
-                            Certificado
-                        </label>
-
-                        <div class="upload-area">
-
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-
-                            <strong>
-                                Selecione o certificado
-                            </strong>
-
-                            <span>
-                                PDF, JPG ou PNG
-                            </span>
-
-                            <input
-                                type="file"
-                                id="arquivo"
-                                accept=".pdf,.jpg,.jpeg,.png"
                                 required
                             >
 

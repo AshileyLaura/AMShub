@@ -62,7 +62,7 @@ AMS Hub - Minhas Mentorias
 
 
 {% block saudacao %}
-Minhas Mentorias
+<h1>Minhas Mentorias</h1>
 {% endblock %}
 
 
@@ -73,16 +73,18 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
 
 {% block perfil %}
 
-<div class="perfil">
+<a href="{% url 'meuperfila' %}" class="perfil-link">
+    <div class="perfil">
 
-    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
 
-    <div>
-        <strong>Manuela</strong>
-        <small>Aluno</small>
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>Aluno</small>
+        </div>
+
     </div>
-
-</div>
+</a>
 
 {% endblock %}
 
@@ -103,31 +105,36 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
 
     <div class="mentorias-futuras">
 
+        {% for p in proximas %}
         <div class="mentoria-futura">
 
             <div class="data-mentoria">
-                <span>SET</span>
-                <strong>15</strong>
+                <span>{{ p.id_mentoria.data|date:"M"|upper }}</span>
+                <strong>{{ p.id_mentoria.data|date:"d" }}</strong>
             </div>
 
             <div class="mentoria-info">
 
-                <h3>Desenvolvimento Web</h3>
+                <h3>{{ p.id_mentoria.tema }}</h3>
 
                 <p>
                     <i class="fa-regular fa-calendar"></i>
-                    15/09/2026
+                    {{ p.id_mentoria.data|date:"d/m/Y" }}
                 </p>
 
-                <p>
-                    <i class="fa-regular fa-clock"></i>
-                    14:00
-                </p>
-
+                {% if p.id_mentoria.id_professor %}
                 <p>
                     <i class="fa-solid fa-user"></i>
-                    Professor João
+                    Professor(a) {{ p.id_mentoria.id_professor.nome }}
                 </p>
+                {% endif %}
+
+                {% if p.id_mentoria.id_supervisor %}
+                <p>
+                    <i class="fa-solid fa-user-tie"></i>
+                    Supervisor(a) {{ p.id_mentoria.id_supervisor.nome }}
+                </p>
+                {% endif %}
 
             </div>
 
@@ -137,42 +144,9 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
             </div>
 
         </div>
-
-
-        <div class="mentoria-futura">
-
-            <div class="data-mentoria">
-                <span>SET</span>
-                <strong>22</strong>
-            </div>
-
-            <div class="mentoria-info">
-
-                <h3>Banco de Dados</h3>
-
-                <p>
-                    <i class="fa-regular fa-calendar"></i>
-                    22/09/2026
-                </p>
-
-                <p>
-                    <i class="fa-regular fa-clock"></i>
-                    15:30
-                </p>
-
-                <p>
-                    <i class="fa-solid fa-user"></i>
-                    Professora Ana
-                </p>
-
-            </div>
-
-            <div class="status-breve">
-                <i class="fa-regular fa-clock"></i>
-                Em breve
-            </div>
-
-        </div>
+        {% empty %}
+        <p>Nenhuma mentoria agendada no momento.</p>
+        {% endfor %}
 
     </div>
 
@@ -191,7 +165,7 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
         </div>
 
         <span class="total-mentorias">
-            5 mentorias
+            {{ realizadas|length }} mentoria{{ realizadas|length|pluralize }}
         </span>
 
     </div>
@@ -199,9 +173,7 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
 
     <div class="lista-mentorias">
 
-
-        <!-- MENTORIA 1 -->
-
+        {% for p in realizadas %}
         <div class="mentoria-card">
 
             <div class="mentoria-header">
@@ -211,37 +183,18 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
                 </div>
 
                 <div>
-                    <h3>Desenvolvimento Web</h3>
-                    <span>27/05/2026 • Professor João</span>
+                    <h3>{{ p.id_mentoria.tema }}</h3>
+                    <span>
+                        {{ p.id_mentoria.data|date:"d/m/Y" }}
+                        {% if p.id_mentoria.id_professor %}
+                        • Professor(a) {{ p.id_mentoria.id_professor.nome }}
+                        {% endif %}
+                    </span>
                 </div>
 
                 <div class="horas">
-                    <strong>2h</strong>
+                    <strong>{{ p.horas|floatformat:"-2" }}h</strong>
                     <small>Horas</small>
-                </div>
-
-            </div>
-
-
-            <div class="materiais">
-
-                <h4>
-                    <i class="fa-solid fa-paperclip"></i>
-                    Materiais utilizados
-                </h4>
-
-                <div class="arquivos">
-
-                    <a href="#" class="arquivo">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        Material de apoio.pdf
-                    </a>
-
-                    <a href="#" class="arquivo">
-                        <i class="fa-solid fa-file-lines"></i>
-                        Exercícios HTML
-                    </a>
-
                 </div>
 
             </div>
@@ -249,12 +202,19 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
 
             <div class="mentoria-footer">
 
+                {% if p.presenca %}
                 <span class="concluida">
                     <i class="fa-solid fa-circle-check"></i>
                     Concluída
                 </span>
+                {% else %}
+                <span class="concluida">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    Ausente
+                </span>
+                {% endif %}
 
-                <a href="{% url 'detalhesdamentoriaa' %}" class="btn-detalhes">
+                <a href="{% url 'detalhesdamentoriaa' p.id_mentoria.id_mentoria %}" class="btn-detalhes">
                     Ver detalhes
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
@@ -262,135 +222,9 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
             </div>
 
         </div>
-
-
-        <!-- MENTORIA 2 -->
-
-        <div class="mentoria-card">
-
-            <div class="mentoria-header">
-
-                <div class="icone-mentoria">
-                    <i class="fa-solid fa-database"></i>
-                </div>
-
-                <div>
-                    <h3>Banco de Dados</h3>
-                    <span>14/04/2026 • Professora Ana</span>
-                </div>
-
-                <div class="horas">
-                    <strong>3h</strong>
-                    <small>Horas</small>
-                </div>
-
-            </div>
-
-
-            <div class="materiais">
-
-                <h4>
-                    <i class="fa-solid fa-paperclip"></i>
-                    Materiais utilizados
-                </h4>
-
-                <div class="arquivos">
-
-                    <a href="#" class="arquivo">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        Introdução ao SQL.pdf
-                    </a>
-
-                    <a href="#" class="arquivo">
-                        <i class="fa-solid fa-file-lines"></i>
-                        Exercícios SQL
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <div class="mentoria-footer">
-
-                <span class="concluida">
-                    <i class="fa-solid fa-circle-check"></i>
-                    Concluída
-                </span>
-
-                <a href="{% url 'detalhesdamentoriaa' %}" class="btn-detalhes">
-                    Ver detalhes
-                    <i class="fa-solid fa-arrow-right"></i>
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <!-- MENTORIA 3 -->
-
-        <div class="mentoria-card">
-
-            <div class="mentoria-header">
-
-                <div class="icone-mentoria">
-                    <i class="fa-solid fa-laptop-code"></i>
-                </div>
-
-                <div>
-                    <h3>Programação Python</h3>
-                    <span>29/03/2026 • Professor Carlos</span>
-                </div>
-
-                <div class="horas">
-                    <strong>2h</strong>
-                    <small>Horas</small>
-                </div>
-
-            </div>
-
-
-            <div class="materiais">
-
-                <h4>
-                    <i class="fa-solid fa-paperclip"></i>
-                    Materiais utilizados
-                </h4>
-
-                <div class="arquivos">
-
-                    <a href="#" class="arquivo">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        Material Python.pdf
-                    </a>
-
-                    <a href="#" class="arquivo">
-                        <i class="fa-solid fa-file-code"></i>
-                        Exercícios Python
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <div class="mentoria-footer">
-
-                <span class="concluida">
-                    <i class="fa-solid fa-circle-check"></i>
-                    Concluída
-                </span>
-
-                <a href="{% url 'detalhesdamentoriaa' mentoria.id_mentoria %}" class="btn-detalhes">
-                    Ver detalhes
-                    <i class="fa-solid fa-arrow-right"></i>
-                </a>
-
-            </div>
-
-        </div>
-
+        {% empty %}
+        <p>Você ainda não tem mentorias realizadas.</p>
+        {% endfor %}
 
     </div>
 

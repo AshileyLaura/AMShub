@@ -64,27 +64,29 @@ AMS Hub - Meu Portfólio
 
 
 {% block saudacao %}
-Meu Portfólio
+<h1>Meu Portfólio</h1>
 {% endblock %}
 
 
 {% block descricao %}
-Visualize seu portfólio, suas versões e os comentários recebidos.
+Visualize seus portfólios e as avaliações recebidas.
 {% endblock %}
 
 
 {% block perfil %}
 
-<div class="perfil">
+<a href="{% url 'meuperfila' %}" class="perfil-link">
+    <div class="perfil">
 
-    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
 
-    <div>
-        <strong>{{ nome_usuario }}</strong>
-        <small>Aluno</small>
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>Aluno</small>
+        </div>
+
     </div>
-
-</div>
+</a>
 
 {% endblock %}
 
@@ -93,8 +95,9 @@ Visualize seu portfólio, suas versões e os comentários recebidos.
 
 <div class="portfolio-container">
 
+    {% for portfolio in portfolios %}
 
-    <!-- PORTFÓLIO PRINCIPAL -->
+    <!-- PORTFÓLIO -->
 
     <section class="portfolio-principal">
 
@@ -108,15 +111,14 @@ Visualize seu portfólio, suas versões e os comentários recebidos.
 
                 <span class="status">
                     <i class="fa-solid fa-clock"></i>
-                    Em avaliação
+                    {{ portfolio.status }}
                 </span>
 
-                <h2>Meu Portfólio Profissional</h2>
+                <h2>{{ portfolio.id_mentoria.tema }}</h2>
 
-                <p>
-                    Portfólio com meus projetos, atividades e experiências
-                    desenvolvidas durante o curso.
-                </p>
+                {% if portfolio.resumo %}
+                <p>{{ portfolio.resumo }}</p>
+                {% endif %}
 
             </div>
 
@@ -127,18 +129,18 @@ Visualize seu portfólio, suas versões e os comentários recebidos.
 
             <div class="info-item">
 
-                <span>Última atualização</span>
+                <span>Mentoria</span>
 
-                <strong>05/09/2026</strong>
+                <strong>{{ portfolio.id_mentoria.tema }}</strong>
 
             </div>
 
 
             <div class="info-item">
 
-                <span>Versões enviadas</span>
+                <span>Avaliação</span>
 
-                <strong>3 versões</strong>
+                <strong>{{ portfolio.avaliacao }}</strong>
 
             </div>
 
@@ -147,7 +149,7 @@ Visualize seu portfólio, suas versões e os comentários recebidos.
 
                 <span>Status</span>
 
-                <strong>Em avaliação</strong>
+                <strong>{{ portfolio.status }}</strong>
 
             </div>
 
@@ -156,181 +158,50 @@ Visualize seu portfólio, suas versões e os comentários recebidos.
     </section>
 
 
-
-    <!-- LINK DO PORTFÓLIO -->
-
-    <section class="portfolio-link">
-
-        <h2>Link do Portfólio</h2>
-
-        <p>
-            Link disponibilizado para acesso ao seu portfólio.
-        </p>
-
-
-        <div class="link-box">
-
-            <i class="fa-solid fa-link"></i>
-
-            <a href="https://canva.link/6axaqnl8duhzo53" target="_blank">
-                https://canva.link/6axaqnl8duhzo53
-            </a>
-
-        </div>
-
-
-        <a href="#" target="_blank" class="btn-abrir">
-
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-
-            Abrir portfólio
-
-        </a>
-
-    </section>
-
-
-
-    <!-- VERSÕES PDF -->
-
-    <section class="versoes-pdf">
-
-        <h2>Versões em PDF</h2>
-
-        <p>
-            Histórico dos arquivos enviados.
-        </p>
-
-
-        <div class="pdf-lista">
-
-
-            <div class="pdf-item">
-
-                <div class="pdf-icone">
-                    <i class="fa-solid fa-file-pdf"></i>
-                </div>
-
-
-                <div class="pdf-info">
-
-                    <strong>
-                        Portfólio - Versão 3.pdf
-                    </strong>
-
-                    <small>
-                        Enviado em 05/09/2026 • Versão atual
-                    </small>
-
-                </div>
-
-
-                <a href="#" class="btn-pdf">
-
-                    <i class="fa-solid fa-eye"></i>
-
-                    Visualizar
-
-                </a>
-
-            </div>
-
-
-
-            <div class="pdf-item">
-
-                <div class="pdf-icone">
-                    <i class="fa-solid fa-file-pdf"></i>
-                </div>
-
-
-                <div class="pdf-info">
-
-                    <strong>
-                        Portfólio - Versão 2.pdf
-                    </strong>
-
-                    <small>
-                        Enviado em 20/08/2026
-                    </small>
-
-                </div>
-
-
-                <a href="#" class="btn-pdf">
-
-                    <i class="fa-solid fa-eye"></i>
-
-                    Visualizar
-
-                </a>
-
-            </div>
-
-
-
-            <div class="pdf-item">
-
-                <div class="pdf-icone">
-                    <i class="fa-solid fa-file-pdf"></i>
-                </div>
-
-
-                <div class="pdf-info">
-
-                    <strong>
-                        Portfólio - Versão 1.pdf
-                    </strong>
-
-                    <small>
-                        Enviado em 10/07/2026
-                    </small>
-
-                </div>
-
-
-                <a href="#" class="btn-pdf">
-
-                    <i class="fa-solid fa-eye"></i>
-
-                    Visualizar
-
-                </a>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- COMENTÁRIOS -->
-
+    {% if portfolio.aprendizados %}
     <section class="comentarios">
 
-        <h2>Comentários sobre o Portfólio</h2>
+        <h2>Aprendizados</h2>
 
         <p>
-            Feedback recebido dos responsáveis pela avaliação.
+            O que você aprendeu na mentoria {{ portfolio.id_mentoria.tema }}.
         </p>
-
 
         <div class="comentario">
 
-            <strong>
-                Professor responsável
-            </strong>
+            {{ portfolio.aprendizados|linebreaks }}
 
-            <p>
-                Seu portfólio está bem organizado. Continue adicionando
-                projetos e atividades desenvolvidas durante o curso.
-            </p>
+        </div>
+
+    </section>
+    {% endif %}
+
+    {% empty %}
+
+    <section class="portfolio-principal">
+
+        <div class="portfolio-topo">
+
+            <div class="portfolio-icone">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+
+            <div class="portfolio-titulo">
+
+                <h2>Nenhum portfólio ainda</h2>
+
+                <p>
+                    Quando um portfólio for cadastrado para você,
+                    ele aparecerá aqui.
+                </p>
+
+            </div>
 
         </div>
 
     </section>
 
+    {% endfor %}
 
 </div>
 

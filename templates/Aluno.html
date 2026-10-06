@@ -17,8 +17,10 @@ AMS Hub - Aluno
 <ul>
 
     <li class="active">
-        <i class="fa-solid fa-house"></i>
-        <span>Início</span>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
     </li>
 
     <li>
@@ -73,7 +75,7 @@ Aqui você encontra tudo sobre seus portfólios.
 
 {% block perfil %}
 
-<a href="/aluno/perfil/" class="perfil-link">
+<a href="{% url 'meuperfila' %}" class="perfil-link">
     <div class="perfil">
         <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
         <div>
@@ -83,172 +85,106 @@ Aqui você encontra tudo sobre seus portfólios.
     </div>
 </a>
 
-            </header>
-            <section class="cards row g-4 mb-4">
+{% endblock %}
 
-                <div class="col-xl-3 col-md-6">
 
-                    <div class="card h-100">
+{% block content %}
 
-                        <i class="fa-solid fa-award"></i>
+<section class="cards row g-4 mb-4">
 
-                        <div>
-
-                            <span>Certificados</span>
-
-                            <h2>2</h2>
-
-                            <p>A serem aprovados</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <i class="fa-regular fa-clock"></i>
-
-                        <div>
-
-                            <span>Pendências</span>
-
-                            <h2>93H</h2>
-
-                            <p>A serem resolvidas</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <i class="fa-solid fa-file-circle-check"></i>
-
-                        <div>
-
-                            <span>Atividades</span>
-
-                            <h2>4</h2>
-
-                            <p>Este mês</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-xl-3 col-md-6">
-
-                    <div class="card h-100">
-
-                        <i class="fa-regular fa-clock"></i>
-
-                        <div>
-
-                            <span>Horas Registradas</span>
-
-                            <h2>127H</h2>
-
-                            <p>No total</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-            <section class="content row g-4">
-                <div class="col-xl-7">
-
-                    <div class="atividades h-100">
-
-                        <h2>Últimas Realizações</h2>
-
-                        <ul>
-
-                            <li>
-
-                                <span>📘 Mentoria - 27/05</span>
-
-                                <small>29/05</small>
-
-                            </li>
-
-                            <li>
-
-                                <span>📘 Atividade - 13/05</span>
-
-                                <small>17/05</small>
-
-                            </li>
-
-                            <li>
-
-                                <span>📕 Palestra - 29/04</span>
-
-                                <small>01/05</small>
-
-                            </li>
-
-                            <li>
-
-                                <span>📘 Mentoria - 14/04</span>
-
-                                <small>14/04</small>
-
-                            </li>
-
-                            <li>
-
-                                <span>📘 Atividade - 03/03</span>
-
-                                <small>08/03</small>
-
-                            </li>
-
-                        </ul>
-
-                    </div>
-
-                </div>
-
-                <div class="col-xl-5">
-
-                    <div class="grafico h-100">
-
-                        <h2>Horas Complementares</h2>
-
-                        <canvas id="graficoHoras"></canvas>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </main>
-
-    <div>
-        <strong>{{ nome_usuario }}</strong>
-        <small>Aluno</small>
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100">
+            <i class="fa-solid fa-award"></i>
+            <div>
+                <span>Certificados</span>
+                <h2>{{ certificados_pendentes }}</h2>
+                <p>A serem aprovados</p>
+            </div>
+        </div>
     </div>
 
-</div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100">
+            <i class="fa-regular fa-clock"></i>
+            <div>
+                <span>Pendências</span>
+                <h2>{{ horas_pendentes|floatformat:"-2" }}H</h2>
+                <p>A serem resolvidas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100">
+            <i class="fa-solid fa-file-circle-check"></i>
+            <div>
+                <span>Atividades</span>
+                <h2>{{ atividades_mes }}</h2>
+                <p>Este mês</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100">
+            <i class="fa-regular fa-clock"></i>
+            <div>
+                <span>Horas Registradas</span>
+                <h2>{{ total_horas|floatformat:"-2" }}H</h2>
+                <p>No total</p>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<section class="content row g-4">
+
+    <div class="col-xl-7">
+
+        <div class="atividades h-100">
+
+            <h2>Últimas Realizações</h2>
+
+            <ul>
+                {% for atividade in ultimas_atividades %}
+                <li>
+                    <span>📘 {{ atividade.titulo }}</span>
+                    <small>
+                        {% if atividade.data_entrega %}
+                            {{ atividade.data_entrega|date:"d/m" }}
+                        {% else %}
+                            {{ atividade.status }}
+                        {% endif %}
+                    </small>
+                </li>
+                {% empty %}
+                <li>
+                    <span>Nenhuma atividade concluída ainda.</span>
+                </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="col-xl-5">
+
+        <div class="grafico h-100">
+
+            <h2>Horas Complementares</h2>
+
+            <canvas id="graficoHoras"></canvas>
+
+        </div>
+
+    </div>
+
+</section>
 
 {% endblock %}
+
 
 {% block js %}
 

@@ -62,26 +62,28 @@ AMS Hub - Detalhes da Atividade
 
 
 {% block saudacao %}
-Detalhes da Atividade
+<h1>Detalhes da Atividade</h1>
 {% endblock %}
 
 {% block descricao %}
-Visualize as informações e entregue sua atividade.
+Visualize as informações da atividade.
 {% endblock %}
 
 
 {% block perfil %}
 
-<div class="perfil">
+<a href="{% url 'meuperfila' %}" class="perfil-link">
+    <div class="perfil">
 
-    <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
 
-    <div>
-        <strong>Manuela</strong>
-        <small>Aluno</small>
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>Aluno</small>
+        </div>
+
     </div>
-
-</div>
+</a>
 
 {% endblock %}
 
@@ -115,11 +117,11 @@ Visualize as informações e entregue sua atividade.
                 </span>
 
                 <h2>
-                    Entrega do Portfólio
+                    {{ atividade.titulo }}
                 </h2>
 
                 <p>
-                    Atividade referente à mentoria do mês de setembro.
+                    Atividade referente à mentoria {{ mentoria.tema }}.
                 </p>
 
             </div>
@@ -127,8 +129,8 @@ Visualize as informações e entregue sua atividade.
         </div>
 
 
-        <span class="status pendente">
-            Pendente
+        <span class="status {{ situacao }}">
+            {{ situacao_texto }}
         </span>
 
     </section>
@@ -138,13 +140,41 @@ Visualize as informações e entregue sua atividade.
 
     <section class="informacoes-atividade">
 
+        {% if mentoria.id_professor %}
         <div class="info-item">
 
             <i class="fa-solid fa-user"></i>
 
             <div>
                 <span>Professor</span>
-                <strong>Prof. Carlos</strong>
+                <strong>{{ mentoria.id_professor.nome }}</strong>
+            </div>
+
+        </div>
+        {% endif %}
+
+
+        {% if mentoria.id_supervisor %}
+        <div class="info-item">
+
+            <i class="fa-solid fa-user-tie"></i>
+
+            <div>
+                <span>Supervisor</span>
+                <strong>{{ mentoria.id_supervisor.nome }}</strong>
+            </div>
+
+        </div>
+        {% endif %}
+
+
+        <div class="info-item">
+
+            <i class="fa-solid fa-users"></i>
+
+            <div>
+                <span>Mentoria</span>
+                <strong>{{ mentoria.tema }}</strong>
             </div>
 
         </div>
@@ -152,11 +182,11 @@ Visualize as informações e entregue sua atividade.
 
         <div class="info-item">
 
-            <i class="fa-solid fa-calendar-plus"></i>
+            <i class="fa-solid fa-hourglass-half"></i>
 
             <div>
-                <span>Publicada em</span>
-                <strong>10/09/2026</strong>
+                <span>Horas da atividade</span>
+                <strong>{{ atividade.horas|floatformat:"-2" }}h</strong>
             </div>
 
         </div>
@@ -168,7 +198,13 @@ Visualize as informações e entregue sua atividade.
 
             <div>
                 <span>Prazo de entrega</span>
-                <strong>20/09/2026</strong>
+                <strong>
+                    {% if atividade.data_entrega %}
+                        {{ atividade.data_entrega|date:"d/m/Y" }}
+                    {% else %}
+                        Sem prazo definido
+                    {% endif %}
+                </strong>
             </div>
 
         </div>
@@ -184,144 +220,11 @@ Visualize as informações e entregue sua atividade.
             Descrição da atividade
         </h2>
 
-        <p>
-            Desenvolva e organize seu portfólio com os projetos,
-            atividades e experiências realizadas durante o período.
-        </p>
-
-        <p>
-            O portfólio deve apresentar os principais trabalhos
-            desenvolvidos pelo aluno e demonstrar sua evolução
-            durante o curso.
-        </p>
-
-        <h3>
-            Orientações
-        </h3>
-
-        <ul>
-            <li>Organize os projetos em ordem de realização.</li>
-            <li>Adicione uma breve descrição para cada projeto.</li>
-            <li>Inclua os conhecimentos utilizados.</li>
-            <li>Revise o conteúdo antes de realizar o envio.</li>
-        </ul>
-
-    </section>
-
-
-    <!-- ARQUIVOS -->
-
-    <section class="conteudo-card">
-
-        <div class="card-titulo">
-
-            <div>
-
-                <h2>
-                    Materiais da atividade
-                </h2>
-
-                <p>
-                    Arquivos disponibilizados pelo professor.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="arquivo">
-
-            <div class="arquivo-icon">
-                <i class="fa-solid fa-file-pdf"></i>
-            </div>
-
-            <div class="arquivo-info">
-
-                <strong>
-                    Orientações_Portfólio.pdf
-                </strong>
-
-                <span>
-                    PDF • 1,2 MB
-                </span>
-
-            </div>
-
-            <button class="btn-download">
-                <i class="fa-solid fa-download"></i>
-                Baixar
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- ENTREGA -->
-
-    <section class="entrega-card">
-
-        <div class="entrega-header">
-
-            <div>
-
-                <h2>
-                    Entregar atividade
-                </h2>
-
-                <p>
-                    Envie o arquivo da sua atividade para avaliação.
-                </p>
-
-            </div>
-
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-
-        </div>
-
-
-        <div class="upload">
-
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-
-            <strong>
-                Clique para selecionar seu arquivo
-            </strong>
-
-            <span>
-                PDF, DOC, DOCX, JPG ou PNG
-            </span>
-
-            <input
-                type="file"
-                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-            >
-
-        </div>
-
-
-        <div class="observacao">
-
-            <label for="observacao">
-                Observação para o professor
-            </label>
-
-            <textarea
-                id="observacao"
-                placeholder="Digite uma observação, se necessário..."
-            ></textarea>
-
-        </div>
-
-
-        <button class="btn-enviar">
-
-            <i class="fa-solid fa-paper-plane"></i>
-
-            Enviar atividade
-
-        </button>
+        {% if atividade.descricao %}
+            {{ atividade.descricao|linebreaks }}
+        {% else %}
+            <p>Esta atividade não possui descrição.</p>
+        {% endif %}
 
     </section>
 
