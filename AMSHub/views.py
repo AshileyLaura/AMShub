@@ -381,21 +381,25 @@ def empresa(request):
 # LOGIN / LOGOUT
 # ---------------------------------------------------------------------
 
+# Cada tela de login: (página HTML, tipo de usuário que pode entrar nela)
+TELAS_DE_LOGIN = {
+    'login': ('loginAluno.html', 'aluno'),
+    'login_aluno': ('loginAluno.html', 'aluno'),
+    'login_professor': ('loginProfessor.html', 'professor'),
+    'login_coordenador': ('loginCoordenador.html', 'coordenador'),
+    'login_supervisor': ('loginSupervisor.html', 'supervisor'),
+    'login_empresa': ('loginempresa.html', 'empresa'),
+}
+
+
 def login_view(request):
 
-    pagina = 'loginAluno.html'
+    nome_da_rota = request.resolver_match.url_name
 
-    if request.path == '/login/professor/':
-        pagina = 'loginProfessor.html'
-
-    elif request.path == '/login/coordenador/':
-        pagina = 'loginCoordenador.html'
-
-    elif request.path == '/login/supervisor/':
-        pagina = 'loginSupervisor.html'
-
-    elif request.path == '/login/empresa/':
-        pagina = 'loginempresa.html'
+    pagina, tipo_da_tela = TELAS_DE_LOGIN.get(
+        nome_da_rota,
+        ('loginAluno.html', 'aluno')
+    )
 
     if request.method == 'POST':
 
@@ -416,6 +420,16 @@ def login_view(request):
                     pagina,
                     {
                         'erro': 'Este usuário não possui um perfil cadastrado.'
+                    }
+                )
+
+            # Só entra se o tipo do usuário for o mesmo da tela de login
+            if usuario.perfil.tipo != tipo_da_tela:
+                return render(
+                    request,
+                    pagina,
+                    {
+                        'erro': f'Este usuário não está cadastrado como {tipo_da_tela}.'
                     }
                 )
 
