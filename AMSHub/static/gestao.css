@@ -1,0 +1,441 @@
+/* =========================================
+   GESTÃO - COORDENADOR E SUPERVISOR
+========================================= */
+
+
+/* CARDS */
+
+.cards-gestao {
+    margin-bottom: 30px;
+}
+
+
+.gestao-card {
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+
+    display: flex;
+    flex-direction: column;
+
+    transition: 0.3s;
+}
+
+
+.gestao-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.11);
+}
+
+
+.gestao-card-icon {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    background: #f0edff;
+
+    color: #6b4df6;
+
+    font-size: 23px;
+
+    margin-bottom: 18px;
+}
+
+
+.gestao-card h2 {
+    margin: 0 0 5px;
+
+    font-size: 36px;
+
+    color: #222;
+}
+
+
+.gestao-card p {
+    margin: 0 0 20px;
+
+    color: #777;
+
+    font-size: 15px;
+}
+
+
+.gestao-card-link {
+    margin-top: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 11px 15px;
+
+    border-radius: 12px;
+
+    background: #6b4df6;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+
+.gestao-card-link:hover {
+    background: #5639d8;
+
+    color: white;
+}
+
+
+/* =========================================
+   BOX
+========================================= */
+
+.gestao-box {
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================
+   TÍTULOS
+========================================= */
+
+.gestao-title {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+.gestao-title h2 {
+    margin: 0 0 4px;
+
+    font-size: 21px;
+
+    color: #222;
+}
+
+
+.gestao-title p {
+    margin: 0;
+
+    font-size: 13px;
+
+    color: #888;
+}
+
+
+.gestao-title a {
+    color: #6b4df6;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+.gestao-title a:hover {
+    color: #5639d8;
+}
+
+
+/* =========================================
+   EMPRESAS
+========================================= */
+
+.empresa-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid #eeeeee;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.empresa-item:last-child {
+    border-bottom: none;
+}
+
+
+.empresa-item:hover {
+    transform: translateX(3px);
+}
+
+
+/* =========================================
+   ÍCONES
+========================================= */
+
+.item-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 13px;
+
+    background: #f0edff;
+
+    color: #6b4df6;
+}
+
+
+/* =========================================
+   INFORMAÇÕES DOS ITENS
+========================================= */
+
+.item-info {
+    flex: 1;
+}
+
+
+.item-info strong {
+    display: block;
+
+    color: #333;
+
+    font-size: 14px;
+
+    margin-bottom: 4px;
+}
+
+
+.item-info span {
+    display: block;
+
+    color: #888;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+
+.seta {
+    color: #aaa;
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   MENTORIAS
+========================================= */
+
+.mentoria-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+
+.mentoria-item:last-child {
+    border-bottom: none;
+}
+
+
+.data-mentoria {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 13px;
+
+    background: #f0edff;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+
+.data-mentoria strong {
+    color: #6b4df6;
+
+    font-size: 17px;
+
+    line-height: 1;
+}
+
+
+.data-mentoria span {
+    color: #777;
+
+    font-size: 9px;
+
+    margin-top: 4px;
+
+    font-weight: 700;
+}
+
+
+.tag-mentoria {
+    background: #eeeaff;
+
+    color: #6b4df6;
+
+    border-radius: 20px;
+
+    padding: 6px 10px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   RELATÓRIOS
+========================================= */
+
+.relatorios-box {
+    margin-top: 24px;
+}
+
+
+.relatorios-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 12px;
+}
+
+
+.relatorio-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 15px;
+
+    border: 1px solid #eeeeee;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.relatorio-item:hover {
+    background: #faf9ff;
+
+    border-color: #ded8ff;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   RESPONSIVO
+========================================= */
+
+@media (max-width: 768px) {
+
+    .relatorios-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .gestao-title {
+        align-items: flex-start;
+    }
+
+
+    .gestao-card h2 {
+        font-size: 31px;
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .gestao-card,
+    .gestao-box {
+        padding: 18px;
+    }
+
+
+    .gestao-title {
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+
+    .mentoria-item {
+        flex-wrap: wrap;
+    }
+
+
+    .tag-mentoria {
+        margin-left: 61px;
+    }
+
+}

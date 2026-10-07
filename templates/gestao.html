@@ -1,0 +1,472 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block css %}
+
+<link rel="stylesheet" href="{% static 'gestao.css' %}">
+
+{% block css_gestao %}
+{% endblock %}
+
+{% endblock %}
+
+
+{% block logo %}
+
+<img src="{% static 'imagens/logoprofessor.png' %}"
+     alt="AMS Hub">
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =========================
+     CARDS PRINCIPAIS
+========================= -->
+
+<section class="cards-gestao row g-4 mb-4">
+
+    <!-- EMPRESAS -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="gestao-card h-100">
+
+            <div class="gestao-card-icon">
+                <i class="fa-solid fa-building"></i>
+            </div>
+
+            <div>
+
+                <h2>18</h2>
+
+                <p>Empresas Parceiras</p>
+
+            </div>
+
+            <a href="#" class="gestao-card-link">
+
+                Ver empresas
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- MENTORIAS -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="gestao-card h-100">
+
+            <div class="gestao-card-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <div>
+
+                <h2>08</h2>
+
+                <p>Mentorias</p>
+
+            </div>
+
+            <a href="#" class="gestao-card-link">
+
+                Ver mentorias
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- RELATÓRIOS -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="gestao-card h-100">
+
+            <div class="gestao-card-icon">
+                <i class="fa-solid fa-chart-column"></i>
+            </div>
+
+            <div>
+
+                <h2>09</h2>
+
+                <p>Relatórios</p>
+
+            </div>
+
+            <a href="#" class="gestao-card-link">
+
+                Ver relatórios
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ÁREA ESPECÍFICA
+========================= -->
+
+{% block conteudo_especifico %}
+{% endblock %}
+
+
+<!-- =========================
+     EMPRESAS + MENTORIAS
+========================= -->
+
+<section class="row g-4">
+
+    <!-- EMPRESAS -->
+
+    <div class="col-xl-6">
+
+        <div class="gestao-box h-100">
+
+            <div class="gestao-title">
+
+                <div>
+
+                    <h2>Empresas Parceiras</h2>
+
+                    <p>
+                        Empresas participantes do programa AMS.
+                    </p>
+
+                </div>
+
+                <a href="#">
+                    Ver todas
+                </a>
+
+            </div>
+
+
+            <div class="empresa-item">
+
+                <div class="item-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+
+                <div class="item-info">
+
+                    <strong>IBM</strong>
+
+                    <span>
+                        Empresa parceira
+                    </span>
+
+                </div>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+
+            </div>
+
+
+            <div class="empresa-item">
+
+                <div class="item-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+
+                <div class="item-info">
+
+                    <strong>TAB</strong>
+
+                    <span>
+                        Empresa parceira
+                    </span>
+
+                </div>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+
+            </div>
+
+
+            <div class="empresa-item">
+
+                <div class="item-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+
+                <div class="item-info">
+
+                    <strong>DevCool</strong>
+
+                    <span>
+                        Empresa parceira
+                    </span>
+
+                </div>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MENTORIAS -->
+
+    <div class="col-xl-6">
+
+        <div class="gestao-box h-100">
+
+            <div class="gestao-title">
+
+                <div>
+
+                    <h2>Próximas Mentorias</h2>
+
+                    <p>
+                        Próximas atividades programadas.
+                    </p>
+
+                </div>
+
+                <a href="#">
+                    Ver todas
+                </a>
+
+            </div>
+
+
+            <div class="mentoria-item">
+
+                <div class="data-mentoria">
+
+                    <strong>12</strong>
+
+                    <span>OUT</span>
+
+                </div>
+
+
+                <div class="item-info">
+
+                    <strong>TAB - 3º DS</strong>
+
+                    <span>
+                        10:00 às 11:30
+                    </span>
+
+                </div>
+
+                <span class="tag-mentoria">
+                    Em breve
+                </span>
+
+            </div>
+
+
+            <div class="mentoria-item">
+
+                <div class="data-mentoria">
+
+                    <strong>16</strong>
+
+                    <span>OUT</span>
+
+                </div>
+
+
+                <div class="item-info">
+
+                    <strong>IBM - AMS Geral</strong>
+
+                    <span>
+                        10:00 às 12:00
+                    </span>
+
+                </div>
+
+                <span class="tag-mentoria">
+                    Em breve
+                </span>
+
+            </div>
+
+
+            <div class="mentoria-item">
+
+                <div class="data-mentoria">
+
+                    <strong>21</strong>
+
+                    <span>OUT</span>
+
+                </div>
+
+
+                <div class="item-info">
+
+                    <strong>Visita Técnica</strong>
+
+                    <span>
+                        07:00 às 15:00
+                    </span>
+
+                </div>
+
+                <span class="tag-mentoria">
+                    Em breve
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     RELATÓRIOS
+========================= -->
+
+<section class="gestao-box relatorios-box">
+
+    <div class="gestao-title">
+
+        <div>
+
+            <h2>Relatórios Gerais</h2>
+
+            <p>
+                Consulte as principais informações do programa.
+            </p>
+
+        </div>
+
+        <a href="#">
+            Ver todos
+        </a>
+
+    </div>
+
+
+    <div class="relatorios-grid">
+
+
+        <div class="relatorio-item">
+
+            <div class="item-icon">
+
+                <i class="fa-solid fa-clock"></i>
+
+            </div>
+
+            <div class="item-info">
+
+                <strong>Horas dos Alunos</strong>
+
+                <span>
+                    Acompanhamento das horas registradas
+                </span>
+
+            </div>
+
+            <i class="fa-solid fa-chevron-right seta"></i>
+
+        </div>
+
+
+        <div class="relatorio-item">
+
+            <div class="item-icon">
+
+                <i class="fa-solid fa-user-graduate"></i>
+
+            </div>
+
+            <div class="item-info">
+
+                <strong>Alunos em Estágio</strong>
+
+                <span>
+                    Situação dos alunos nas empresas
+                </span>
+
+            </div>
+
+            <i class="fa-solid fa-chevron-right seta"></i>
+
+        </div>
+
+
+        <div class="relatorio-item">
+
+            <div class="item-icon">
+
+                <i class="fa-solid fa-building"></i>
+
+            </div>
+
+            <div class="item-info">
+
+                <strong>Empresas Parceiras</strong>
+
+                <span>
+                    Informações das empresas cadastradas
+                </span>
+
+            </div>
+
+            <i class="fa-solid fa-chevron-right seta"></i>
+
+        </div>
+
+
+        <div class="relatorio-item">
+
+            <div class="item-icon">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+            </div>
+
+            <div class="item-info">
+
+                <strong>Desempenho Geral</strong>
+
+                <span>
+                    Visão geral do programa AMS
+                </span>
+
+            </div>
+
+            <i class="fa-solid fa-chevron-right seta"></i>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+{% endblock %}

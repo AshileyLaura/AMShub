@@ -779,3 +779,13 @@ def cadastro(request):
         return redirect('login')
 
     return render(request, 'cadastro.html')
+def empresasgestao(request):
+    return render(request, 'empresasgestao.html')
+
+
+def mentoriasgestao(request):
+    return render(request, 'mentoriasgestao.html')
+
+
+def relatoriosgestao(request):
+    return render(request, 'relatoriosgestao.html')

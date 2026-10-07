@@ -1,0 +1,278 @@
+{% extends "gestao.html" %}
+{% load static %}
+
+
+{% block title %}
+AMS Hub - Relatórios
+{% endblock %}
+
+
+{% block css_gestao %}
+<link rel="stylesheet" href="{% static 'gestaopaginas.css' %}">
+{% endblock %}
+
+
+{% block saudacao %}
+Relatórios Gerais
+{% endblock %}
+
+
+{% block descricao %}
+Consulte os principais dados e indicadores do programa AMS.
+{% endblock %}
+
+
+{% block content %}
+
+<section class="pagina-gestao">
+
+
+    <!-- CABEÇALHO -->
+
+    <div class="pagina-topo">
+
+        <div>
+
+            <h2>Relatórios Gerais</h2>
+
+            <p>
+                Acompanhe informações dos alunos, empresas e mentorias.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESUMO -->
+
+    <div class="resumo-relatorios row g-4">
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="resumo-card">
+
+                <div class="resumo-icon">
+
+                    <i class="fa-solid fa-user-graduate"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>124</h3>
+
+                    <p>Alunos</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="resumo-card">
+
+                <div class="resumo-icon">
+
+                    <i class="fa-solid fa-building"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>18</h3>
+
+                    <p>Empresas</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="resumo-card">
+
+                <div class="resumo-icon">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>08</h3>
+
+                    <p>Mentorias</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="resumo-card">
+
+                <div class="resumo-icon">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>3.420h</h3>
+
+                    <p>Horas Registradas</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TIPOS DE RELATÓRIO -->
+
+    <div class="relatorios-lista">
+
+
+        <div class="relatorio-card">
+
+            <div class="relatorio-card-icon">
+
+                <i class="fa-solid fa-clock"></i>
+
+            </div>
+
+
+            <div class="relatorio-card-info">
+
+                <h3>Horas dos Alunos</h3>
+
+                <p>
+                    Consulte as horas registradas e o progresso dos alunos.
+                </p>
+
+            </div>
+
+
+            <a href="#" class="btn-secundario">
+
+                Visualizar
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="relatorio-card">
+
+            <div class="relatorio-card-icon">
+
+                <i class="fa-solid fa-user-graduate"></i>
+
+            </div>
+
+
+            <div class="relatorio-card-info">
+
+                <h3>Alunos em Estágio</h3>
+
+                <p>
+                    Consulte os alunos vinculados às empresas.
+                </p>
+
+            </div>
+
+
+            <a href="#" class="btn-secundario">
+
+                Visualizar
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="relatorio-card">
+
+            <div class="relatorio-card-icon">
+
+                <i class="fa-solid fa-building"></i>
+
+            </div>
+
+
+            <div class="relatorio-card-info">
+
+                <h3>Empresas Parceiras</h3>
+
+                <p>
+                    Consulte informações das empresas participantes.
+                </p>
+
+            </div>
+
+
+            <a href="#" class="btn-secundario">
+
+                Visualizar
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="relatorio-card">
+
+            <div class="relatorio-card-icon">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+            </div>
+
+
+            <div class="relatorio-card-info">
+
+                <h3>Desempenho Geral</h3>
+
+                <p>
+                    Consulte uma visão geral do desempenho do programa AMS.
+                </p>
+
+            </div>
+
+
+            <a href="#" class="btn-secundario">
+
+                Visualizar
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

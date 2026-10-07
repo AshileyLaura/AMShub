@@ -1,0 +1,623 @@
+/* =========================================
+   PÁGINAS INTERNAS - GESTÃO
+========================================= */
+
+.pagina-gestao {
+    width: 100%;
+}
+
+
+/* =========================================
+   TOPO
+========================================= */
+
+.pagina-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+
+.pagina-topo h2 {
+    margin: 0 0 5px;
+
+    font-size: 26px;
+
+    color: #222;
+}
+
+
+.pagina-topo p {
+    margin: 0;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+
+/* =========================================
+   BOTÃO PRINCIPAL
+========================================= */
+
+.btn-principal {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    background: #6b4df6;
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 12px 18px;
+
+    border-radius: 12px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+
+    white-space: nowrap;
+}
+
+
+.btn-principal:hover {
+    background: #5639d8;
+
+    color: white;
+}
+
+
+/* =========================================
+   FILTROS
+========================================= */
+
+.filtros-gestao {
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    margin-bottom: 25px;
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+.pesquisa-gestao {
+    flex: 1;
+
+    min-width: 220px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    background: #f7f7fa;
+
+    border: 1px solid #eeeeee;
+
+    border-radius: 12px;
+
+    padding: 11px 14px;
+}
+
+
+.pesquisa-gestao i {
+    color: #888;
+}
+
+
+.pesquisa-gestao input {
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: #333;
+
+    font-size: 14px;
+}
+
+
+.filtros-gestao select {
+    min-width: 170px;
+
+    padding: 11px 14px;
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 12px;
+
+    background: white;
+
+    color: #555;
+
+    outline: none;
+
+    font-size: 14px;
+}
+
+
+/* =========================================
+   LISTAGEM
+========================================= */
+
+.lista-gestao {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 20px;
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.item-card {
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 22px;
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+
+    display: flex;
+
+    flex-direction: column;
+
+    transition: 0.3s;
+}
+
+
+.item-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+
+.item-card-topo {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+
+.item-card-icon {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f0edff;
+
+    color: #6b4df6;
+
+    border-radius: 15px;
+
+    font-size: 20px;
+}
+
+
+/* =========================================
+   CONTEÚDO DOS CARDS
+========================================= */
+
+.item-card-conteudo {
+    flex: 1;
+}
+
+
+.item-card-conteudo h3 {
+    margin: 0 0 8px;
+
+    color: #222;
+
+    font-size: 19px;
+}
+
+
+.item-card-conteudo > p {
+    color: #777;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    margin-bottom: 18px;
+}
+
+
+/* =========================================
+   INFORMAÇÕES
+========================================= */
+
+.informacoes {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+
+    margin-bottom: 20px;
+}
+
+
+.informacoes span {
+    color: #666;
+
+    font-size: 13px;
+}
+
+
+.informacoes i {
+    width: 20px;
+
+    color: #6b4df6;
+
+    margin-right: 5px;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.status {
+    display: inline-block;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+
+.status-proximo {
+    background: #eeeaff;
+
+    color: #6b4df6;
+}
+
+
+.status-concluido {
+    background: #dcf8e5;
+
+    color: #248347;
+}
+
+
+.status-cancelado {
+    background: #ffe4e4;
+
+    color: #c44747;
+}
+
+
+/* =========================================
+   AÇÕES
+========================================= */
+
+.item-card-acoes {
+    display: flex;
+
+    gap: 9px;
+
+    padding-top: 17px;
+
+    border-top: 1px solid #eeeeee;
+}
+
+
+.btn-secundario,
+.btn-editar {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    border-radius: 10px;
+
+    padding: 9px 13px;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+
+.btn-secundario {
+    background: #f0edff;
+
+    color: #6b4df6;
+}
+
+
+.btn-secundario:hover {
+    background: #e3ddff;
+
+    color: #5639d8;
+}
+
+
+.btn-editar {
+    background: #f5f5f5;
+
+    color: #555;
+}
+
+
+.btn-editar:hover {
+    background: #e9e9e9;
+
+    color: #333;
+}
+
+
+/* =========================================
+   RESUMO DOS RELATÓRIOS
+========================================= */
+
+.resumo-relatorios {
+    margin-bottom: 25px;
+}
+
+
+.resumo-card {
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+}
+
+
+.resumo-icon {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 15px;
+
+    background: #f0edff;
+
+    color: #6b4df6;
+
+    font-size: 19px;
+}
+
+
+.resumo-card h3 {
+    margin: 0;
+
+    font-size: 24px;
+
+    color: #222;
+}
+
+
+.resumo-card p {
+    margin: 3px 0 0;
+
+    color: #777;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   RELATÓRIOS
+========================================= */
+
+.relatorios-lista {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+
+.relatorio-card {
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+
+    transition: 0.2s;
+}
+
+
+.relatorio-card:hover {
+    transform: translateY(-2px);
+}
+
+
+.relatorio-card-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 15px;
+
+    background: #f0edff;
+
+    color: #6b4df6;
+
+    font-size: 20px;
+}
+
+
+.relatorio-card-info {
+    flex: 1;
+}
+
+
+.relatorio-card-info h3 {
+    margin: 0 0 4px;
+
+    color: #222;
+
+    font-size: 16px;
+}
+
+
+.relatorio-card-info p {
+    margin: 0;
+
+    color: #888;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   RESPONSIVO
+========================================= */
+
+@media (max-width: 1100px) {
+
+    .lista-gestao {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .pagina-topo {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .filtros-gestao {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+
+    .filtros-gestao select {
+        width: 100%;
+    }
+
+
+    .lista-gestao {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .item-card {
+        padding: 18px;
+    }
+
+
+    .item-card-acoes {
+        flex-direction: column;
+    }
+
+
+    .btn-secundario,
+    .btn-editar {
+        width: 100%;
+    }
+
+
+    .relatorio-card {
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+    }
+
+
+    .relatorio-card .btn-secundario {
+        width: 100%;
+    }
+
+}

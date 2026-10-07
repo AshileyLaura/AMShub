@@ -1,445 +1,443 @@
-* {
-    box-sizing: border-box;
+/* =========================================
+   DASHBOARD DO COORDENADOR
+========================================= */
+
+
+/* CARDS PRINCIPAIS */
+
+.coordenador-card {
+    border: none;
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+    transition: 0.3s;
 }
 
-body {
-    margin: 0;
-    background: #f4f5fb;
-    font-family: 'Segoe UI', sans-serif;
+.coordenador-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.11);
+}
+
+
+.card-icon {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f0edff;
+    color: #6b4df6;
+
+    border-radius: 16px;
+
+    font-size: 23px;
+
+    margin-bottom: 20px;
+}
+
+
+.coordenador-card h2 {
+    margin: 0 0 5px;
+
+    font-size: 36px;
+
     color: #222;
 }
 
-.sidebar {
 
-    min-height: 100vh;
-
-    background: linear-gradient(
-        180deg,
-        #2d225c,
-        #5b3cc4
-    );
-
-    color: white;
-
-    padding: 30px 20px;
-
-    border-radius: 0 25px 25px 0;
-}
-
-.logo {
-    margin-bottom: 40px;
-}
-
-.logo img {
-    width: 160px;
-    max-width: 100%;
-}
-
-.sidebar .nav-item {
-    margin-bottom: 12px;
-}
-
-.sidebar .nav-link {
-
-    color: white;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-    padding: 16px;
-
-    border-radius: 12px;
-
-    font-size: 17px;
-
-    transition: .3s;
-}
-
-.sidebar .nav-link i {
-
-    width: 22px;
-
-    text-align: center;
-}
-
-.sidebar .nav-link:hover,
-.sidebar .nav-item.active .nav-link {
-
-    background: #7756ff;
-
-    color: white;
-}
-
-
-.content {
-
-    padding: 30px 40px;
-
-}
-
-.search {
-
-    width: 420px;
-
-    height: 48px;
-
-    background: white;
-
-    border-radius: 12px;
-
-    display: flex;
-
-    align-items: center;
-
-    padding: 0 18px;
-
-    box-shadow: 0 4px 12px rgba(0,0,0,.08);
-}
-
-.search i {
+.coordenador-card p {
+    margin: 0 0 20px;
 
     color: #777;
 
+    font-size: 15px;
 }
 
-.search input {
+
+.card-button {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     border: none;
 
-    outline: none;
+    background: #6b4df6;
+    color: white;
 
-    margin-left: 10px;
+    border-radius: 12px;
 
-    width: 100%;
+    padding: 11px 15px;
 
-    font-size: 15px;
-
-}
-
-.top-icons > i {
-
-    font-size: 20px;
+    font-size: 14px;
+    font-weight: 600;
 
     cursor: pointer;
 
-    color: #555;
-
+    transition: 0.3s;
 }
 
-.perfil img {
 
-    width: 50px;
-
-    height: 50px;
-
-    border-radius: 50%;
-
-    object-fit: cover;
-
+.card-button:hover {
+    background: #5639d8;
 }
 
-.perfil h3 {
 
-    font-size: 16px;
+/* =========================================
+   GRID
+========================================= */
 
-    margin: 0;
-
+.coordenador-grid {
+    margin-top: 5px;
 }
 
-.perfil span {
 
-    color: #666;
-
-    font-size: 13px;
-
-}
-
-.welcome {
-
-    margin-top: 35px;
-
-    margin-bottom: 30px;
-
-}
-
-.welcome h1 {
-
-    font-size: 34px;
-
-    margin-bottom: 8px;
-
-}
-
-.welcome p {
-
-    color: #666;
-
-}
-
-.card {
-
-    border: none;
-
-    background: white;
-
-    padding: 28px;
-
-    border-radius: 20px;
-
-    box-shadow: 0 8px 20px rgba(0,0,0,.08);
-
-    transition: .3s;
-
-}
-
-.card:hover {
-
-    transform: translateY(-4px);
-
-    box-shadow: 0 12px 25px rgba(0,0,0,.12);
-
-}
-
-.card > i {
-
-    font-size: 28px;
-
-    color: #7756ff;
-
-    margin-bottom: 20px;
-
-}
-
-.card h2 {
-
-    font-size: 38px;
-
-    margin-bottom: 5px;
-
-}
-
-.card p {
-
-    color: #666;
-
-    margin: 0;
-
-}
-
-.card.purple {
-
-    background: linear-gradient(
-        135deg,
-        #6d45ff,
-        #9c7cff
-    );
-
-    color: white;
-}
-
-.card.purple i,
-.card.purple p {
-
-    color: white;
-
-}
+/* =========================================
+   ALUNOS
+========================================= */
 
 .students {
-
     background: white;
 
     border-radius: 20px;
 
     padding: 25px;
 
-    box-shadow: 0 8px 20px rgba(0,0,0,.08);
-
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
 }
 
 
-.title {
+/* =========================================
+   TÍTULOS
+========================================= */
 
+.section-title {
     display: flex;
-
+    align-items: center;
     justify-content: space-between;
 
-    align-items: center;
+    gap: 15px;
 
-    margin-bottom: 20px;
-
+    margin-bottom: 22px;
 }
 
-.title h2 {
 
+.section-title h2 {
+    margin: 0 0 4px;
+
+    font-size: 21px;
+
+    color: #222;
+}
+
+
+.section-title p {
     margin: 0;
 
+    color: #888;
+
+    font-size: 13px;
 }
 
-.title a {
 
+.section-title a {
     text-decoration: none;
 
-    color: #7756ff;
+    color: #6b4df6;
 
+    font-size: 14px;
     font-weight: 600;
 
+    white-space: nowrap;
 }
 
+
+.section-title a:hover {
+    color: #5639d8;
+}
+
+
+/* =========================================
+   TABELA
+========================================= */
+
+.students table {
+    width: 100%;
+}
+
+
 .students table thead th {
+    background: #f7f7fa;
 
-    background: #f4f4f4;
-
-    color: #444;
+    color: #666;
 
     padding: 14px;
 
     border: none;
 
+    font-size: 13px;
+    font-weight: 600;
 }
 
-
-/* Células */
 
 .students table tbody td {
+    padding: 16px 14px;
 
-    padding: 15px;
-
-    border-bottom: 1px solid #eee;
-
-}
-
-.status {
-
-    padding: 6px 14px;
-
-    border-radius: 20px;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    display: inline-block;
-
-}
-
-.ativo {
-
-    background: #d9ffe3;
-
-    color: #2d8b47;
-
-}
-
-.estagio {
-
-    background: #dce8ff;
-
-    color: #295bd4;
-
-}
-
-.pendente {
-
-    background: #fff1d6;
-
-    color: #cc8a00;
-
-}
-
-.right-panel {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 25px;
-
-}
-
-
-.box {
-
-    background: white;
-
-    border-radius: 20px;
-
-    padding: 25px;
-
-    box-shadow: 0 8px 20px rgba(0,0,0,.08);
-
-}
-
-
-.box ul {
-
-    list-style: none;
-
-    padding: 0;
-
-    margin: 0;
-
-}
-
-
-.box li {
-
-    padding: 14px 0;
-
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid #eeeeee;
 
     color: #555;
 
+    font-size: 14px;
 }
 
 
-.box li:last-child {
-
-    border: none;
-
+.students table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-@media (max-width: 991px) {
 
-    .sidebar {
-
-        min-height: auto;
-
-        border-radius: 0;
-
-    }
-
-    .content {
-
-        padding: 25px;
-
-    }
-
+.students table tbody tr {
+    transition: 0.2s;
 }
 
+
+.students table tbody tr:hover {
+    background: #faf9ff;
+}
+
+
+/* =========================================
+   ALUNO
+========================================= */
+
+.student-name {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+}
+
+
+.student-name strong {
+    color: #333;
+
+    font-size: 14px;
+}
+
+
+.student-avatar {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #eeeaff;
+    color: #6b4df6;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.status {
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.status.ativo {
+    background: #dcf8e5;
+    color: #248347;
+}
+
+
+.status.estagio {
+    background: #e2eaff;
+    color: #3b5fc4;
+}
+
+
+.status.pendente {
+    background: #fff0d5;
+    color: #b97a00;
+}
+
+
+/* =========================================
+   COLUNA DIREITA
+========================================= */
+
+.right-panel {
+    display: flex;
+    flex-direction: column;
+
+    gap: 24px;
+}
+
+
+.coordenador-box {
+    background: white;
+
+    padding: 23px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================
+   EMPRESAS
+========================================= */
+
+.empresa-item {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 13px 0;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+
+.empresa-item:last-child {
+    border-bottom: none;
+}
+
+
+.empresa-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: #f0edff;
+    color: #6b4df6;
+}
+
+
+.empresa-item strong {
+    display: block;
+
+    color: #333;
+
+    font-size: 14px;
+
+    margin-bottom: 3px;
+}
+
+
+.empresa-item span {
+    display: block;
+
+    color: #888;
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   ATIVIDADES RECENTES
+========================================= */
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 13px;
+
+    padding: 13px 0;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+
+.activity-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #f0edff;
+    color: #6b4df6;
+
+    font-size: 13px;
+}
+
+
+.activity-item strong {
+    display: block;
+
+    color: #333;
+
+    font-size: 14px;
+
+    margin-bottom: 3px;
+}
+
+
+.activity-item span {
+    display: block;
+
+    color: #888;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   RESPONSIVO
+========================================= */
 
 @media (max-width: 768px) {
 
-    .search {
-
-        width: 100%;
-
+    .section-title {
+        align-items: flex-start;
     }
 
-    header {
-
-        align-items: flex-start !important;
-
-    }
-
-    .top-icons {
-
-        width: 100%;
-
-        flex-wrap: wrap;
-
+    .coordenador-card h2 {
+        font-size: 31px;
     }
 
 }
@@ -447,22 +445,25 @@ body {
 
 @media (max-width: 576px) {
 
-    .content {
-
-        padding: 20px;
-
+    .students,
+    .coordenador-box,
+    .coordenador-card {
+        padding: 18px;
     }
 
-    .welcome h1 {
 
-        font-size: 28px;
-
+    .section-title {
+        flex-direction: column;
     }
 
-    .card {
 
-        padding: 22px;
+    .section-title a {
+        align-self: flex-start;
+    }
 
+
+    .students table {
+        min-width: 650px;
     }
 
 }
