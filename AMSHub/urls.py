@@ -18,7 +18,7 @@ from AMSHub.views import (
     certificadoa,
     detalhesdaatividadea,
     meuperfila,
-    empresasgestao,
+    empresagestao,
     mentoriasgestao,
     relatoriosgestao,
 )
@@ -35,7 +35,7 @@ urlpatterns = [
     path('coordenador/', coordenador, name='coordenador'),
     path('supervisor/', supervisor, name='supervisor'),
     path('empresa/', empresa, name='empresa'),
-    path('gestao/empresas/',empresasgestao,name='empresasgestao'),
+    path('gestao/empresa/',empresagestao,name='empresagestao'),
     path('gestao/mentorias/',mentoriasgestao,name='mentoriasgestao'),
     path('gestao/relatorios/',relatoriosgestao,name='relatoriosgestao'),
 
