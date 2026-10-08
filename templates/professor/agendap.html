@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AMS Hub - Agenda{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'Professor.css' %}">
+<link rel="stylesheet" href="{% static 'professor/professorpaginas.css' %}">
+{% endblock %}
+
+{% block saudacao %}
+<h1>Agenda do Professor</h1>
+{% endblock %}
+
+{% block descricao %}
+Organize seus compromissos e acompanhe os próximos eventos.
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url 'professor' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'portfoliosp' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'avaliacoesp' %}">
+            <i class="fa-solid fa-star"></i>
+            <span>Avaliações</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'mentoriasp' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'agendap' %}">
+            <i class="fa-solid fa-calendar"></i>
+            <span>Agenda</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<section class="professor-pagina">
+
+    <div class="pagina-cabecalho">
+        <div>
+            <h2>Minha Agenda</h2>
+            <p>Confira seus próximos compromissos.</p>
+        </div>
+    </div>
+
+    <div class="painel-tabela">
+
+        <h3>Próximos Eventos</h3>
+
+        <div class="lista-eventos">
+
+            {% for evento in eventos %}
+
+            <article class="evento-item">
+
+                <div class="evento-data">
+                    <strong>{{ evento.data|date:"d" }}</strong>
+                    <span>{{ evento.data|date:"M" }}</span>
+                </div>
+
+                <div class="evento-conteudo">
+                    <h4>{{ evento.titulo }}</h4>
+                    <p>{{ evento.descricao|default:"Sem descrição." }}</p>
+
+                    <span>
+                        <i class="fa-solid fa-clock"></i>
+                        {{ evento.horario|default:"Horário não informado" }}
+                    </span>
+                </div>
+
+                <span class="etiqueta">
+                    {{ evento.tipo|default:"Evento" }}
+                </span>
+
+            </article>
+
+            {% empty %}
+
+            <div class="estado-vazio">
+                <i class="fa-solid fa-calendar"></i>
+                <h3>Nenhum evento agendado</h3>
+                <p>Seus próximos compromissos aparecerão aqui.</p>
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

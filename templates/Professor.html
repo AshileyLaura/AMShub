@@ -24,23 +24,30 @@ AMS Hub - Professor
     </li>
 
     <li>
-        <i class="fa-solid fa-folder-open"></i>
-        <span>Portfólios</span>
+        <a href="{% url 'portfoliosp' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'avaliacoesp' %}">
+            <i class="fa-solid fa-star"></i>
+            <span>Avaliações</span>
+        </a>
     </li>
 
     <li>
-        <i class="fa-solid fa-star"></i>
-        <span>Avaliações</span>
+        <a href="{% url 'mentoriasp' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
     </li>
 
     <li>
-        <i class="fa-solid fa-users"></i>
-        <span>Mentorias</span>
-    </li>
-
-    <li>
-        <i class="fa-solid fa-calendar"></i>
-        <span>Agenda</span>
+        <a href="{% url 'agendap' %}">
+            <i class="fa-solid fa-calendar"></i>
+            <span>Agenda</span>
+        </a>
     </li>
 
     <li>

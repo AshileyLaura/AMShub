@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AMS Hub - Portfólios{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'Professor.css' %}">
+<link rel="stylesheet" href="{% static 'professor/professorpaginas.css' %}">
+{% endblock %}
+
+{% block saudacao %}
+<h1>Portfólios dos Alunos</h1>
+{% endblock %}
+
+{% block descricao %}
+Acompanhe os projetos e atividades desenvolvidos pelos alunos.
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url 'professor' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'portfoliosp' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'avaliacoesp' %}">
+            <i class="fa-solid fa-star"></i>
+            <span>Avaliações</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'mentoriasp' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'agendap' %}">
+            <i class="fa-solid fa-calendar"></i>
+            <span>Agenda</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<section class="professor-pagina">
+
+    <div class="pagina-cabecalho">
+        <div>
+            <h2>Portfólios</h2>
+            <p>Consulte os portfólios enviados pelos alunos.</p>
+        </div>
+
+        <span class="contador">
+            {{ portfolios|length }} portfólio(s)
+        </span>
+    </div>
+
+    <form method="get" class="filtros-pagina">
+        <div class="campo-pesquisa">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+                type="search"
+                name="q"
+                value="{{ pesquisa }}"
+                placeholder="Pesquisar portfólio..."
+            >
+        </div>
+
+        <button type="submit" class="botao-principal">
+            Pesquisar
+        </button>
+    </form>
+
+    <div class="grade-cards">
+
+        {% for portfolio in portfolios %}
+
+        <article class="card-professor">
+
+            <div class="card-icone">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+
+            <h3>{{ portfolio.titulo }}</h3>
+
+            <p>{{ portfolio.descricao|default:"Sem descrição."|truncatewords:25 }}</p>
+
+            <div class="card-informacoes">
+                <span>
+                    <i class="fa-solid fa-user"></i>
+                    {{ portfolio.aluno }}
+                </span>
+            </div>
+
+            <div class="card-rodape">
+                <span class="etiqueta">Portfólio</span>
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="estado-vazio">
+            <i class="fa-solid fa-folder-open"></i>
+            <h3>Nenhum portfólio encontrado</h3>
+            <p>Os portfólios cadastrados aparecerão aqui.</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

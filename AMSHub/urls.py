@@ -50,7 +50,10 @@ urlpatterns = [
     path('empresa/cadastrar-mentorias/', cadastrarmentoriase, name='cadastrarmentoriase'),
     path('empresa/criar-tarefas/', criartarefase, name='criartarefase'),
     path('empresa/oportunidades/', oportunidadese, name='oportunidadese'),
-
+    path('professor/portfolios/', portfoliosp, name='portfoliosp'),
+    path('professor/avaliacoes/', avaliacoesp, name='avaliacoesp'),
+    path('professor/mentorias/', mentoriasp, name='mentoriasp'),
+    path('professor/agenda/', agendap, name='agendap'),
     # ALUNO
 
     path(

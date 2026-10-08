@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AMS Hub - Mentorias{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'Professor.css' %}">
+<link rel="stylesheet" href="{% static 'professor/professorpaginas.css' %}">
+{% endblock %}
+
+{% block saudacao %}
+<h1>Mentorias</h1>
+{% endblock %}
+
+{% block descricao %}
+Acompanhe as mentorias e o desenvolvimento dos alunos.
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url 'professor' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'portfoliosp' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'avaliacoesp' %}">
+            <i class="fa-solid fa-star"></i>
+            <span>Avaliações</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'mentoriasp' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'agendap' %}">
+            <i class="fa-solid fa-calendar"></i>
+            <span>Agenda</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<section class="professor-pagina">
+
+    <div class="pagina-cabecalho">
+        <div>
+            <h2>Mentorias</h2>
+            <p>Acompanhe as mentorias cadastradas no programa.</p>
+        </div>
+
+        <span class="contador">
+            {{ mentorias|length }} mentoria(s)
+        </span>
+    </div>
+
+    <div class="grade-cards">
+
+        {% for mentoria in mentorias %}
+
+        <article class="card-professor">
+
+            <div class="card-icone">
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <h3>{{ mentoria.titulo }}</h3>
+
+            <p>{{ mentoria.descricao|default:"Sem descrição."|truncatewords:25 }}</p>
+
+            <div class="card-informacoes">
+                <span>
+                    <i class="fa-solid fa-calendar"></i>
+                    {{ mentoria.data|date:"d/m/Y" }}
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-clock"></i>
+                    {{ mentoria.horario|default:"Horário não informado" }}
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-building"></i>
+                    {{ mentoria.empresa|default:"Empresa não informada" }}
+                </span>
+            </div>
+
+            <div class="card-rodape">
+                <span class="etiqueta">Mentoria</span>
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="estado-vazio">
+            <i class="fa-solid fa-users"></i>
+            <h3>Nenhuma mentoria encontrada</h3>
+            <p>As mentorias cadastradas aparecerão aqui.</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}
