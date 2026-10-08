@@ -803,3 +803,6 @@ def mentoriasgestao(request):
 
 def relatoriosgestao(request):
     return render(request, 'relatoriosgestao.html')
+
+def gerenciaalunosc(request):
+    return render(request, 'gerenciaalunosc.html')

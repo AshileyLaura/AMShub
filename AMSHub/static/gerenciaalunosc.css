@@ -1,0 +1,270 @@
+/* =========================================
+   GERENCIAR ALUNOS - COORDENADOR
+========================================= */
+
+.gerencia-alunos {
+    width: 100%;
+}
+
+/* FILTROS */
+
+.filtros-alunos {
+    flex-wrap: wrap;
+}
+
+.btn-filtrar,
+.btn-limpar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 11px 17px;
+
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-filtrar {
+    background: #6b4df6;
+    color: white;
+    border: none;
+}
+
+.btn-filtrar:hover {
+    background: #5639d8;
+}
+
+.btn-limpar {
+    background: #f0edff;
+    color: #6b4df6;
+}
+
+.btn-limpar:hover {
+    background: #e2dcff;
+    color: #5639d8;
+}
+
+/* TABELA */
+
+.tabela-alunos {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+}
+
+.tabela-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.tabela-cabecalho h2 {
+    font-size: 21px;
+    color: #222;
+    margin: 0 0 5px;
+}
+
+.tabela-cabecalho p {
+    color: #888;
+    font-size: 13px;
+    margin: 0;
+}
+
+.contador-alunos {
+    background: #f0edff;
+    color: #6b4df6;
+    border-radius: 20px;
+    padding: 7px 13px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* CABEÇALHO DA TABELA */
+
+.tabela-alunos table thead th {
+    background: #f7f7fa;
+    color: #666;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 16px 14px;
+    border: none;
+    white-space: nowrap;
+}
+
+/* LINHAS */
+
+.tabela-alunos table tbody td {
+    padding: 17px 14px;
+    border-bottom: 1px solid #eee;
+    color: #555;
+    font-size: 14px;
+}
+
+.tabela-alunos table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-alunos table tbody tr:hover {
+    background: #faf9ff;
+}
+
+/* IDENTIFICAÇÃO */
+
+.aluno-identificacao {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 190px;
+}
+
+.aluno-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #eeeaff;
+    color: #6b4df6;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.aluno-identificacao strong {
+    display: block;
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.aluno-identificacao small {
+    display: block;
+    color: #999;
+    font-size: 12px;
+}
+
+/* STATUS */
+
+.status-aluno {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-aluno.ativo {
+    background: #dcf8e5;
+    color: #248347;
+}
+
+.status-aluno.estagio {
+    background: #e2eaff;
+    color: #3b5fc4;
+}
+
+.status-aluno.pendente {
+    background: #fff0d5;
+    color: #b97a00;
+}
+
+.status-aluno.neutro {
+    background: #eeeeee;
+    color: #666;
+}
+
+/* AÇÕES */
+
+.acoes-aluno {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.acao-btn {
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f0edff;
+    color: #6b4df6;
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.acao-btn:not(:disabled):hover {
+    background: #6b4df6;
+    color: white;
+}
+
+.acao-btn:disabled,
+.btn-principal:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* SEM RESULTADOS */
+
+.sem-alunos {
+    text-align: center;
+    padding: 45px 20px;
+}
+
+.sem-alunos > i {
+    font-size: 36px;
+    color: #bcb1ff;
+    margin-bottom: 15px;
+}
+
+.sem-alunos h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 7px;
+}
+
+.sem-alunos p {
+    color: #888;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 768px) {
+
+    .tabela-alunos {
+        padding: 18px;
+    }
+
+    .tabela-cabecalho {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tabela-alunos table {
+        min-width: 850px;
+    }
+
+    .filtros-alunos .btn-filtrar,
+    .filtros-alunos .btn-limpar {
+        width: 100%;
+    }
+}

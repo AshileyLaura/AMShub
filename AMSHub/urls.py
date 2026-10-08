@@ -21,6 +21,7 @@ from AMSHub.views import (
     empresagestao,
     mentoriasgestao,
     relatoriosgestao,
+    gerenciaalunosc,
 )
 
 
@@ -38,6 +39,7 @@ urlpatterns = [
     path('gestao/empresa/',empresagestao,name='empresagestao'),
     path('gestao/mentorias/',mentoriasgestao,name='mentoriasgestao'),
     path('gestao/relatorios/',relatoriosgestao,name='relatoriosgestao'),
+    path('coordenador/gerenciar-alunos/',gerenciaalunosc,name='gerenciaalunosc'),
 
     # ALUNO
 

@@ -1,0 +1,303 @@
+{% extends "gestao.html" %}
+{% load static %}
+
+{% block title %}
+AMS Hub - Gerenciar Alunos
+{% endblock %}
+
+{% block css_gestao %}
+<link rel="stylesheet" href="{% static 'gestaopaginas.css' %}">
+<link rel="stylesheet" href="{% static 'gerenciaalunosc.css' %}">
+{% endblock %}
+
+{% block saudacao %}
+Gerenciar Alunos
+{% endblock %}
+
+{% block descricao %}
+Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url 'coordenador' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'gerenciaalunosc' %}">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Gerenciar Alunos</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'empresagestao' %}">
+            <i class="fa-solid fa-building"></i>
+            <span>Empresas</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'mentoriasgestao' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Gerenciar Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'relatoriosgestao' %}">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Relatórios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'logout' %}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block perfil %}
+<div class="perfil">
+    <img src="{% static 'imagens/professor.png.png' %}" alt="Coordenador">
+
+    <div>
+        <strong>{{ nome_usuario }}</strong>
+        <small>Coordenador</small>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<section class="pagina-gestao gerencia-alunos">
+
+    <!-- TÍTULO -->
+
+    <div class="pagina-topo">
+        <div>
+            <h2>Gerenciar Alunos</h2>
+            <p>Visualize os alunos e acompanhe a situação de cada um.</p>
+        </div>
+
+        <button type="button" class="btn-principal" disabled
+                title="Cadastro de alunos ainda não conectado">
+            <i class="fa-solid fa-plus"></i>
+            Novo Aluno
+        </button>
+    </div>
+
+    <!-- INDICADORES -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-xl-3 col-md-6">
+            <div class="resumo-card">
+                <div class="resumo-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <div>
+                    <h3>{{ total_alunos|default:"0" }}</h3>
+                    <p>Total de Alunos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="resumo-card">
+                <div class="resumo-icon">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+
+                <div>
+                    <h3>{{ alunos_ativos|default:"0" }}</h3>
+                    <p>Alunos Ativos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="resumo-card">
+                <div class="resumo-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+
+                <div>
+                    <h3>{{ alunos_estagio|default:"0" }}</h3>
+                    <p>Em Estágio</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="resumo-card">
+                <div class="resumo-icon">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+
+                <div>
+                    <h3>{{ alunos_pendentes|default:"0" }}</h3>
+                    <p>Com Pendências</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FILTROS -->
+
+    <form method="get" class="filtros-gestao filtros-alunos">
+
+        <div class="pesquisa-gestao">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="search"
+                name="q"
+                value="{{ pesquisa }}"
+                placeholder="Pesquisar aluno por nome..."
+            >
+        </div>
+
+        <select name="status">
+            <option value="">Todos os status</option>
+            <option value="Ativo" {% if status_selecionado == "Ativo" %}selected{% endif %}>Ativo</option>
+            <option value="Em estágio" {% if status_selecionado == "Em estágio" %}selected{% endif %}>Em estágio</option>
+            <option value="Pendente" {% if status_selecionado == "Pendente" %}selected{% endif %}>Pendente</option>
+        </select>
+
+        <button type="submit" class="btn-filtrar">
+            <i class="fa-solid fa-filter"></i>
+            Filtrar
+        </button>
+
+        <a href="{% url 'gerenciaalunosc' %}" class="btn-limpar">
+            Limpar
+        </a>
+
+    </form>
+
+    <!-- TABELA -->
+
+    <div class="tabela-alunos">
+
+        <div class="tabela-cabecalho">
+            <div>
+                <h2>Alunos Cadastrados</h2>
+                <p>Lista de alunos registrados no programa.</p>
+            </div>
+
+            <span class="contador-alunos">
+                {{ alunos|length }} resultado(s)
+            </span>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Curso</th>
+                        <th>Empresa</th>
+                        <th>Horas</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for aluno in alunos %}
+
+                    <tr>
+                        <td>
+                            <div class="aluno-identificacao">
+
+                                <div class="aluno-avatar">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+
+                                <div>
+                                    <strong>{{ aluno.nome }}</strong>
+                                    <small>{{ aluno.email }}</small>
+                                </div>
+
+                            </div>
+                        </td>
+
+                        <td>{{ aluno.curso|default:"Não informado" }}</td>
+
+                        <td>{{ aluno.empresa|default:"Não vinculada" }}</td>
+
+                        <td>
+                            <strong>{{ aluno.horas|default:"0" }}h</strong>
+                        </td>
+
+                        <td>
+                            {% if aluno.status == "Ativo" %}
+                                <span class="status-aluno ativo">Ativo</span>
+                            {% elif aluno.status == "Em estágio" %}
+                                <span class="status-aluno estagio">Em estágio</span>
+                            {% elif aluno.status == "Pendente" %}
+                                <span class="status-aluno pendente">Pendente</span>
+                            {% else %}
+                                <span class="status-aluno neutro">
+                                    {{ aluno.status|default:"Não informado" }}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="acoes-aluno">
+
+                                <button type="button" class="acao-btn"
+                                        title="Detalhes ainda não disponíveis"
+                                        disabled>
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+
+                                <button type="button" class="acao-btn"
+                                        title="Edição ainda não disponível"
+                                        disabled>
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="6">
+                            <div class="sem-alunos">
+                                <i class="fa-solid fa-users"></i>
+                                <h3>Nenhum aluno encontrado</h3>
+                                <p>Não existem alunos para os filtros selecionados.</p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
