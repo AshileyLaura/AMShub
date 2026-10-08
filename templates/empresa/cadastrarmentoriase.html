@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AMS Hub - Cadastrar Mentorias{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'Empresa.css' %}">
+<link rel="stylesheet" href="{% static 'empresapaginas.css' %}">
+{% endblock %}
+
+{% block saudacao %}
+<h1>Cadastrar Mentorias</h1>
+{% endblock %}
+
+{% block descricao %}
+Organize e acompanhe as mentorias oferecidas pela empresa.
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url 'empresa' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'cadastrarmentoriase' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Cadastrar Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'criartarefase' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Criar Tarefas</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'oportunidadese' %}">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Oportunidades</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<section class="empresa-pagina">
+
+    <div class="pagina-cabecalho">
+        <div>
+            <h2>Gerenciamento de Mentorias</h2>
+            <p>Cadastre novas mentorias e acompanhe as existentes.</p>
+        </div>
+    </div>
+
+    <div class="painel-empresa">
+
+        <div class="painel-titulo">
+            <i class="fa-solid fa-circle-plus"></i>
+            <h3>Nova Mentoria</h3>
+        </div>
+
+        <form method="post" class="formulario-empresa">
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="campo-formulario">
+                    <label for="titulo">Título da mentoria</label>
+                    <input
+                        type="text"
+                        id="titulo"
+                        name="titulo"
+                        placeholder="Ex.: Desenvolvimento Web"
+                        required
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="area">Área de conhecimento</label>
+                    <input
+                        type="text"
+                        id="area"
+                        name="area"
+                        placeholder="Ex.: Tecnologia"
+                        required
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="data">Data</label>
+                    <input type="date" id="data" name="data" required>
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="horario">Horário</label>
+                    <input type="time" id="horario" name="horario" required>
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="vagas">Quantidade de vagas</label>
+                    <input
+                        type="number"
+                        id="vagas"
+                        name="vagas"
+                        min="1"
+                        required
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="modalidade">Modalidade</label>
+                    <select id="modalidade" name="modalidade" required>
+                        <option value="">Selecione</option>
+                        <option value="Online">Online</option>
+                        <option value="Presencial">Presencial</option>
+                        <option value="Híbrida">Híbrida</option>
+                    </select>
+                </div>
+
+                <div class="campo-formulario campo-completo">
+                    <label for="descricao">Descrição</label>
+                    <textarea
+                        id="descricao"
+                        name="descricao"
+                        rows="4"
+                        placeholder="Descreva os objetivos da mentoria..."
+                        required
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div class="form-acoes">
+                <button type="submit" class="botao-principal" disabled
+                        title="Aguardando integração com o banco">
+                    <i class="fa-solid fa-plus"></i>
+                    Cadastrar Mentoria
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="painel-empresa">
+        <div class="painel-titulo">
+            <i class="fa-solid fa-list"></i>
+            <h3>Mentorias Cadastradas</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Mentoria</th>
+                        <th>Data</th>
+                        <th>Modalidade</th>
+                        <th>Vagas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mentoria in mentorias %}
+                    <tr>
+                        <td>{{ mentoria.titulo }}</td>
+                        <td>{{ mentoria.data|date:"d/m/Y" }}</td>
+                        <td>{{ mentoria.modalidade }}</td>
+                        <td>{{ mentoria.vagas }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4">
+                            Nenhuma mentoria cadastrada.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
