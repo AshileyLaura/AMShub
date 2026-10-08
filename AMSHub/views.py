@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Count, Q
 from django.urls import reverse
 from django.utils import timezone
 from functools import wraps
@@ -22,7 +23,6 @@ from .models import (
     Horas,
     Notificacao,
     Atividade,
-    
 )
 
 
@@ -209,7 +209,9 @@ def redirecionar_por_tipo(tipo):
     return redirect(destinos.get(tipo, 'index'))
 
 
-def tipo_permitido(tipo):
+def tipos_permitidos(*tipos):
+    """Libera a tela para um ou mais tipos de usuário."""
+
     def decorator(view_func):
 
         @wraps(view_func)
@@ -218,7 +220,7 @@ def tipo_permitido(tipo):
             if not hasattr(request.user, 'perfil'):
                 return redirect('login')
 
-            if request.user.perfil.tipo != tipo:
+            if request.user.perfil.tipo not in tipos:
                 return redirecionar_por_tipo(request.user.perfil.tipo)
 
             return view_func(request, *args, **kwargs)
@@ -228,8 +230,61 @@ def tipo_permitido(tipo):
     return decorator
 
 
+def tipo_permitido(tipo):
+    return tipos_permitidos(tipo)
+
+
 def index(request):
     return render(request, 'index.html')
+
+
+# ---------------------------------------------------------------------
+# FUNÇÕES AUXILIARES DA GESTÃO (coordenador e supervisor)
+# ---------------------------------------------------------------------
+
+CARGOS = {
+    'coordenador': 'Coordenador',
+    'supervisor': 'Supervisor',
+}
+
+
+def resumo_do_aluno(aluno, hoje):
+    """Devolve (total de horas, tem atividade em atraso) de um aluno."""
+
+    _, concluidas, atrasadas = classificar_atividades(
+        atividades_do_aluno(aluno),
+        hoje
+    )
+
+    horas = (
+        sum(p.horas for p in Participacao.objects.filter(
+            id_aluno=aluno, presenca=True))
+        + sum(a.horas for a in concluidas)
+        + sum(c.carga_horaria for c in Certificado.objects.filter(
+            id_aluno=aluno) if classe_certificado(c.status) == 'aprovado')
+        + sum(v.horas for v in Viagem.objects.filter(id_aluno=aluno))
+        + sum(h.quantidade for h in Horas.objects.filter(id_aluno=aluno))
+    )
+
+    return horas, bool(atrasadas)
+
+
+def contexto_gestao(request):
+    """Dados que o gestao.html (base) precisa em qualquer tela de gestão."""
+
+    hoje = timezone.localdate()
+
+    return {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'cargo_usuario': CARGOS.get(request.user.perfil.tipo, ''),
+        'total_empresas': Empresa.objects.count(),
+        'total_mentorias': Mentoria.objects.count(),
+        'empresas_recentes': Empresa.objects.order_by('nome')[:3],
+        'proximas_mentorias': Mentoria.objects.filter(
+            data__gte=hoje
+        ).select_related('empresa').order_by('data')[:3],
+    }
 
 
 # ---------------------------------------------------------------------
@@ -345,28 +400,6 @@ def professor(request):
     return render(request, 'Professor.html', contexto)
 
 
-@tipo_permitido('coordenador')
-def coordenador(request):
-
-    contexto = {
-        'usuario': request.user,
-        'nome_usuario': nome_do_usuario(request),
-    }
-
-    return render(request, 'Coordenador.html', contexto)
-
-
-@tipo_permitido('supervisor')
-def supervisor(request):
-
-    contexto = {
-        'usuario': request.user,
-        'nome_usuario': nome_do_usuario(request),
-    }
-
-    return render(request, 'Supervisor.html', contexto)
-
-
 @tipo_permitido('empresa')
 def empresa(request):
 
@@ -376,6 +409,178 @@ def empresa(request):
     }
 
     return render(request, 'Empresa.html', contexto)
+
+
+# ---------------------------------------------------------------------
+# GESTÃO: COORDENADOR E SUPERVISOR
+# ---------------------------------------------------------------------
+
+@tipos_permitidos('coordenador')
+def coordenador(request):
+
+    contexto = contexto_gestao(request)
+    contexto['total_alunos'] = Aluno.objects.count()
+
+    return render(request, 'Coordenador.html', contexto)
+
+
+@tipos_permitidos('supervisor')
+def supervisor(request):
+
+    return render(request, 'Supervisor.html', contexto_gestao(request))
+
+
+@tipos_permitidos('coordenador', 'supervisor')
+def empresagestao(request):
+
+    hoje = timezone.localdate()
+    pesquisa = request.GET.get('q', '').strip()
+
+    empresas = Empresa.objects.annotate(
+        total_alunos=Count('alunos', distinct=True),
+        total_mentorias=Count('mentorias', distinct=True),
+        total_vagas=Count(
+            'vaga',
+            filter=Q(vaga__data_limite__gte=hoje),
+            distinct=True
+        ),
+    ).order_by('nome')
+
+    if pesquisa:
+        empresas = empresas.filter(nome__icontains=pesquisa)
+
+    contexto = contexto_gestao(request)
+    contexto['empresas'] = empresas
+    contexto['pesquisa'] = pesquisa
+
+    return render(request, 'empresagestao.html', contexto)
+
+
+@tipos_permitidos('coordenador', 'supervisor')
+def mentoriasgestao(request):
+
+    hoje = timezone.localdate()
+    pesquisa = request.GET.get('q', '').strip()
+    status_selecionado = request.GET.get('status', '').strip()
+    empresa_selecionada = request.GET.get('empresa', '').strip()
+
+    consulta = Mentoria.objects.select_related(
+        'empresa',
+        'id_professor__perfil__user',
+        'id_supervisor__perfil__user'
+    ).order_by('data')
+
+    if pesquisa:
+        consulta = consulta.filter(tema__icontains=pesquisa)
+
+    if empresa_selecionada.isdigit():
+        consulta = consulta.filter(empresa_id=int(empresa_selecionada))
+
+    if status_selecionado == 'Em breve':
+        consulta = consulta.filter(data__gte=hoje)
+    elif status_selecionado == 'Concluída':
+        consulta = consulta.filter(data__lt=hoje)
+
+    mentorias = list(consulta)
+
+    # Quantidade de alunos por mentoria, em uma consulta só
+    participantes = dict(
+        Participacao.objects.values_list('id_mentoria').annotate(
+            total=Count('id_aluno')
+        )
+    )
+
+    for mentoria in mentorias:
+        mentoria.total_alunos = participantes.get(mentoria.pk, 0)
+        mentoria.realizada = mentoria.data < hoje
+
+    contexto = contexto_gestao(request)
+    contexto.update({
+        'mentorias': mentorias,
+        'empresas': Empresa.objects.order_by('nome'),
+        'pesquisa': pesquisa,
+        'status_selecionado': status_selecionado,
+        'empresa_selecionada': empresa_selecionada,
+    })
+
+    return render(request, 'mentoriasgestao.html', contexto)
+
+
+@tipos_permitidos('coordenador', 'supervisor')
+def relatoriosgestao(request):
+
+    hoje = timezone.localdate()
+
+    total_horas = sum(
+        resumo_do_aluno(aluno, hoje)[0]
+        for aluno in Aluno.objects.all()
+    )
+
+    contexto = contexto_gestao(request)
+    contexto['total_alunos'] = Aluno.objects.count()
+    contexto['total_horas'] = total_horas
+
+    return render(request, 'relatoriosgestao.html', contexto)
+
+
+@tipos_permitidos('coordenador')
+def gerenciaalunosc(request):
+
+    hoje = timezone.localdate()
+    pesquisa = request.GET.get('q', '').strip()
+    status_selecionado = request.GET.get('status', '').strip()
+
+    consulta = Aluno.objects.select_related(
+        'perfil__user',
+        'empresa'
+    ).order_by('perfil__user__first_name')
+
+    if pesquisa:
+        consulta = consulta.filter(
+            Q(perfil__user__first_name__icontains=pesquisa)
+            | Q(perfil__user__email__icontains=pesquisa)
+        )
+
+    todos = []
+
+    for aluno in consulta:
+
+        horas, tem_atraso = resumo_do_aluno(aluno, hoje)
+        usuario = aluno.perfil.user
+
+        if tem_atraso:
+            status = 'Pendente'
+        elif aluno.empresa_id:
+            status = 'Em estágio'
+        else:
+            status = 'Ativo'
+
+        todos.append({
+            'nome': usuario.get_full_name() or usuario.username,
+            'email': usuario.email,
+            'curso': aluno.curso,
+            'empresa': aluno.empresa.nome if aluno.empresa else None,
+            'horas': horas,
+            'status': status,
+        })
+
+    if status_selecionado:
+        alunos = [a for a in todos if a['status'] == status_selecionado]
+    else:
+        alunos = todos
+
+    contexto = contexto_gestao(request)
+    contexto.update({
+        'alunos': alunos,
+        'pesquisa': pesquisa,
+        'status_selecionado': status_selecionado,
+        'total_alunos': len(todos),
+        'alunos_ativos': sum(1 for a in todos if a['status'] == 'Ativo'),
+        'alunos_estagio': sum(1 for a in todos if a['status'] == 'Em estágio'),
+        'alunos_pendentes': sum(1 for a in todos if a['status'] == 'Pendente'),
+    })
+
+    return render(request, 'gerenciaalunosc.html', contexto)
 
 
 # ---------------------------------------------------------------------
@@ -802,23 +1007,15 @@ def cadastro(request):
             request,
             'Cadastro realizado! Escolha seu tipo de acesso para entrar.'
         )
-        
+
         return redirect('index')
 
     return render(request, 'cadastro.html')
-def empresagestao(request):
-    return render(request, 'empresagestao.html')
 
 
-def mentoriasgestao(request):
-    return render(request, 'mentoriasgestao.html')
-
-
-def relatoriosgestao(request):
-    return render(request, 'relatoriosgestao.html')
-
-def gerenciaalunosc(request):
-    return render(request, 'gerenciaalunosc.html')
+# ---------------------------------------------------------------------
+# PROFESSOR
+# ---------------------------------------------------------------------
 
 def portfoliosp(request):
     return render(request, 'professor/portfoliosp.html')
@@ -834,6 +1031,11 @@ def mentoriasp(request):
 
 def agendap(request):
     return render(request, 'professor/agendap.html')
+
+
+# ---------------------------------------------------------------------
+# EMPRESA
+# ---------------------------------------------------------------------
 
 def cadastrarmentoriase(request):
     return render(request, 'empresa/cadastrarmentoriase.html')

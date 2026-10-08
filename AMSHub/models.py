@@ -45,6 +45,14 @@ class Mentoria(models.Model):
         blank=True
     )
 
+    empresa = models.ForeignKey(
+        'Empresa',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='mentorias'
+    )
+
     tema = models.CharField(max_length=200)
     descricao = models.TextField()
     data = models.DateField()
@@ -66,6 +74,14 @@ class Aluno(models.Model):
     curso = models.CharField(
         max_length=200,
         default="Não informado"
+    )
+
+    empresa = models.ForeignKey(
+        'Empresa',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='alunos'
     )
 
     turma = models.CharField(max_length=200)
