@@ -59,7 +59,7 @@ Acompanhe as mentorias realizadas pelas empresas parceiras.
 
     <!-- PESQUISA E FILTROS -->
 
-    <div class="filtros-gestao">
+    <form method="get" class="filtros-gestao">
 
         <div class="pesquisa-gestao">
 
@@ -67,44 +67,148 @@ Acompanhe as mentorias realizadas pelas empresas parceiras.
 
             <input
                 type="text"
+                name="q"
+                value="{{ pesquisa }}"
                 placeholder="Pesquisar mentoria..."
             >
 
         </div>
 
 
-        <select>
+        <select name="empresa" onchange="this.form.submit()">
 
             <option value="">
                 Todas as empresas
             </option>
 
-            <option>IBM</option>
-            <option>TAB</option>
-            <option>DevCool</option>
+            {% for e in empresas %}
+            <option value="{{ e.pk }}" {% if empresa_selecionada == e.pk|stringformat:"s" %}selected{% endif %}>{{ e.nome }}</option>
+            {% endfor %}
 
         </select>
 
 
-        <select>
+        <select name="status" onchange="this.form.submit()">
 
             <option value="">
                 Todos os status
             </option>
 
-            <option>Em breve</option>
-            <option>Concluída</option>
-            <option>Cancelada</option>
+            <option value="Em breve" {% if status_selecionado == "Em breve" %}selected{% endif %}>Em breve</option>
+            <option value="Concluída" {% if status_selecionado == "Concluída" %}selected{% endif %}>Concluída</option>
 
         </select>
 
-    </div>
+    </form>
 
 
     <!-- CARDS -->
 
     <div class="lista-gestao">
 
+
+        {% for m in mentorias %}
+
+        <div class="item-card">
+
+            <div class="item-card-topo">
+
+                <div class="item-card-icon">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+
+                {% if m.realizada %}
+                <span class="status status-concluido">
+                    Concluída
+                </span>
+                {% else %}
+                <span class="status status-proximo">
+                    Em breve
+                </span>
+                {% endif %}
+
+            </div>
+
+
+            <div class="item-card-conteudo">
+
+                <h3>{{ m.tema }}</h3>
+
+                <p>
+                    {{ m.descricao|truncatechars:120 }}
+                </p>
+
+
+                <div class="informacoes">
+
+                    <span>
+
+                        <i class="fa-solid fa-building"></i>
+
+                        {{ m.empresa.nome|default:"Sem empresa" }}
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-calendar"></i>
+
+                        {{ m.data|date:"d/m/Y" }}
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-clock"></i>
+
+                        {{ m.carga_horaria }}h
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="item-card-acoes">
+
+                <a href="#" class="btn-secundario">
+
+                    <i class="fa-regular fa-eye"></i>
+
+                    Ver detalhes
+
+                </a>
+
+
+                {% if cargo_usuario == "Coordenador" %}
+
+                <a href="#" class="btn-editar">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                    Editar
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        {% if pesquisa or empresa_selecionada or status_selecionado %}
+
+        <p>Nenhuma mentoria encontrada para os filtros selecionados.</p>
+
+        {% else %}
 
         <!-- MENTORIA 1 -->
 
@@ -374,6 +478,10 @@ Acompanhe as mentorias realizadas pelas empresas parceiras.
             </div>
 
         </div>
+
+        {% endif %}
+
+        {% endfor %}
 
     </div>
 

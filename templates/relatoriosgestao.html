@@ -61,7 +61,7 @@ Consulte os principais dados e indicadores do programa AMS.
 
                 <div>
 
-                    <h3>124</h3>
+                    <h3>{{ total_alunos|default:"124" }}</h3>
 
                     <p>Alunos</p>
 
@@ -84,7 +84,7 @@ Consulte os principais dados e indicadores do programa AMS.
 
                 <div>
 
-                    <h3>18</h3>
+                    <h3>{{ total_empresas|default:"18" }}</h3>
 
                     <p>Empresas</p>
 
@@ -107,7 +107,7 @@ Consulte os principais dados e indicadores do programa AMS.
 
                 <div>
 
-                    <h3>08</h3>
+                    <h3>{{ total_mentorias|default:"08" }}</h3>
 
                     <p>Mentorias</p>
 
@@ -130,7 +130,7 @@ Consulte os principais dados e indicadores do programa AMS.
 
                 <div>
 
-                    <h3>3.420h</h3>
+                    <h3>{% if total_horas %}{{ total_horas|floatformat:"-1" }}h{% else %}3.420h{% endif %}</h3>
 
                     <p>Horas Registradas</p>
 

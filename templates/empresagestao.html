@@ -59,7 +59,7 @@ Consulte as empresas parceiras do programa AMS.
 
     <!-- FILTROS -->
 
-    <div class="filtros-gestao">
+    <form method="get" class="filtros-gestao">
 
         <div class="pesquisa-gestao">
 
@@ -67,6 +67,8 @@ Consulte as empresas parceiras do programa AMS.
 
             <input
                 type="text"
+                name="q"
+                value="{{ pesquisa }}"
                 placeholder="Pesquisar empresa..."
             >
 
@@ -84,13 +86,100 @@ Consulte as empresas parceiras do programa AMS.
 
         </select>
 
-    </div>
+    </form>
 
 
     <!-- EMPRESAS -->
 
     <div class="lista-gestao">
 
+
+        {% for empresa in empresas %}
+
+        <div class="item-card">
+
+            <div class="item-card-topo">
+
+                <div class="item-card-icon">
+
+                    <i class="fa-solid fa-building"></i>
+
+                </div>
+
+                <span class="status status-concluido">
+                    Ativa
+                </span>
+
+            </div>
+
+
+            <div class="item-card-conteudo">
+
+                <h3>{{ empresa.nome }}</h3>
+
+                <p>
+                    Empresa parceira do programa AMS.
+                </p>
+
+
+                <div class="informacoes">
+
+                    <span>
+
+                        <i class="fa-solid fa-users"></i>
+
+                        {{ empresa.total_alunos }} alunos
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-chalkboard-user"></i>
+
+                        {{ empresa.total_mentorias }} mentorias
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="item-card-acoes">
+
+                <a href="#" class="btn-secundario">
+
+                    <i class="fa-regular fa-eye"></i>
+
+                    Ver detalhes
+
+                </a>
+
+
+                {% if cargo_usuario == "Coordenador" %}
+
+                <a href="#" class="btn-editar">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                    Editar
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        {% if pesquisa %}
+
+        <p>Nenhuma empresa encontrada para "{{ pesquisa }}".</p>
+
+        {% else %}
 
         <!-- IBM -->
 
@@ -330,6 +419,10 @@ Consulte as empresas parceiras do programa AMS.
             </div>
 
         </div>
+
+        {% endif %}
+
+        {% endfor %}
 
     </div>
 

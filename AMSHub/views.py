@@ -418,8 +418,14 @@ def empresa(request):
 @tipos_permitidos('coordenador')
 def coordenador(request):
 
+    hoje = timezone.localdate()
+    alunos = Aluno.objects.all()
+
     contexto = contexto_gestao(request)
-    contexto['total_alunos'] = Aluno.objects.count()
+    contexto['total_alunos'] = alunos.count()
+    contexto['alunos_pendentes'] = sum(
+        1 for a in alunos if resumo_do_aluno(a, hoje)[1]
+    )
 
     return render(request, 'Coordenador.html', contexto)
 
@@ -1017,18 +1023,22 @@ def cadastro(request):
 # PROFESSOR
 # ---------------------------------------------------------------------
 
+@tipo_permitido('professor')
 def portfoliosp(request):
     return render(request, 'professor/portfoliosp.html')
 
 
+@tipo_permitido('professor')
 def avaliacoesp(request):
     return render(request, 'professor/avaliacoesp.html')
 
 
+@tipo_permitido('professor')
 def mentoriasp(request):
     return render(request, 'professor/mentoriasp.html')
 
 
+@tipo_permitido('professor')
 def agendap(request):
     return render(request, 'professor/agendap.html')
 
@@ -1037,13 +1047,16 @@ def agendap(request):
 # EMPRESA
 # ---------------------------------------------------------------------
 
+@tipo_permitido('empresa')
 def cadastrarmentoriase(request):
     return render(request, 'empresa/cadastrarmentoriase.html')
 
 
+@tipo_permitido('empresa')
 def criartarefase(request):
     return render(request, 'empresa/criartarefase.html')
 
 
+@tipo_permitido('empresa')
 def oportunidadese(request):
     return render(request, 'empresa/oportunidadese.html')

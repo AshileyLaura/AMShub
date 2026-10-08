@@ -41,13 +41,13 @@
 
             <div>
 
-                <h2>18</h2>
+                <h2>{{ total_empresas|default:"18" }}</h2>
 
                 <p>Empresas Parceiras</p>
 
             </div>
 
-            <a href="#" class="gestao-card-link">
+            <a href="{% url 'empresagestao' %}" class="gestao-card-link">
 
                 Ver empresas
 
@@ -72,13 +72,13 @@
 
             <div>
 
-                <h2>08</h2>
+                <h2>{{ total_mentorias|default:"08" }}</h2>
 
                 <p>Mentorias</p>
 
             </div>
 
-            <a href="#" class="gestao-card-link">
+            <a href="{% url 'mentoriasgestao' %}" class="gestao-card-link">
 
                 Ver mentorias
 
@@ -109,7 +109,7 @@
 
             </div>
 
-            <a href="#" class="gestao-card-link">
+            <a href="{% url 'relatoriosgestao' %}" class="gestao-card-link">
 
                 Ver relatórios
 
@@ -156,12 +156,36 @@
 
                 </div>
 
-                <a href="#">
+                <a href="{% url 'empresagestao' %}">
                     Ver todas
                 </a>
 
             </div>
 
+
+            {% for e in empresas_recentes %}
+
+            <div class="empresa-item">
+
+                <div class="item-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+
+                <div class="item-info">
+
+                    <strong>{{ e.nome }}</strong>
+
+                    <span>
+                        Empresa parceira
+                    </span>
+
+                </div>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+
+            </div>
+
+            {% empty %}
 
             <div class="empresa-item">
 
@@ -225,6 +249,8 @@
 
             </div>
 
+            {% endfor %}
+
         </div>
 
     </div>
@@ -248,12 +274,43 @@
 
                 </div>
 
-                <a href="#">
+                <a href="{% url 'mentoriasgestao' %}">
                     Ver todas
                 </a>
 
             </div>
 
+
+            {% for m in proximas_mentorias %}
+
+            <div class="mentoria-item">
+
+                <div class="data-mentoria">
+
+                    <strong>{{ m.data|date:"d" }}</strong>
+
+                    <span>{{ m.data|date:"M"|upper }}</span>
+
+                </div>
+
+
+                <div class="item-info">
+
+                    <strong>{{ m.tema }}</strong>
+
+                    <span>
+                        {{ m.empresa.nome|default:"Sem empresa" }} · {{ m.carga_horaria }}h
+                    </span>
+
+                </div>
+
+                <span class="tag-mentoria">
+                    Em breve
+                </span>
+
+            </div>
+
+            {% empty %}
 
             <div class="mentoria-item">
 
@@ -338,6 +395,8 @@
 
             </div>
 
+            {% endfor %}
+
         </div>
 
     </div>
@@ -363,7 +422,7 @@
 
         </div>
 
-        <a href="#">
+        <a href="{% url 'relatoriosgestao' %}">
             Ver todos
         </a>
 
