@@ -25,6 +25,12 @@
 
         <p>Selecione o perfil para acessar o sistema.</p>
 
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
         <div class="botoes">
 
             <a href="/login/aluno/" class="botao">
@@ -47,7 +53,7 @@
                 <span>Supervisor</span>
             </a>
 
-            <a href="/login/empresa" class="botao empresa">
+            <a href="/login/empresa/" class="botao empresa">
                 <i class="fa-solid fa-building"></i>
                 <span>Empresa</span>
             </a>

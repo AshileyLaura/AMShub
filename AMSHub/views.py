@@ -22,6 +22,7 @@ from .models import (
     Horas,
     Notificacao,
     Atividade,
+    
 )
 
 
@@ -403,12 +404,17 @@ def login_view(request):
 
     if request.method == 'POST':
 
-        username = request.POST.get('username')
+        email = (
+            request.POST.get('email')
+            or request.POST.get('username')
+            or ''
+        ).strip().lower()
+
         senha = request.POST.get('senha')
 
         usuario = authenticate(
             request,
-            username=username,
+            username=email,
             password=senha
         )
 
@@ -419,17 +425,18 @@ def login_view(request):
                     request,
                     pagina,
                     {
-                        'erro': 'Este usuário não possui um perfil cadastrado.'
+                        'erro': 'Este usuário não possui um perfil cadastrado.',
+                        'email': email
                     }
                 )
 
-            # Só entra se o tipo do usuário for o mesmo da tela de login
             if usuario.perfil.tipo != tipo_da_tela:
                 return render(
                     request,
                     pagina,
                     {
-                        'erro': f'Este usuário não está cadastrado como {tipo_da_tela}.'
+                        'erro': f'Este e-mail não está cadastrado como {tipo_da_tela}.',
+                        'email': email
                     }
                 )
 
@@ -441,7 +448,8 @@ def login_view(request):
             request,
             pagina,
             {
-                'erro': 'Usuário ou senha inválidos.'
+                'erro': 'E-mail ou senha inválidos.',
+                'email': email
             }
         )
 
@@ -727,7 +735,7 @@ def cadastro(request):
     if request.method == 'POST':
 
         nome = request.POST.get('nome', '').strip()
-        email = request.POST.get('email', '').strip()
+        email = request.POST.get('email', '').strip().lower()
         senha = request.POST.get('senha', '').strip()
         tipo = request.POST.get('tipo', '').strip().lower()
         curso = request.POST.get('curso', '').strip()
@@ -790,7 +798,12 @@ def cadastro(request):
                 nome=nome
             )
 
-        return redirect('login')
+        messages.success(
+            request,
+            'Cadastro realizado! Escolha seu tipo de acesso para entrar.'
+        )
+        
+        return redirect('index')
 
     return render(request, 'cadastro.html')
 def empresagestao(request):
@@ -806,3 +819,29 @@ def relatoriosgestao(request):
 
 def gerenciaalunosc(request):
     return render(request, 'gerenciaalunosc.html')
+
+def portfoliosp(request):
+    return render(request, 'professor/portfoliosp.html')
+
+
+def avaliacoesp(request):
+    return render(request, 'professor/avaliacoesp.html')
+
+
+def mentoriasp(request):
+    return render(request, 'professor/mentoriasp.html')
+
+
+def agendap(request):
+    return render(request, 'professor/agendap.html')
+
+def cadastrarmentoriase(request):
+    return render(request, 'empresa/cadastrarmentoriase.html')
+
+
+def criartarefase(request):
+    return render(request, 'empresa/criartarefase.html')
+
+
+def oportunidadese(request):
+    return render(request, 'empresa/oportunidadese.html')
