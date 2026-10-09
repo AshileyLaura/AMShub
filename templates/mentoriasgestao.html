@@ -1,490 +1,474 @@
 {% extends "gestao.html" %}
 {% load static %}
 
-
 {% block title %}
 AMS Hub - Mentorias
 {% endblock %}
-
 
 {% block css_gestao %}
 <link rel="stylesheet" href="{% static 'gestaopaginas.css' %}">
 {% endblock %}
 
-
 {% block saudacao %}
 Mentorias
 {% endblock %}
-
 
 {% block descricao %}
 Acompanhe as mentorias realizadas pelas empresas parceiras.
 {% endblock %}
 
-
 {% block content %}
 
 <section class="pagina-gestao">
 
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
 
-    <!-- CABEÇALHO DA PÁGINA -->
-
+    <!-- CABEÇALHO -->
     <div class="pagina-topo">
-
         <div>
-
             <h2>Mentorias</h2>
-
-            <p>
-                Consulte e acompanhe as mentorias do programa AMS.
-            </p>
-
+            <p>Consulte e acompanhe as mentorias do programa AMS.</p>
         </div>
 
-
         {% if cargo_usuario == "Coordenador" %}
-
-        <a href="#" class="btn-principal">
-
+        <button
+            type="button"
+            class="btn-principal"
+            data-bs-toggle="modal"
+            data-bs-target="#modalMentoria"
+            onclick="novaMentoria()"
+        >
             <i class="fa-solid fa-plus"></i>
-
             Nova Mentoria
-
-        </a>
-
+        </button>
         {% endif %}
-
     </div>
 
-
     <!-- PESQUISA E FILTROS -->
-
     <form method="get" class="filtros-gestao">
 
         <div class="pesquisa-gestao">
-
             <i class="fa-solid fa-magnifying-glass"></i>
-
             <input
                 type="text"
                 name="q"
                 value="{{ pesquisa }}"
                 placeholder="Pesquisar mentoria..."
             >
-
         </div>
 
-
         <select name="empresa" onchange="this.form.submit()">
-
-            <option value="">
-                Todas as empresas
-            </option>
+            <option value="">Todas as empresas</option>
 
             {% for e in empresas %}
-            <option value="{{ e.pk }}" {% if empresa_selecionada == e.pk|stringformat:"s" %}selected{% endif %}>{{ e.nome }}</option>
+            <option value="{{ e.pk }}"
+                {% if empresa_selecionada == e.pk|stringformat:"s" %}selected{% endif %}>
+                {{ e.nome }}
+            </option>
             {% endfor %}
-
         </select>
-
 
         <select name="status" onchange="this.form.submit()">
-
-            <option value="">
-                Todos os status
+            <option value="">Todos os status</option>
+            <option value="Em breve"
+                {% if status_selecionado == "Em breve" %}selected{% endif %}>
+                Em breve
             </option>
-
-            <option value="Em breve" {% if status_selecionado == "Em breve" %}selected{% endif %}>Em breve</option>
-            <option value="Concluída" {% if status_selecionado == "Concluída" %}selected{% endif %}>Concluída</option>
-
+            <option value="Concluída"
+                {% if status_selecionado == "Concluída" %}selected{% endif %}>
+                Concluída
+            </option>
         </select>
+
+        <button type="submit" class="btn-filtrar">
+            <i class="fa-solid fa-filter"></i>
+            Filtrar
+        </button>
 
     </form>
 
-
-    <!-- CARDS -->
-
+    <!-- LISTA DE MENTORIAS -->
     <div class="lista-gestao">
-
 
         {% for m in mentorias %}
 
         <div class="item-card">
 
             <div class="item-card-topo">
-
                 <div class="item-card-icon">
-
                     <i class="fa-solid fa-users"></i>
-
                 </div>
-
 
                 {% if m.realizada %}
-                <span class="status status-concluido">
-                    Concluída
-                </span>
+                <span class="status status-concluido">Concluída</span>
                 {% else %}
-                <span class="status status-proximo">
-                    Em breve
-                </span>
+                <span class="status status-proximo">Em breve</span>
                 {% endif %}
-
             </div>
-
 
             <div class="item-card-conteudo">
-
                 <h3>{{ m.tema }}</h3>
 
-                <p>
-                    {{ m.descricao|truncatechars:120 }}
-                </p>
-
+                <p>{{ m.descricao|truncatechars:120 }}</p>
 
                 <div class="informacoes">
-
                     <span>
-
                         <i class="fa-solid fa-building"></i>
-
                         {{ m.empresa.nome|default:"Sem empresa" }}
-
                     </span>
 
-
                     <span>
-
                         <i class="fa-solid fa-calendar"></i>
-
                         {{ m.data|date:"d/m/Y" }}
-
                     </span>
-
 
                     <span>
-
                         <i class="fa-solid fa-clock"></i>
-
                         {{ m.carga_horaria }}h
-
                     </span>
-
                 </div>
-
             </div>
-
 
             <div class="item-card-acoes">
 
-                <a href="#" class="btn-secundario">
-
+                <button
+                    type="button"
+                    class="btn-secundario"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalDetalhesMentoria"
+                    data-tema="{{ m.tema }}"
+                    data-descricao="{{ m.descricao }}"
+                    data-data="{{ m.data|date:'d/m/Y' }}"
+                    data-horas="{{ m.carga_horaria }}"
+                    data-empresa="{{ m.empresa.nome|default:'Sem empresa' }}"
+                    data-professor="{% if m.id_professor %}{{ m.id_professor.perfil.user.get_full_name|default:m.id_professor.perfil.user.username }}{% else %}Não vinculado{% endif %}"
+                    data-supervisor="{% if m.id_supervisor %}{{ m.id_supervisor.perfil.user.get_full_name|default:m.id_supervisor.perfil.user.username }}{% else %}Não vinculado{% endif %}"
+                    data-alunos="{{ m.total_alunos }}"
+                    onclick="verMentoria(this)"
+                >
                     <i class="fa-regular fa-eye"></i>
-
                     Ver detalhes
-
-                </a>
-
+                </button>
 
                 {% if cargo_usuario == "Coordenador" %}
-
-                <a href="#" class="btn-editar">
-
+                <button
+                    type="button"
+                    class="btn-editar"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalMentoria"
+                    data-id="{{ m.pk }}"
+                    data-tema="{{ m.tema }}"
+                    data-descricao="{{ m.descricao }}"
+                    data-data="{{ m.data|date:'Y-m-d' }}"
+                    data-horas="{{ m.carga_horaria }}"
+                    data-empresa="{{ m.empresa_id|default:'' }}"
+                    data-professor="{{ m.id_professor_id|default:'' }}"
+                    data-supervisor="{{ m.id_supervisor_id|default:'' }}"
+                    onclick="editarMentoria(this)"
+                >
                     <i class="fa-solid fa-pen"></i>
-
                     Editar
-
-                </a>
-
+                </button>
                 {% endif %}
 
             </div>
-
         </div>
 
         {% empty %}
 
-        {% if pesquisa or empresa_selecionada or status_selecionado %}
-
-        <p>Nenhuma mentoria encontrada para os filtros selecionados.</p>
-
-        {% else %}
-
-        <!-- MENTORIA 1 -->
-
         <div class="item-card">
-
-            <div class="item-card-topo">
-
-                <div class="item-card-icon">
-
-                    <i class="fa-solid fa-users"></i>
-
-                </div>
-
-
-                <span class="status status-proximo">
-                    Em breve
-                </span>
-
-            </div>
-
-
             <div class="item-card-conteudo">
-
-                <h3>TAB - 3º DS</h3>
-
+                <h3>Nenhuma mentoria encontrada</h3>
                 <p>
-                    Mentoria de acompanhamento com os alunos do terceiro ano.
+                    {% if pesquisa or empresa_selecionada or status_selecionado %}
+                    Não existem mentorias para os filtros selecionados.
+                    {% else %}
+                    Ainda não existem mentorias cadastradas no banco de dados.
+                    {% endif %}
                 </p>
-
-
-                <div class="informacoes">
-
-                    <span>
-
-                        <i class="fa-solid fa-building"></i>
-
-                        TAB
-
-                    </span>
-
-
-                    <span>
-
-                        <i class="fa-solid fa-calendar"></i>
-
-                        12/10/2026
-
-                    </span>
-
-
-                    <span>
-
-                        <i class="fa-solid fa-clock"></i>
-
-                        10:00 às 11:30
-
-                    </span>
-
-                </div>
-
             </div>
-
-
-            <div class="item-card-acoes">
-
-                <a href="#" class="btn-secundario">
-
-                    <i class="fa-regular fa-eye"></i>
-
-                    Ver detalhes
-
-                </a>
-
-
-                {% if cargo_usuario == "Coordenador" %}
-
-                <a href="#" class="btn-editar">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                    Editar
-
-                </a>
-
-                {% endif %}
-
-            </div>
-
         </div>
-
-
-        <!-- MENTORIA 2 -->
-
-        <div class="item-card">
-
-            <div class="item-card-topo">
-
-                <div class="item-card-icon">
-
-                    <i class="fa-solid fa-users"></i>
-
-                </div>
-
-
-                <span class="status status-proximo">
-                    Em breve
-                </span>
-
-            </div>
-
-
-            <div class="item-card-conteudo">
-
-                <h3>IBM - AMS Geral</h3>
-
-                <p>
-                    Encontro com os alunos do programa AMS.
-                </p>
-
-
-                <div class="informacoes">
-
-                    <span>
-
-                        <i class="fa-solid fa-building"></i>
-
-                        IBM
-
-                    </span>
-
-
-                    <span>
-
-                        <i class="fa-solid fa-calendar"></i>
-
-                        16/10/2026
-
-                    </span>
-
-
-                    <span>
-
-                        <i class="fa-solid fa-clock"></i>
-
-                        10:00 às 12:00
-
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="item-card-acoes">
-
-                <a href="#" class="btn-secundario">
-
-                    <i class="fa-regular fa-eye"></i>
-
-                    Ver detalhes
-
-                </a>
-
-
-                {% if cargo_usuario == "Coordenador" %}
-
-                <a href="#" class="btn-editar">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                    Editar
-
-                </a>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-
-        <!-- MENTORIA 3 -->
-
-        <div class="item-card">
-
-            <div class="item-card-topo">
-
-                <div class="item-card-icon">
-
-                    <i class="fa-solid fa-users"></i>
-
-                </div>
-
-
-                <span class="status status-concluido">
-                    Concluída
-                </span>
-
-            </div>
-
-
-            <div class="item-card-conteudo">
-
-                <h3>Visita Técnica</h3>
-
-                <p>
-                    Visita técnica realizada com os alunos do programa.
-                </p>
-
-
-                <div class="informacoes">
-
-                    <span>
-
-                        <i class="fa-solid fa-building"></i>
-
-                        DevCool
-
-                    </span>
-
-
-                    <span>
-
-                        <i class="fa-solid fa-calendar"></i>
-
-                        28/09/2026
-
-                    </span>
-
-
-                    <span>
-
-                        <i class="fa-solid fa-clock"></i>
-
-                        07:00 às 15:00
-
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="item-card-acoes">
-
-                <a href="#" class="btn-secundario">
-
-                    <i class="fa-regular fa-eye"></i>
-
-                    Ver detalhes
-
-                </a>
-
-
-                {% if cargo_usuario == "Coordenador" %}
-
-                <a href="#" class="btn-editar">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                    Editar
-
-                </a>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-        {% endif %}
 
         {% endfor %}
 
     </div>
-
 </section>
+
+
+<!-- MODAL CADASTRAR / EDITAR -->
+{% if cargo_usuario == "Coordenador" %}
+<div class="modal fade" id="modalMentoria" tabindex="-1"
+     aria-labelledby="tituloModalMentoria" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <form method="POST" action="{% url 'mentoriasgestao' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="acao" id="acaoMentoria" value="cadastrar">
+                <input type="hidden" name="id_mentoria" id="idMentoria">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tituloModalMentoria">
+                        Cadastrar Nova Mentoria
+                    </h5>
+
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row g-3">
+
+                        <div class="col-12">
+                            <label class="form-label">Tema da Mentoria *</label>
+                            <input
+                                type="text"
+                                name="tema"
+                                id="temaMentoria"
+                                class="form-control"
+                                maxlength="200"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Descrição *</label>
+                            <textarea
+                                name="descricao"
+                                id="descricaoMentoria"
+                                class="form-control"
+                                rows="3"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Data *</label>
+                            <input
+                                type="date"
+                                name="data"
+                                id="dataMentoria"
+                                class="form-control"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Carga Horária *</label>
+                            <input
+                                type="number"
+                                name="carga_horaria"
+                                id="horasMentoria"
+                                class="form-control"
+                                min="1"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Empresa Parceira</label>
+                            <select
+                                name="empresa"
+                                id="empresaMentoria"
+                                class="form-select"
+                            >
+                                <option value="">Sem empresa vinculada</option>
+
+                                {% for empresa in empresas %}
+                                <option value="{{ empresa.pk }}">
+                                    {{ empresa.nome }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Professor Responsável</label>
+                            <select
+                                name="professor"
+                                id="professorMentoria"
+                                class="form-select"
+                            >
+                                <option value="">Sem professor vinculado</option>
+
+                                {% for professor in professores %}
+                                <option value="{{ professor.pk }}">
+                                    {{ professor.perfil.user.get_full_name|default:professor.perfil.user.username }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Supervisor Responsável</label>
+                            <select
+                                name="supervisor"
+                                id="supervisorMentoria"
+                                class="form-select"
+                            >
+                                <option value="">Sem supervisor vinculado</option>
+
+                                {% for supervisor in supervisores %}
+                                <option value="{{ supervisor.pk }}">
+                                    {{ supervisor.perfil.user.get_full_name|default:supervisor.perfil.user.username }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Salvar Mentoria
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- MODAL DE DETALHES -->
+<div class="modal fade" id="modalDetalhesMentoria" tabindex="-1"
+     aria-labelledby="tituloDetalhesMentoria" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloDetalhesMentoria">
+                    Detalhes da Mentoria
+                </h5>
+
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+
+            <div class="modal-body">
+                <h4 id="detTema"></h4>
+
+                <p id="detDescricao" class="text-muted"></p>
+
+                <hr>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <strong>Empresa</strong>
+                        <p id="detEmpresa"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <strong>Data</strong>
+                        <p id="detData"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <strong>Carga Horária</strong>
+                        <p id="detHoras"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <strong>Participantes</strong>
+                        <p id="detAlunos"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <strong>Professor</strong>
+                        <p id="detProfessor"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <strong>Supervisor</strong>
+                        <p id="detSupervisor"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Fechar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+function novaMentoria() {
+    document.getElementById('tituloModalMentoria').textContent =
+        'Cadastrar Nova Mentoria';
+
+    document.getElementById('acaoMentoria').value = 'cadastrar';
+    document.getElementById('idMentoria').value = '';
+
+    document.getElementById('temaMentoria').value = '';
+    document.getElementById('descricaoMentoria').value = '';
+    document.getElementById('dataMentoria').value = '';
+    document.getElementById('horasMentoria').value = '';
+    document.getElementById('empresaMentoria').value = '';
+    document.getElementById('professorMentoria').value = '';
+    document.getElementById('supervisorMentoria').value = '';
+}
+
+function editarMentoria(botao) {
+    const dados = botao.dataset;
+
+    document.getElementById('tituloModalMentoria').textContent =
+        'Editar Mentoria';
+
+    document.getElementById('acaoMentoria').value = 'editar';
+    document.getElementById('idMentoria').value = dados.id;
+
+    document.getElementById('temaMentoria').value = dados.tema;
+    document.getElementById('descricaoMentoria').value = dados.descricao;
+    document.getElementById('dataMentoria').value = dados.data;
+    document.getElementById('horasMentoria').value = dados.horas;
+    document.getElementById('empresaMentoria').value = dados.empresa;
+    document.getElementById('professorMentoria').value = dados.professor;
+    document.getElementById('supervisorMentoria').value = dados.supervisor;
+}
+
+function verMentoria(botao) {
+    const dados = botao.dataset;
+
+    const campos = {
+        detTema: dados.tema,
+        detDescricao: dados.descricao,
+        detEmpresa: dados.empresa,
+        detData: dados.data,
+        detHoras: dados.horas + 'h',
+        detAlunos: dados.alunos,
+        detProfessor: dados.professor,
+        detSupervisor: dados.supervisor
+    };
+
+    Object.entries(campos).forEach(([id, valor]) => {
+        document.getElementById(id).textContent = valor;
+    });
+}
+</script>
 
 {% endblock %}

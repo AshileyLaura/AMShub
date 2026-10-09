@@ -1,431 +1,371 @@
+
 {% extends "gestao.html" %}
 {% load static %}
-
 
 {% block title %}
 AMS Hub - Empresas
 {% endblock %}
 
-
 {% block css_gestao %}
 <link rel="stylesheet" href="{% static 'gestaopaginas.css' %}">
 {% endblock %}
-
 
 {% block saudacao %}
 Empresas
 {% endblock %}
 
-
 {% block descricao %}
 Consulte as empresas parceiras do programa AMS.
 {% endblock %}
-
 
 {% block content %}
 
 <section class="pagina-gestao">
 
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
 
     <!-- CABEÇALHO -->
-
     <div class="pagina-topo">
-
         <div>
-
             <h2>Empresas Parceiras</h2>
-
-            <p>
-                Consulte as empresas vinculadas ao programa.
-            </p>
-
+            <p>Consulte as empresas vinculadas ao programa.</p>
         </div>
 
-
         {% if cargo_usuario == "Coordenador" %}
-
-        <a href="#" class="btn-principal">
-
+        <button
+            type="button"
+            class="btn-principal"
+            data-bs-toggle="modal"
+            data-bs-target="#modalEmpresa"
+            onclick="novaEmpresa()"
+        >
             <i class="fa-solid fa-plus"></i>
-
             Nova Empresa
-
-        </a>
-
+        </button>
         {% endif %}
-
     </div>
 
-
     <!-- FILTROS -->
-
     <form method="get" class="filtros-gestao">
-
         <div class="pesquisa-gestao">
-
             <i class="fa-solid fa-magnifying-glass"></i>
-
             <input
-                type="text"
+                type="search"
                 name="q"
                 value="{{ pesquisa }}"
                 placeholder="Pesquisar empresa..."
             >
-
         </div>
 
+        <button type="submit" class="btn-filtrar">
+            <i class="fa-solid fa-filter"></i>
+            Filtrar
+        </button>
 
-        <select>
-
-            <option value="">
-                Todas as empresas
-            </option>
-
-            <option>Ativas</option>
-            <option>Inativas</option>
-
-        </select>
-
+        <a href="{% url 'empresagestao' %}" class="btn-limpar">
+            Limpar
+        </a>
     </form>
 
-
     <!-- EMPRESAS -->
-
     <div class="lista-gestao">
 
-
         {% for empresa in empresas %}
-
         <div class="item-card">
 
             <div class="item-card-topo">
-
                 <div class="item-card-icon">
-
                     <i class="fa-solid fa-building"></i>
-
                 </div>
 
                 <span class="status status-concluido">
-                    Ativa
+                    Cadastrada
                 </span>
-
             </div>
-
 
             <div class="item-card-conteudo">
-
                 <h3>{{ empresa.nome }}</h3>
 
-                <p>
-                    Empresa parceira do programa AMS.
-                </p>
-
+                <p>Empresa parceira do programa AMS.</p>
 
                 <div class="informacoes">
-
                     <span>
-
                         <i class="fa-solid fa-users"></i>
-
                         {{ empresa.total_alunos }} alunos
-
                     </span>
-
 
                     <span>
-
                         <i class="fa-solid fa-chalkboard-user"></i>
-
                         {{ empresa.total_mentorias }} mentorias
-
                     </span>
-
                 </div>
-
             </div>
-
 
             <div class="item-card-acoes">
 
-                <a href="#" class="btn-secundario">
-
+                <button
+                    type="button"
+                    class="btn-secundario"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalDetalhesEmpresa"
+                    data-nome="{{ empresa.nome }}"
+                    data-email="{{ empresa.perfil.user.email }}"
+                    data-alunos="{{ empresa.total_alunos }}"
+                    data-mentorias="{{ empresa.total_mentorias }}"
+                    data-vagas="{{ empresa.total_vagas }}"
+                    onclick="verEmpresa(this)"
+                >
                     <i class="fa-regular fa-eye"></i>
-
                     Ver detalhes
-
-                </a>
-
+                </button>
 
                 {% if cargo_usuario == "Coordenador" %}
-
-                <a href="#" class="btn-editar">
-
+                <button
+                    type="button"
+                    class="btn-editar"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalEmpresa"
+                    data-id="{{ empresa.pk }}"
+                    data-nome="{{ empresa.nome }}"
+                    data-email="{{ empresa.perfil.user.email }}"
+                    onclick="editarEmpresa(this)"
+                >
                     <i class="fa-solid fa-pen"></i>
-
                     Editar
-
-                </a>
-
+                </button>
                 {% endif %}
 
             </div>
-
         </div>
 
         {% empty %}
-
-        {% if pesquisa %}
-
-        <p>Nenhuma empresa encontrada para "{{ pesquisa }}".</p>
-
-        {% else %}
-
-        <!-- IBM -->
-
-        <div class="item-card">
-
-            <div class="item-card-topo">
-
-                <div class="item-card-icon">
-
-                    <i class="fa-solid fa-building"></i>
-
-                </div>
-
-                <span class="status status-concluido">
-                    Ativa
-                </span>
-
-            </div>
-
-
-            <div class="item-card-conteudo">
-
-                <h3>IBM</h3>
-
-                <p>
-                    Empresa parceira do programa AMS.
-                </p>
-
-
-                <div class="informacoes">
-
-                    <span>
-
-                        <i class="fa-solid fa-users"></i>
-
-                        18 alunos
-
-                    </span>
-
-
-                    <span>
-
-                        <i class="fa-solid fa-chalkboard-user"></i>
-
-                        5 mentorias
-
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="item-card-acoes">
-
-                <a href="#" class="btn-secundario">
-
-                    <i class="fa-regular fa-eye"></i>
-
-                    Ver detalhes
-
-                </a>
-
-
-                {% if cargo_usuario == "Coordenador" %}
-
-                <a href="#" class="btn-editar">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                    Editar
-
-                </a>
-
+        <div class="sem-alunos">
+            <i class="fa-solid fa-building"></i>
+            <h3>Nenhuma empresa encontrada</h3>
+            <p>
+                {% if pesquisa %}
+                    Não existem empresas para a pesquisa realizada.
+                {% else %}
+                    Nenhuma empresa foi cadastrada até o momento.
                 {% endif %}
-
-            </div>
-
+            </p>
         </div>
-
-
-        <!-- TAB -->
-
-        <div class="item-card">
-
-            <div class="item-card-topo">
-
-                <div class="item-card-icon">
-
-                    <i class="fa-solid fa-building"></i>
-
-                </div>
-
-                <span class="status status-concluido">
-                    Ativa
-                </span>
-
-            </div>
-
-
-            <div class="item-card-conteudo">
-
-                <h3>TAB</h3>
-
-                <p>
-                    Empresa parceira do programa AMS.
-                </p>
-
-
-                <div class="informacoes">
-
-                    <span>
-
-                        <i class="fa-solid fa-users"></i>
-
-                        12 alunos
-
-                    </span>
-
-
-                    <span>
-
-                        <i class="fa-solid fa-chalkboard-user"></i>
-
-                        4 mentorias
-
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="item-card-acoes">
-
-                <a href="#" class="btn-secundario">
-
-                    <i class="fa-regular fa-eye"></i>
-
-                    Ver detalhes
-
-                </a>
-
-
-                {% if cargo_usuario == "Coordenador" %}
-
-                <a href="#" class="btn-editar">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                    Editar
-
-                </a>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-
-        <!-- DEVCOOL -->
-
-        <div class="item-card">
-
-            <div class="item-card-topo">
-
-                <div class="item-card-icon">
-
-                    <i class="fa-solid fa-building"></i>
-
-                </div>
-
-                <span class="status status-concluido">
-                    Ativa
-                </span>
-
-            </div>
-
-
-            <div class="item-card-conteudo">
-
-                <h3>DevCool</h3>
-
-                <p>
-                    Empresa parceira do programa AMS.
-                </p>
-
-
-                <div class="informacoes">
-
-                    <span>
-
-                        <i class="fa-solid fa-users"></i>
-
-                        9 alunos
-
-                    </span>
-
-
-                    <span>
-
-                        <i class="fa-solid fa-chalkboard-user"></i>
-
-                        3 mentorias
-
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="item-card-acoes">
-
-                <a href="#" class="btn-secundario">
-
-                    <i class="fa-regular fa-eye"></i>
-
-                    Ver detalhes
-
-                </a>
-
-
-                {% if cargo_usuario == "Coordenador" %}
-
-                <a href="#" class="btn-editar">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                    Editar
-
-                </a>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-        {% endif %}
-
         {% endfor %}
 
     </div>
-
 </section>
+
+<!-- MODAL CADASTRAR / EDITAR EMPRESA -->
+{% if cargo_usuario == "Coordenador" %}
+<div class="modal fade" id="modalEmpresa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <form method="POST" action="{% url 'empresagestao' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="acao" id="acaoEmpresa" value="cadastrar">
+                <input type="hidden" name="id_empresa" id="idEmpresa">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tituloModalEmpresa">
+                        Cadastrar Nova Empresa
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar"
+                    ></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row g-3">
+
+                        <div class="col-12">
+                            <label class="form-label">Nome da Empresa *</label>
+                            <input
+                                type="text"
+                                name="nome"
+                                id="nomeEmpresa"
+                                class="form-control"
+                                maxlength="200"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">E-mail de Acesso *</label>
+                            <input
+                                type="email"
+                                name="email"
+                                id="emailEmpresa"
+                                class="form-control"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" id="labelSenhaEmpresa">
+                                Senha de Acesso *
+                            </label>
+
+                            <input
+                                type="password"
+                                name="senha"
+                                id="senhaEmpresa"
+                                class="form-control"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <small class="text-muted" id="ajudaSenhaEmpresa">
+                                Senha para a empresa acessar o AMS Hub.
+                            </small>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Salvar Empresa
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- MODAL DETALHES -->
+<div class="modal fade" id="modalDetalhesEmpresa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Detalhes da Empresa</h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar"
+                ></button>
+            </div>
+
+            <div class="modal-body">
+
+                <h4 id="detNomeEmpresa"></h4>
+                <p class="text-muted" id="detEmailEmpresa"></p>
+
+                <hr>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <strong>Alunos Vinculados</strong>
+                        <p id="detAlunosEmpresa"></p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <strong>Mentorias</strong>
+                        <p id="detMentoriasEmpresa"></p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <strong>Vagas Abertas</strong>
+                        <p id="detVagasEmpresa"></p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Fechar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function novaEmpresa() {
+    document.getElementById('tituloModalEmpresa').textContent =
+        'Cadastrar Nova Empresa';
+
+    document.getElementById('acaoEmpresa').value = 'cadastrar';
+    document.getElementById('idEmpresa').value = '';
+
+    document.getElementById('nomeEmpresa').value = '';
+    document.getElementById('emailEmpresa').value = '';
+
+    const senha = document.getElementById('senhaEmpresa');
+    senha.value = '';
+    senha.required = true;
+
+    document.getElementById('labelSenhaEmpresa').textContent =
+        'Senha de Acesso *';
+
+    document.getElementById('ajudaSenhaEmpresa').textContent =
+        'Senha para a empresa acessar o AMS Hub.';
+}
+
+function editarEmpresa(botao) {
+    const dados = botao.dataset;
+
+    document.getElementById('tituloModalEmpresa').textContent =
+        'Editar Empresa';
+
+    document.getElementById('acaoEmpresa').value = 'editar';
+    document.getElementById('idEmpresa').value = dados.id;
+
+    document.getElementById('nomeEmpresa').value = dados.nome;
+    document.getElementById('emailEmpresa').value = dados.email;
+
+    const senha = document.getElementById('senhaEmpresa');
+    senha.value = '';
+    senha.required = false;
+
+    document.getElementById('labelSenhaEmpresa').textContent =
+        'Nova Senha (opcional)';
+
+    document.getElementById('ajudaSenhaEmpresa').textContent =
+        'Deixe em branco para manter a senha atual.';
+}
+
+function verEmpresa(botao) {
+    const dados = botao.dataset;
+
+    document.getElementById('detNomeEmpresa').textContent = dados.nome;
+    document.getElementById('detEmailEmpresa').textContent = dados.email;
+    document.getElementById('detAlunosEmpresa').textContent = dados.alunos;
+    document.getElementById('detMentoriasEmpresa').textContent = dados.mentorias;
+    document.getElementById('detVagasEmpresa').textContent = dados.vagas;
+}
+</script>
 
 {% endblock %}
