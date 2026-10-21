@@ -342,3 +342,281 @@
     }
 
 }
+
+
+/* ========================================
+   CABEÇALHO DO PORTFÓLIO
+======================================== */
+
+.portfolio-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.portfolio-cabecalho h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 7px;
+}
+
+.portfolio-cabecalho p {
+    color: #777;
+    font-size: 14px;
+    margin: 0;
+}
+
+.btn-adicionar-portfolio,
+.btn-salvar-portfolio {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 12px;
+    background: #6528e0;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-adicionar-portfolio:hover,
+.btn-salvar-portfolio:hover {
+    background: #5120b5;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   JORNADA DOS 3 ANOS
+======================================== */
+
+.portfolio-jornada {
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+.jornada-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 22px;
+}
+
+.jornada-titulo i {
+    color: #6528e0;
+}
+
+.jornada-anos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.jornada-ano {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f7f5ff;
+    border: 1px solid #e9e2ff;
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.ano-numero {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #eee6ff;
+    color: #6528e0;
+    font-weight: 800;
+    font-size: 15px;
+}
+
+.jornada-ano strong {
+    font-size: 14px;
+    color: #333;
+}
+
+/* ========================================
+   MODAL DO PORTFÓLIO
+======================================== */
+
+.portfolio-modal {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.portfolio-modal .modal-header {
+    padding: 24px 28px;
+    border-bottom: 1px solid #f0edf7;
+}
+
+.portfolio-modal .modal-title {
+    color: #252034;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.portfolio-modal .modal-title i {
+    color: #6528e0;
+    margin-right: 8px;
+}
+
+.modal-subtitulo {
+    color: #888;
+    font-size: 13px;
+    margin: 7px 0 0;
+}
+
+.portfolio-modal .modal-body {
+    padding: 25px 28px;
+}
+
+.portfolio-modal .modal-footer {
+    padding: 18px 28px;
+    border-top: 1px solid #f0edf7;
+}
+
+.portfolio-modal .form-label {
+    font-weight: 600;
+    color: #38333f;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.portfolio-modal .form-control,
+.portfolio-modal .form-select {
+    border: 1px solid #e3dfed;
+    border-radius: 11px;
+    padding: 12px 14px;
+    font-size: 14px;
+}
+
+.portfolio-modal .form-control:focus,
+.portfolio-modal .form-select:focus {
+    border-color: #6528e0;
+    box-shadow: 0 0 0 3px rgba(101, 40, 224, 0.1);
+}
+
+/* ========================================
+   TIPO DE ENVIO
+======================================== */
+
+.portfolio-tipos-envio {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.tipo-envio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px;
+    border: 1px solid #e2d9f5;
+    border-radius: 13px;
+    background: #faf9ff;
+    color: #444;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.tipo-envio:hover {
+    border-color: #6528e0;
+    background: #f4efff;
+}
+
+.tipo-envio:has(input:checked) {
+    border-color: #6528e0;
+    background: #eee6ff;
+    color: #6528e0;
+}
+
+.tipo-envio input {
+    accent-color: #6528e0;
+}
+
+.tipo-envio i {
+    font-size: 18px;
+}
+
+/* ========================================
+   LISTA DE ENTREGAS
+======================================== */
+
+.portfolio-vazio {
+    text-align: center;
+    padding: 28px;
+    color: #888;
+}
+
+.portfolio-vazio i {
+    font-size: 30px;
+    color: #b4a0e8;
+    margin-bottom: 12px;
+}
+
+.portfolio-vazio p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.pdf-info p {
+    margin: 7px 0 0;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .portfolio-cabecalho {
+        align-items: stretch;
+    }
+
+    .btn-adicionar-portfolio {
+        width: 100%;
+    }
+
+    .portfolio-jornada {
+        padding: 18px;
+    }
+
+    .jornada-anos {
+        grid-template-columns: 1fr;
+    }
+
+    .portfolio-tipos-envio {
+        grid-template-columns: 1fr;
+    }
+
+    .portfolio-modal .modal-header,
+    .portfolio-modal .modal-body,
+    .portfolio-modal .modal-footer {
+        padding: 18px;
+    }
+
+}

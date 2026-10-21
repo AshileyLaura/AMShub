@@ -1,185 +1,210 @@
-{% extends "base.html" %}
 
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}
 AMS Hub - Meu Portfólio
 {% endblock %}
 
-
 {% block css %}
 <link rel="stylesheet" href="{% static 'aluno/meusportifoliosa.css' %}">
 {% endblock %}
 
-
 {% block menu %}
-
 <ul>
-
     <li>
         <a href="{% url 'aluno' %}">
             <i class="fa-solid fa-house"></i>
             <span>Início</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'minhasmentoriasa' %}">
             <i class="fa-solid fa-users"></i>
             <span>Mentorias</span>
         </a>
     </li>
-
     <li class="active">
         <a href="{% url 'meusportifoliosa' %}">
             <i class="fa-solid fa-folder-open"></i>
             <span>Portfólios</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'atividadesa' %}">
             <i class="fa-solid fa-list-check"></i>
             <span>Atividades</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'certificadoa' %}">
             <i class="fa-solid fa-award"></i>
             <span>Certificados</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'pendenciasa' %}">
             <i class="fa-solid fa-circle-exclamation"></i>
             <span>Pendências</span>
         </a>
     </li>
-
+    <li>
+        <a href="{% url 'index' %}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
+    </li>
 </ul>
-
 {% endblock %}
-
 
 {% block saudacao %}
 <h1>Meu Portfólio</h1>
 {% endblock %}
 
-
 {% block descricao %}
-Visualize seus portfólios e as avaliações recebidas.
+Acompanhe suas entregas e aprendizados durante os três anos do AMS.
 {% endblock %}
 
-
 {% block perfil %}
-
 <a href="{% url 'meuperfila' %}" class="perfil-link">
     <div class="perfil">
-
         <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
-
         <div>
             <strong>{{ nome_usuario }}</strong>
             <small>Aluno</small>
         </div>
-
     </div>
 </a>
-
 {% endblock %}
-
 
 {% block content %}
 
 <div class="portfolio-container">
 
-    {% for portfolio in portfolios %}
+    <!-- CABEÇALHO -->
+    <div class="portfolio-cabecalho">
+        <div>
+            <h2>Minha Jornada no AMS</h2>
+            <p>
+                Organize seus trabalhos, projetos e aprendizados
+                durante os três anos do programa.
+            </p>
+        </div>
 
-    <!-- PORTFÓLIO -->
+        <button
+            type="button"
+            class="btn-adicionar-portfolio"
+            data-bs-toggle="modal"
+            data-bs-target="#modalAdicionarPortfolio"
+        >
+            <i class="fa-solid fa-plus"></i>
+            Adicionar ao Portfólio
+        </button>
+    </div>
+
+    <!-- HISTÓRICO -->
+    <div class="portfolio-jornada">
+        <div class="jornada-titulo">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Minha trajetória acadêmica</span>
+        </div>
+
+        <div class="jornada-anos">
+            <div class="jornada-ano">
+                <span class="ano-numero">01</span>
+                <strong>1º Ano</strong>
+            </div>
+
+            <div class="jornada-ano">
+                <span class="ano-numero">02</span>
+                <strong>2º Ano</strong>
+            </div>
+
+            <div class="jornada-ano">
+                <span class="ano-numero">03</span>
+                <strong>3º Ano</strong>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
+            {{ message }}
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Fechar"
+            ></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- PORTFÓLIOS CADASTRADOS -->
+    {% for portfolio in portfolios %}
 
     <section class="portfolio-principal">
 
         <div class="portfolio-topo">
-
             <div class="portfolio-icone">
                 <i class="fa-solid fa-folder-open"></i>
             </div>
 
             <div class="portfolio-titulo">
-
                 <span class="status">
                     <i class="fa-solid fa-clock"></i>
-                    {{ portfolio.status }}
+                    {{ portfolio.status|default:"Registrado" }}
                 </span>
 
                 <h2>{{ portfolio.id_mentoria.tema }}</h2>
 
                 {% if portfolio.resumo %}
-                <p>{{ portfolio.resumo }}</p>
+                    <p>{{ portfolio.resumo }}</p>
                 {% endif %}
-
             </div>
-
         </div>
-
 
         <div class="portfolio-informacoes">
 
             <div class="info-item">
-
                 <span>Mentoria</span>
-
                 <strong>{{ portfolio.id_mentoria.tema }}</strong>
-
             </div>
 
-
             <div class="info-item">
-
                 <span>Avaliação</span>
-
-                <strong>{{ portfolio.avaliacao }}</strong>
-
+                <strong>
+                    {{ portfolio.avaliacao|default_if_none:"Aguardando avaliação" }}
+                </strong>
             </div>
 
-
             <div class="info-item">
-
                 <span>Status</span>
-
-                <strong>{{ portfolio.status }}</strong>
-
+                <strong>{{ portfolio.status|default:"Registrado" }}</strong>
             </div>
 
         </div>
 
     </section>
 
-
     {% if portfolio.aprendizados %}
     <section class="comentarios">
-
         <h2>Aprendizados</h2>
-
         <p>
-            O que você aprendeu na mentoria {{ portfolio.id_mentoria.tema }}.
+            O que você aprendeu na mentoria
+            {{ portfolio.id_mentoria.tema }}.
         </p>
 
         <div class="comentario">
-
             {{ portfolio.aprendizados|linebreaks }}
-
         </div>
-
     </section>
     {% endif %}
 
     {% empty %}
 
     <section class="portfolio-principal">
-
         <div class="portfolio-topo">
 
             <div class="portfolio-icone">
@@ -187,22 +212,359 @@ Visualize seus portfólios e as avaliações recebidas.
             </div>
 
             <div class="portfolio-titulo">
-
                 <h2>Nenhum portfólio ainda</h2>
-
                 <p>
-                    Quando um portfólio for cadastrado para você,
-                    ele aparecerá aqui.
+                    Comece a registrar sua trajetória acadêmica
+                    adicionando seu primeiro trabalho.
                 </p>
-
             </div>
-
         </div>
-
     </section>
 
     {% endfor %}
 
+    <!-- ENTREGAS -->
+    <section class="versoes-pdf">
+
+        <h2>Minhas Entregas</h2>
+        <p>
+            Histórico dos arquivos e links adicionados ao portfólio.
+        </p>
+
+        <div class="pdf-lista">
+
+            {% for entrega in entregas %}
+
+            <div class="pdf-item">
+
+                <div class="pdf-icone">
+                    {% if entrega.arquivo %}
+                        <i class="fa-solid fa-file-pdf"></i>
+                    {% else %}
+                        <i class="fa-solid fa-link"></i>
+                    {% endif %}
+                </div>
+
+                <div class="pdf-info">
+                    <strong>{{ entrega.titulo }}</strong>
+
+                    <small>
+                        {{ entrega.ano }}º Ano
+                        {% if entrega.data_envio %}
+                            • {{ entrega.data_envio|date:"d/m/Y" }}
+                        {% endif %}
+                    </small>
+
+                    {% if entrega.descricao %}
+                        <p>{{ entrega.descricao }}</p>
+                    {% endif %}
+                </div>
+
+                {% if entrega.arquivo %}
+                <a
+                    href="{{ entrega.arquivo.url }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn-pdf"
+                >
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    Abrir PDF
+                </a>
+                {% elif entrega.link %}
+                <a
+                    href="{{ entrega.link }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn-pdf"
+                >
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    Abrir Link
+                </a>
+                {% endif %}
+
+            </div>
+
+            {% empty %}
+
+            <div class="portfolio-vazio">
+                <i class="fa-regular fa-folder-open"></i>
+                <p>Nenhuma entrega adicionada até o momento.</p>
+            </div>
+
+            {% endfor %}
+
+        </div>
+    </section>
+
 </div>
+
+
+<!-- MODAL ADICIONAR PORTFÓLIO -->
+<div
+    class="modal fade"
+    id="modalAdicionarPortfolio"
+    tabindex="-1"
+    aria-labelledby="tituloModalPortfolio"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+
+        <div class="modal-content portfolio-modal">
+
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="tituloModalPortfolio">
+                        <i class="fa-solid fa-folder-plus"></i>
+                        Adicionar ao Portfólio
+                    </h5>
+                    <p class="modal-subtitulo">
+                        Registre uma nova entrega da sua jornada no AMS.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar"
+                ></button>
+            </div>
+
+            <form
+                method="POST"
+                action="{% url 'meusportifoliosa' %}"
+                enctype="multipart/form-data"
+                id="formPortfolio"
+            >
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="acao"
+                    value="adicionar_entrega"
+                >
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-12">
+                            <label class="form-label">
+                                Título do Trabalho *
+                            </label>
+
+                            <input
+                                type="text"
+                                name="titulo"
+                                class="form-control"
+                                placeholder="Ex.: Projeto Integrador"
+                                maxlength="200"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Ano do AMS *
+                            </label>
+
+                            <select
+                                name="ano"
+                                class="form-select"
+                                required
+                            >
+                                <option value="">Selecione o ano</option>
+                                <option value="1">1º Ano</option>
+                                <option value="2">2º Ano</option>
+                                <option value="3">3º Ano</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Mentoria Relacionada
+                            </label>
+
+                            <select
+                                name="mentoria"
+                                class="form-select"
+                            >
+                                <option value="">Nenhuma mentoria específica</option>
+
+                                {% for mentoria in mentorias %}
+                                <option value="{{ mentoria.pk }}">
+                                    {{ mentoria.tema }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">
+                                Descrição do Trabalho
+                            </label>
+
+                            <textarea
+                                name="descricao"
+                                class="form-control"
+                                rows="3"
+                                placeholder="Conte um pouco sobre esse trabalho..."
+                            ></textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">
+                                Como deseja enviar? *
+                            </label>
+
+                            <div class="portfolio-tipos-envio">
+
+                                <label class="tipo-envio">
+                                    <input
+                                        type="radio"
+                                        name="tipo_envio"
+                                        value="link"
+                                        checked
+                                    >
+                                    <i class="fa-solid fa-link"></i>
+                                    <span>Enviar Link</span>
+                                </label>
+
+                                <label class="tipo-envio">
+                                    <input
+                                        type="radio"
+                                        name="tipo_envio"
+                                        value="pdf"
+                                    >
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                    <span>Enviar PDF</span>
+                                </label>
+
+                            </div>
+                        </div>
+
+                        <!-- CAMPO LINK -->
+                        <div class="col-12" id="campoLinkPortfolio">
+
+                            <label class="form-label">
+                                Link do Portfólio *
+                            </label>
+
+                            <input
+                                type="url"
+                                name="link"
+                                id="linkPortfolio"
+                                class="form-control"
+                                placeholder="https://..."
+                                required
+                            >
+
+                            <small class="text-muted">
+                                Pode ser um link do GitHub, Google Drive
+                                ou de outro site.
+                            </small>
+                        </div>
+
+                        <!-- CAMPO PDF -->
+                        <div
+                            class="col-12"
+                            id="campoPdfPortfolio"
+                            hidden
+                        >
+
+                            <label class="form-label">
+                                Arquivo PDF *
+                            </label>
+
+                            <input
+                                type="file"
+                                name="arquivo"
+                                id="arquivoPortfolio"
+                                class="form-control"
+                                accept=".pdf,application/pdf"
+                                disabled
+                            >
+
+                            <small class="text-muted">
+                                Selecione um arquivo no formato PDF.
+                            </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn-salvar-portfolio">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        Salvar Entrega
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const radios = document.querySelectorAll(
+        'input[name="tipo_envio"]'
+    );
+
+    const campoLink = document.getElementById(
+        'campoLinkPortfolio'
+    );
+
+    const campoPdf = document.getElementById(
+        'campoPdfPortfolio'
+    );
+
+    const inputLink = document.getElementById(
+        'linkPortfolio'
+    );
+
+    const inputPdf = document.getElementById(
+        'arquivoPortfolio'
+    );
+
+    function atualizarTipoEnvio() {
+
+        const selecionado = document.querySelector(
+            'input[name="tipo_envio"]:checked'
+        );
+
+        const tipo = selecionado ? selecionado.value : 'link';
+        const enviarPdf = tipo === 'pdf';
+
+        campoLink.hidden = enviarPdf;
+        campoPdf.hidden = !enviarPdf;
+
+        inputLink.disabled = enviarPdf;
+        inputLink.required = !enviarPdf;
+
+        inputPdf.disabled = !enviarPdf;
+        inputPdf.required = enviarPdf;
+    }
+
+    radios.forEach(function (radio) {
+        radio.addEventListener('change', atualizarTipoEnvio);
+    });
+
+    atualizarTipoEnvio();
+
+});
+</script>
 
 {% endblock %}

@@ -17,6 +17,52 @@ Mentorias
 Acompanhe as mentorias realizadas pelas empresas parceiras.
 {% endblock %}
 
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url 'coordenador' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'gerenciaalunosc' %}">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Gerenciar Alunos</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'empresagestao' %}">
+            <i class="fa-solid fa-building"></i>
+            <span>Empresas</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'mentoriasgestao' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Gerenciar Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'relatoriosgestao' %}">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Relatórios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'index' %}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
 {% block content %}
 
 <section class="pagina-gestao">
