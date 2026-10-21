@@ -302,3 +302,54 @@ class Notificacao(models.Model):
 
     def __str__(self):
         return str(self.id_notificacao)
+
+
+class EntregaPortfolio(models.Model):
+
+    ANOS = [
+        (1, '1º Ano'),
+        (2, '2º Ano'),
+        (3, '3º Ano'),
+    ]
+
+    id_aluno = models.ForeignKey(
+        Aluno,
+        on_delete=models.CASCADE,
+        related_name='entregas_portfolio'
+    )
+
+    id_mentoria = models.ForeignKey(
+        Mentoria,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='entregas_portfolio'
+    )
+
+    titulo = models.CharField(max_length=200)
+
+    ano = models.PositiveSmallIntegerField(
+        choices=ANOS
+    )
+
+    descricao = models.TextField(blank=True)
+
+    link = models.URLField(
+        max_length=1000,
+        blank=True
+    )
+
+    arquivo = models.FileField(
+        upload_to='portfolios/pdfs/',
+        blank=True
+    )
+
+    data_envio = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['-data_envio']
+
+    def __str__(self):
+        return f'{self.titulo} - {self.id_aluno_id}'

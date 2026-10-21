@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count, Q
 from django.db import transaction
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
+from django.core.validators import validate_email, URLValidator
 from django.contrib.auth.password_validation import validate_password
 from django.urls import reverse
 from django.utils import timezone
@@ -20,6 +20,7 @@ from .models import (
     Mentoria,
     Participacao,
     Portfolio,
+    EntregaPortfolio,
     Certificado,
     Viagem,
     Vaga,
@@ -827,20 +828,93 @@ def meuperfila(request):
 @tipo_permitido('aluno')
 def meusportifoliosa(request):
     aluno = obter_aluno(request)
+
+    if request.method == 'POST':
+        if request.POST.get('acao') != 'adicionar_entrega':
+            messages.error(request, 'Operação inválida.')
+            return redirect('meusportifoliosa')
+
+        titulo = request.POST.get('titulo', '').strip()
+        ano_texto = request.POST.get('ano', '').strip()
+        descricao = request.POST.get('descricao', '').strip()
+        tipo_envio = request.POST.get('tipo_envio', '').strip()
+        mentoria_id = request.POST.get('mentoria', '').strip()
+        link = request.POST.get('link', '').strip()
+        arquivo = request.FILES.get('arquivo')
+
+        if not titulo or len(titulo) > 200 or ano_texto not in ('1', '2', '3'):
+            messages.error(request, 'Informe o título e o ano corretamente.')
+            return redirect('meusportifoliosa')
+
+        mentoria = None
+        if mentoria_id:
+            if not mentoria_id.isdigit():
+                messages.error(request, 'Mentoria inválida.')
+                return redirect('meusportifoliosa')
+            mentoria = Mentoria.objects.filter(
+                pk=int(mentoria_id),
+                participacao__id_aluno=aluno
+            ).distinct().first()
+            if mentoria is None:
+                messages.error(request, 'Você não está inscrito nessa mentoria.')
+                return redirect('meusportifoliosa')
+
+        if tipo_envio == 'link':
+            if not link or len(link) > 1000:
+                messages.error(request, 'Informe um link válido.')
+                return redirect('meusportifoliosa')
+            try:
+                URLValidator(schemes=['http', 'https'])(link)
+            except ValidationError:
+                messages.error(request, 'Informe um link HTTP ou HTTPS válido.')
+                return redirect('meusportifoliosa')
+            arquivo = None
+        elif tipo_envio == 'pdf':
+            link = ''
+            if not arquivo:
+                messages.error(request, 'Selecione um PDF para enviar.')
+                return redirect('meusportifoliosa')
+            if not arquivo.name.lower().endswith('.pdf') or arquivo.size > 10 * 1024 * 1024:
+                messages.error(request, 'O arquivo deve ser PDF e ter no máximo 10 MB.')
+                return redirect('meusportifoliosa')
+            if arquivo.read(5) != b'%PDF-':
+                messages.error(request, 'O arquivo enviado não parece ser um PDF válido.')
+                return redirect('meusportifoliosa')
+            arquivo.seek(0)
+        else:
+            messages.error(request, 'Escolha enviar um link ou PDF.')
+            return redirect('meusportifoliosa')
+
+        EntregaPortfolio.objects.create(
+            id_aluno=aluno,
+            id_mentoria=mentoria,
+            titulo=titulo,
+            ano=int(ano_texto),
+            descricao=descricao,
+            link=link,
+            arquivo=arquivo
+        )
+        messages.success(request, 'Entrega adicionada ao portfólio com sucesso!')
+        return redirect('meusportifoliosa')
+
     portfolios = Portfolio.objects.filter(
         id_aluno=aluno
-    ).select_related(
-        'id_mentoria'
-    )
-    return render(
-        request,
-        'aluno/meusportifoliosa.html',
-        {
-            'aluno': aluno,
-            'portfolios': portfolios,
-            'nome_usuario': nome_do_usuario(request)
-        }
-    )
+    ).select_related('id_mentoria')
+    entregas = EntregaPortfolio.objects.filter(
+        id_aluno=aluno
+    ).select_related('id_mentoria')
+    mentorias = Mentoria.objects.filter(
+        participacao__id_aluno=aluno
+    ).distinct().order_by('tema')
+
+    return render(request, 'aluno/meusportifoliosa.html', {
+        'aluno': aluno,
+        'portfolios': portfolios,
+        'entregas': entregas,
+        'mentorias': mentorias,
+        'nome_usuario': nome_do_usuario(request)
+    })
+
 @tipo_permitido('aluno')
 def atividadesa(request):
     aluno = obter_aluno(request)
