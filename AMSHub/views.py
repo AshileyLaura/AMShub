@@ -1,3 +1,4 @@
+from PIL import Image, UnidentifiedImageError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -36,6 +37,29 @@ from .models import (
 # ---------------------------------------------------------------------
 # Status de atividade que contam como "concluída".
 # Qualquer outro status (ex.: "Pendente") é tratado como não concluída.
+
+FORMATOS_FOTO = ('JPEG', 'PNG', 'WEBP')
+TAMANHO_MAX_FOTO = 2 * 1024 * 1024  # 2 MB
+
+
+def validar_foto(arquivo):
+    """Devolve uma mensagem de erro, ou None se a foto for válida."""
+    if not arquivo:
+        return 'Selecione uma imagem.'
+    if arquivo.size > TAMANHO_MAX_FOTO:
+        return 'A foto deve ter no máximo 2 MB.'
+    try:
+        imagem = Image.open(arquivo)
+        formato = imagem.format
+        imagem.verify()
+    except (UnidentifiedImageError, OSError):
+        return 'O arquivo enviado não é uma imagem válida.'
+    finally:
+        arquivo.seek(0)
+    if formato not in FORMATOS_FOTO:
+        return 'Use uma imagem JPG, PNG ou WEBP.'
+    return None
+
 STATUS_CONCLUIDO = ('concluída', 'concluida', 'concluído', 'concluido')
 def nome_do_usuario(request):
     return request.user.get_full_name() or request.user.username
@@ -909,6 +933,33 @@ def detalhesdamentoriaa(request, id_mentoria):
 @tipo_permitido('aluno')
 def meuperfila(request):
     aluno = obter_aluno(request)
+    perfil = request.user.perfil
+
+    if request.method == 'POST':
+        acao = request.POST.get('acao')
+
+        if acao == 'enviar_foto':
+            arquivo = request.FILES.get('foto')
+            erro = validar_foto(arquivo)
+            if erro:
+                messages.error(request, erro)
+            else:
+                if perfil.foto:
+                    perfil.foto.delete(save=False)  # apaga a foto antiga
+                perfil.foto = arquivo
+                perfil.save(update_fields=['foto'])
+                messages.success(request, 'Foto atualizada com sucesso!')
+
+        elif acao == 'remover_foto':
+            if perfil.foto:
+                perfil.foto.delete(save=True)
+            messages.success(request, 'Foto removida.')
+
+        else:
+            messages.error(request, 'Operação inválida.')
+
+        return redirect('meuperfila')
+
     return render(
         request,
         'aluno/meuperfila.html',

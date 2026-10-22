@@ -239,4 +239,81 @@
     .btn-secundario {
         width: 100%;
     }
+        .acoes-foto,
+    .form-foto {
+        width: 100%;
+    }
+
+    .botao-foto {
+        justify-content: center;
+    }
+}
+
+/* =========================
+   ALTERAR / REMOVER FOTO
+========================= */
+
+.acoes-foto {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.form-foto {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.botao-foto {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    background: white;
+    border: 1px solid #6f42c1;
+    border-radius: 8px;
+    color: #6f42c1;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.botao-foto:hover {
+    background: #6f42c1;
+    color: white;
+}
+
+.botao-salvar {
+    background: #6f42c1;
+    color: white;
+}
+
+.botao-salvar:hover {
+    background: #59339d;
+}
+
+.botao-remover {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.botao-remover:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.nome-arquivo,
+.dica-foto {
+    font-size: 13px;
+    color: #888;
+}
+
+.dica-foto {
+    width: 100%;
 }

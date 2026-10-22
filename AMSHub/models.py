@@ -24,6 +24,11 @@ class Perfil(models.Model):
         choices=TIPOS
     )
 
+    foto = models.ImageField(
+        upload_to='perfis/fotos/',
+        blank=True
+    )
+
     def __str__(self):
         return f'{self.user.username} - {self.tipo}'
 
