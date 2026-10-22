@@ -52,8 +52,9 @@ Acompanhe as mentorias e o desenvolvimento dos alunos.
             <span>Agenda</span>
         </a>
     </li>
+
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -68,7 +69,7 @@ Acompanhe as mentorias e o desenvolvimento dos alunos.
     <div class="pagina-cabecalho">
         <div>
             <h2>Mentorias</h2>
-            <p>Acompanhe as mentorias cadastradas no programa.</p>
+            <p>Acompanhe todas as mentorias do programa AMS.</p>
         </div>
 
         <span class="contador">
@@ -86,11 +87,12 @@ Acompanhe as mentorias e o desenvolvimento dos alunos.
                 <i class="fa-solid fa-users"></i>
             </div>
 
-            <h3>{{ mentoria.titulo }}</h3>
+            <h3>{{ mentoria.tema }}</h3>
 
             <p>{{ mentoria.descricao|default:"Sem descrição."|truncatewords:25 }}</p>
 
             <div class="card-informacoes">
+
                 <span>
                     <i class="fa-solid fa-calendar"></i>
                     {{ mentoria.data|date:"d/m/Y" }}
@@ -98,17 +100,48 @@ Acompanhe as mentorias e o desenvolvimento dos alunos.
 
                 <span>
                     <i class="fa-solid fa-clock"></i>
-                    {{ mentoria.horario|default:"Horário não informado" }}
+                    {{ mentoria.horario|time:"H:i"|default:"Horário não informado" }}
+                    · {{ mentoria.carga_texto }}
                 </span>
 
                 <span>
                     <i class="fa-solid fa-building"></i>
-                    {{ mentoria.empresa|default:"Empresa não informada" }}
+                    {{ mentoria.empresa.nome|default:"Empresa não informada" }}
                 </span>
+
+                <span>
+                    <i class="fa-solid fa-user-group"></i>
+                    {{ mentoria.inscritos }} aluno(s) inscrito(s)
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    {% if mentoria.id_professor %}
+                        {{ mentoria.id_professor.perfil.user.get_full_name|default:mentoria.id_professor.perfil.user.username }}
+                    {% else %}
+                        Sem professor definido
+                    {% endif %}
+                </span>
+
+                {% if mentoria.modalidade %}
+                <span>
+                    <i class="fa-solid fa-location-dot"></i>
+                    {{ mentoria.modalidade }}
+                </span>
+                {% endif %}
+
             </div>
 
             <div class="card-rodape">
-                <span class="etiqueta">Mentoria</span>
+                {% if mentoria.realizada %}
+                    <span class="etiqueta">Concluída</span>
+                {% else %}
+                    <span class="etiqueta">Em breve</span>
+                {% endif %}
+
+                {% if mentoria.minha %}
+                    <span class="etiqueta">Sua mentoria</span>
+                {% endif %}
             </div>
 
         </article>

@@ -53,7 +53,7 @@ Acompanhe as avaliações e os feedbacks dos alunos.
         </a>
     </li>
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -90,7 +90,12 @@ Acompanhe as avaliações e os feedbacks dos alunos.
             </div>
             <div>
                 <h3>{{ avaliacoes_pendentes|default:"0" }}</h3>
-                <p>Pendentes</p>
+                <p>
+                    Pendentes
+                    {% if avaliacoes_pendentes %}
+                    · <a href="{% url 'portfoliosp' %}?status=Pendente">avaliar agora</a>
+                    {% endif %}
+                </p>
             </div>
         </div>
 
@@ -110,6 +115,7 @@ Acompanhe as avaliações e os feedbacks dos alunos.
                         <th>Nota</th>
                         <th>Feedback</th>
                         <th>Data</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
 
@@ -119,15 +125,21 @@ Acompanhe as avaliações e os feedbacks dos alunos.
                     <tr>
                         <td>{{ avaliacao.aluno }}</td>
                         <td>{{ avaliacao.atividade }}</td>
-                        <td>{{ avaliacao.nota|default:"—" }}</td>
+                        <td>{{ avaliacao.nota|default_if_none:"—" }}</td>
                         <td>{{ avaliacao.feedback|default:"Não registrado" }}</td>
                         <td>{{ avaliacao.data|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'portfoliosp' %}?avaliar={{ avaliacao.id }}"
+                               class="btn btn-sm btn-outline-secondary">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </a>
+                        </td>
                     </tr>
 
                     {% empty %}
 
                     <tr>
-                        <td colspan="5" class="text-center py-5">
+                        <td colspan="6" class="text-center py-5">
                             Nenhuma avaliação cadastrada.
                         </td>
                     </tr>

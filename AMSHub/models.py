@@ -366,6 +366,35 @@ class EntregaPortfolio(models.Model):
         auto_now_add=True
     )
 
+    # --- Avaliação feita pelo professor da mentoria ---
+
+    status = models.CharField(
+        max_length=20,
+        default='Pendente'
+    )
+
+    nota = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        null=True,
+        blank=True
+    )
+
+    feedback = models.TextField(blank=True)
+
+    data_avaliacao = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    avaliador = models.ForeignKey(
+        Professor,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='entregas_avaliadas'
+    )
+
     class Meta:
         ordering = ['-data_envio']
 

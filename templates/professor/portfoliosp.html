@@ -52,8 +52,9 @@ Acompanhe os projetos e atividades desenvolvidos pelos alunos.
             <span>Agenda</span>
         </a>
     </li>
+
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -65,10 +66,19 @@ Acompanhe os projetos e atividades desenvolvidos pelos alunos.
 
 <section class="professor-pagina">
 
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="pagina-cabecalho">
         <div>
             <h2>Portfólios</h2>
-            <p>Consulte os portfólios enviados pelos alunos.</p>
+            <p>Consulte os portfólios enviados pelos alunos e avalie cada entrega.</p>
         </div>
 
         <span class="contador">
@@ -77,20 +87,45 @@ Acompanhe os projetos e atividades desenvolvidos pelos alunos.
     </div>
 
     <form method="get" class="filtros-pagina">
+
         <div class="campo-pesquisa">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input
                 type="search"
                 name="q"
                 value="{{ pesquisa }}"
-                placeholder="Pesquisar portfólio..."
+                placeholder="Pesquisar por título, aluno ou mentoria..."
             >
         </div>
+
+        {% if filtro %}
+        <input type="hidden" name="status" value="{{ filtro }}">
+        {% endif %}
 
         <button type="submit" class="botao-principal">
             Pesquisar
         </button>
+
     </form>
+
+    <div class="d-flex flex-wrap gap-2 mb-3">
+
+        <a href="{% url 'portfoliosp' %}{% if pesquisa %}?q={{ pesquisa|urlencode }}{% endif %}"
+           class="btn btn-sm {% if not filtro %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+            Todos
+        </a>
+
+        <a href="{% url 'portfoliosp' %}?status=Pendente{% if pesquisa %}&q={{ pesquisa|urlencode }}{% endif %}"
+           class="btn btn-sm {% if filtro == 'Pendente' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+            Pendentes ({{ total_pendentes }})
+        </a>
+
+        <a href="{% url 'portfoliosp' %}?status=Avaliado{% if pesquisa %}&q={{ pesquisa|urlencode }}{% endif %}"
+           class="btn btn-sm {% if filtro == 'Avaliado' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+            Avaliados
+        </a>
+
+    </div>
 
     <div class="grade-cards">
 
@@ -107,14 +142,76 @@ Acompanhe os projetos e atividades desenvolvidos pelos alunos.
             <p>{{ portfolio.descricao|default:"Sem descrição."|truncatewords:25 }}</p>
 
             <div class="card-informacoes">
+
                 <span>
                     <i class="fa-solid fa-user"></i>
-                    {{ portfolio.aluno }}
+                    {{ portfolio.aluno_nome }}
                 </span>
+
+                {% if portfolio.id_mentoria %}
+                <span>
+                    <i class="fa-solid fa-users"></i>
+                    {{ portfolio.id_mentoria.tema }}
+                </span>
+                {% endif %}
+
+                <span>
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    {{ portfolio.get_ano_display }}
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-calendar"></i>
+                    Enviado em {{ portfolio.data_envio|date:"d/m/Y" }}
+                </span>
+
             </div>
 
             <div class="card-rodape">
-                <span class="etiqueta">Portfólio</span>
+
+                {% if portfolio.status == 'Avaliado' %}
+                    <span class="etiqueta">Nota {{ portfolio.nota }}</span>
+                {% else %}
+                    <span class="etiqueta">Pendente</span>
+                {% endif %}
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    {% if portfolio.link %}
+                    <a href="{{ portfolio.link }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-link"></i> Link
+                    </a>
+                    {% endif %}
+
+                    {% if portfolio.arquivo %}
+                    <a href="{{ portfolio.arquivo.url }}"
+                       target="_blank"
+                       rel="noopener"
+                       class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-file-pdf"></i> PDF
+                    </a>
+                    {% endif %}
+
+                    <button
+                        type="button"
+                        class="botao-principal"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalAvaliar"
+                        data-id="{{ portfolio.pk }}"
+                        data-titulo="{{ portfolio.titulo }}"
+                        data-aluno="{{ portfolio.aluno_nome }}"
+                        data-nota="{% if portfolio.nota is not None %}{{ portfolio.nota }}{% endif %}"
+                        data-feedback="{{ portfolio.feedback }}"
+                        onclick="avaliarEntrega(this)"
+                    >
+                        {% if portfolio.status == 'Avaliado' %}Editar avaliação{% else %}Avaliar{% endif %}
+                    </button>
+
+                </div>
+
             </div>
 
         </article>
@@ -124,7 +221,13 @@ Acompanhe os projetos e atividades desenvolvidos pelos alunos.
         <div class="estado-vazio">
             <i class="fa-solid fa-folder-open"></i>
             <h3>Nenhum portfólio encontrado</h3>
-            <p>Os portfólios cadastrados aparecerão aqui.</p>
+            <p>
+                {% if pesquisa or filtro %}
+                    Não há portfólios para os filtros selecionados.
+                {% else %}
+                    Os portfólios enviados pelos alunos das suas mentorias aparecerão aqui.
+                {% endif %}
+            </p>
         </div>
 
         {% endfor %}
@@ -133,4 +236,105 @@ Acompanhe os projetos e atividades desenvolvidos pelos alunos.
 
 </section>
 
-{% endblock %}
+
+<!-- MODAL: AVALIAR ENTREGA -->
+<div class="modal fade" id="modalAvaliar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form method="POST" action="{% url 'portfoliosp' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="id_entrega" id="idEntrega">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Avaliar portfólio</h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar"
+                    ></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <h6 id="avaliarTitulo" class="mb-0"></h6>
+                    <p class="text-muted" id="avaliarAluno"></p>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="avaliarNota">
+                            Nota (0 a 10) *
+                        </label>
+                        <input
+                            type="text"
+                            inputmode="decimal"
+                            name="nota"
+                            id="avaliarNota"
+                            class="form-control"
+                            pattern="^(10([.,]0)?|[0-9]([.,][0-9])?)$"
+                            title="Informe uma nota de 0 a 10, por exemplo 8,5"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label" for="avaliarFeedback">
+                            Feedback para o aluno
+                        </label>
+                        <textarea
+                            name="feedback"
+                            id="avaliarFeedback"
+                            class="form-control"
+                            rows="4"
+                            maxlength="2000"
+                        ></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Salvar avaliação
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function avaliarEntrega(botao) {
+    const dados = botao.dataset;
+
+    document.getElementById('idEntrega').value = dados.id;
+    document.getElementById('avaliarTitulo').textContent = dados.titulo;
+    document.getElementById('avaliarAluno').textContent = dados.aluno;
+    document.getElementById('avaliarNota').value = dados.nota || '';
+    document.getElementById('avaliarFeedback').value = dados.feedback || '';
+}
+
+{% if avaliar_id %}
+// Vindo do dashboard (?avaliar=ID): abre direto o modal dessa entrega.
+window.addEventListener('load', function () {
+    const alvo = document.querySelector('button[data-id="{{ avaliar_id }}"]');
+    if (alvo) {
+        alvo.click();
+    }
+});
+{% endif %}
+</script>
+
+{% endblock %}  

@@ -19,8 +19,10 @@ AMS Hub - Professor
 <ul>
 
     <li class="active">
-        <i class="fa-solid fa-house"></i>
-        <span>Dashboard</span>
+        <a href="{% url 'professor' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
     </li>
 
     <li>
@@ -29,6 +31,7 @@ AMS Hub - Professor
             <span>Portfólios</span>
         </a>
     </li>
+
     <li>
         <a href="{% url 'avaliacoesp' %}">
             <i class="fa-solid fa-star"></i>
@@ -51,7 +54,7 @@ AMS Hub - Professor
     </li>
 
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -71,7 +74,7 @@ Olá, {{ nome_usuario }}!
 
 {% block descricao %}
 
-Bem-vinda ao painel do professor.
+Bem-vindo(a) ao painel do professor.
 
 {% endblock %}
 
@@ -81,7 +84,7 @@ Bem-vinda ao painel do professor.
 <div class="perfil">
 
     <img src="{% static 'imagens/professor.png.png' %}"
-         alt="Professora">
+         alt="Professor">
 
     <div>
 
@@ -107,11 +110,12 @@ Bem-vinda ao painel do professor.
 
         <h3>Portfólios</h3>
 
-        <h2>18</h2>
+        <h2>{{ total_pendentes }}</h2>
 
         <p>Pendentes para avaliação</p>
 
-        <button>
+        <button type="button"
+                onclick="location.href='{% url 'portfoliosp' %}'">
             Visualizar →
         </button>
 
@@ -126,11 +130,12 @@ Bem-vinda ao painel do professor.
 
         <h3>Avaliações</h3>
 
-        <h2>26</h2>
+        <h2>{{ total_avaliacoes }}</h2>
 
-        <p>Prontas para envio</p>
+        <p>Já realizadas</p>
 
-        <button>
+        <button type="button"
+                onclick="location.href='{% url 'portfoliosp' %}?status=Pendente'">
             Avaliar →
         </button>
 
@@ -145,11 +150,12 @@ Bem-vinda ao painel do professor.
 
         <h3>Feedbacks</h3>
 
-        <h2>41</h2>
+        <h2>{{ feedbacks_mes }}</h2>
 
         <p>Realizados este mês</p>
 
-        <button>
+        <button type="button"
+                onclick="location.href='{% url 'avaliacoesp' %}'">
             Consultar →
         </button>
 
@@ -164,11 +170,12 @@ Bem-vinda ao painel do professor.
 
         <h3>Mentorias</h3>
 
-        <h2>08</h2>
+        <h2>{{ mentorias_agendadas }}</h2>
 
         <p>Agendadas</p>
 
-        <button>
+        <button type="button"
+                onclick="location.href='{% url 'mentoriasp' %}'">
             Acompanhar →
         </button>
 
@@ -185,66 +192,52 @@ Bem-vinda ao painel do professor.
 
             <h2>Portfólios Recentes</h2>
 
-            <a href="#">Ver todos</a>
+            <a href="{% url 'portfoliosp' %}">Ver todos</a>
 
         </div>
 
+
+        {% for entrega in portfolios_recentes %}
 
         <div class="linha">
 
             <div>
 
-                <h4>Lohanny Ayala</h4>
+                <h4>
+                    {{ entrega.id_aluno.perfil.user.get_full_name|default:entrega.id_aluno.perfil.user.username }}
+                </h4>
 
                 <span>
-                    Portfólio - Atualizar
+                    {{ entrega.titulo }}
+                    {% if entrega.id_mentoria %}· {{ entrega.id_mentoria.tema }}{% endif %}
                 </span>
 
             </div>
 
-            <button>
+            <button type="button"
+                    onclick="location.href='{% url 'portfoliosp' %}?avaliar={{ entrega.pk }}'">
                 Avaliar
             </button>
 
         </div>
 
+        {% empty %}
 
         <div class="linha">
 
             <div>
 
-                <h4>João Vitor Medeiros</h4>
+                <h4>Nenhum portfólio pendente</h4>
 
                 <span>
-                    Portfólio - Atualizar
+                    Os portfólios enviados pelos alunos aparecerão aqui.
                 </span>
 
             </div>
 
-            <button>
-                Avaliar
-            </button>
-
         </div>
 
-
-        <div class="linha">
-
-            <div>
-
-                <h4>Julia Castanheira</h4>
-
-                <span>
-                    Portfólio - Atualizar
-                </span>
-
-            </div>
-
-            <button>
-                Avaliar
-            </button>
-
-        </div>
+        {% endfor %}
 
     </div>
 
@@ -255,40 +248,37 @@ Bem-vinda ao painel do professor.
 
             <h2>Próximas Mentorias</h2>
 
+            <a href="{% url 'mentoriasp' %}">Ver todas</a>
+
         </div>
 
 
+        {% for mentoria in proximas_mentorias %}
+
         <div class="mentoria">
 
-            <strong>TAB - 3°DS</strong>
+            <strong>{{ mentoria.tema }}</strong>
 
             <span>
-                10:00 às 11:30
+                {{ mentoria.data|date:"d/m" }}
+                {% if mentoria.horario %}· {{ mentoria.horario|time:"H:i" }}{% endif %}
             </span>
 
         </div>
 
+        {% empty %}
 
         <div class="mentoria">
 
-            <strong>Ioship - AMS Geral</strong>
+            <strong>Nenhuma mentoria agendada</strong>
 
             <span>
-                10h as 12h
+                As próximas mentorias aparecerão aqui.
             </span>
 
         </div>
 
-
-        <div class="mentoria">
-
-            <strong>Visita Técnica 3° Anos</strong>
-
-            <span>
-                7h as 15hs
-            </span>
-
-        </div>
+        {% endfor %}
 
     </div>
 

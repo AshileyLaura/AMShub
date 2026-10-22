@@ -300,12 +300,77 @@ def aluno(request):
         'ultimas_atividades': ultimas_atividades,
     }
     return render(request, 'Aluno.html', contexto)
+# ---------------------------------------------------------------------
+# PROFESSOR (funções auxiliares)
+# ---------------------------------------------------------------------
+
+STATUS_ENTREGA_PENDENTE = 'Pendente'
+STATUS_ENTREGA_AVALIADA = 'Avaliado'
+
+
+def obter_professor(request):
+    """Professor do usuário logado (cada professor só vê o que é dele)."""
+    return get_object_or_404(
+        Professor,
+        perfil__user=request.user
+    )
+
+
+def entregas_do_professor(professor_logado):
+    """Entregas de portfólio das mentorias em que ele é o professor."""
+    return EntregaPortfolio.objects.filter(
+        id_mentoria__id_professor=professor_logado
+    ).select_related(
+        'id_aluno__perfil__user',
+        'id_mentoria'
+    )
+
+
+def nome_do_aluno(aluno):
+    usuario = aluno.perfil.user
+    return usuario.get_full_name() or usuario.username
+
+
+def ler_nota(texto):
+    """Lê uma nota de 0 a 10 (aceita vírgula). Devolve Decimal ou None."""
+    try:
+        valor = Decimal((texto or '').strip().replace(',', '.'))
+    except InvalidOperation:
+        return None
+    if not valor.is_finite() or valor < 0 or valor > 10:
+        return None
+    return valor.quantize(Decimal('0.1'))
+
+
 @tipo_permitido('professor')
 def professor(request):
+
+    professor_logado = obter_professor(request)
+    hoje = timezone.localdate()
+
+    # Todas as mentorias aparecem para todos os professores.
+    mentorias = Mentoria.objects.all()
+    entregas = entregas_do_professor(professor_logado)
+
+    pendentes = entregas.filter(status=STATUS_ENTREGA_PENDENTE)
+    avaliadas = entregas.filter(status=STATUS_ENTREGA_AVALIADA)
+
     contexto = {
         'usuario': request.user,
         'nome_usuario': nome_do_usuario(request),
+        'total_pendentes': pendentes.count(),
+        'total_avaliacoes': avaliadas.count(),
+        'feedbacks_mes': avaliadas.filter(
+            data_avaliacao__year=hoje.year,
+            data_avaliacao__month=hoje.month
+        ).exclude(feedback='').count(),
+        'mentorias_agendadas': mentorias.filter(data__gte=hoje).count(),
+        'portfolios_recentes': pendentes.order_by('-data_envio')[:3],
+        'proximas_mentorias': mentorias.filter(
+            data__gte=hoje
+        ).order_by('data', 'horario')[:3],
     }
+
     return render(request, 'Professor.html', contexto)
 def obter_empresa(request):
     """Empresa do usuário logado (cada empresa só mexe no que é dela)."""
@@ -1129,16 +1194,226 @@ def cadastro(request):
 # ---------------------------------------------------------------------
 @tipo_permitido('professor')
 def portfoliosp(request):
-    return render(request, 'professor/portfoliosp.html')
+
+    professor_logado = obter_professor(request)
+    entregas_base = entregas_do_professor(professor_logado)
+
+    # Salvar a avaliação (nota + feedback) de uma entrega
+    if request.method == 'POST':
+
+        id_entrega = request.POST.get('id_entrega', '').strip()
+        nota = ler_nota(request.POST.get('nota', ''))
+        feedback = request.POST.get('feedback', '').strip()
+
+        if not id_entrega.isdigit():
+            messages.error(request, 'Entrega inválida.')
+
+        elif nota is None:
+            messages.error(request, 'Informe uma nota de 0 a 10.')
+
+        elif len(feedback) > 2000:
+            messages.error(request, 'O feedback deve ter até 2000 caracteres.')
+
+        else:
+            # Só dá para avaliar entrega de mentoria do próprio professor.
+            entrega = entregas_base.filter(pk=int(id_entrega)).first()
+
+            if entrega is None:
+                messages.error(request, 'Entrega não encontrada.')
+            else:
+                entrega.nota = nota
+                entrega.feedback = feedback
+                entrega.status = STATUS_ENTREGA_AVALIADA
+                entrega.data_avaliacao = timezone.now()
+                entrega.avaliador = professor_logado
+                entrega.save(update_fields=[
+                    'nota', 'feedback', 'status',
+                    'data_avaliacao', 'avaliador'
+                ])
+                messages.success(request, 'Avaliação salva com sucesso!')
+
+        return redirect('portfoliosp')
+
+    pesquisa = request.GET.get('q', '').strip()
+    filtro = request.GET.get('status', '').strip()
+    avaliar = request.GET.get('avaliar', '').strip()
+
+    consulta = entregas_base.order_by('-data_envio')
+
+    if pesquisa:
+        consulta = consulta.filter(
+            Q(titulo__icontains=pesquisa)
+            | Q(id_aluno__perfil__user__first_name__icontains=pesquisa)
+            | Q(id_mentoria__tema__icontains=pesquisa)
+        )
+
+    if filtro in (STATUS_ENTREGA_PENDENTE, STATUS_ENTREGA_AVALIADA):
+        consulta = consulta.filter(status=filtro)
+    else:
+        filtro = ''
+
+    # Pendentes primeiro (a ordenação do Python é estável: mantém a data)
+    portfolios = sorted(
+        consulta,
+        key=lambda entrega: entrega.status != STATUS_ENTREGA_PENDENTE
+    )
+
+    for entrega in portfolios:
+        entrega.aluno_nome = nome_do_aluno(entrega.id_aluno)
+
+    return render(request, 'professor/portfoliosp.html', {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'portfolios': portfolios,
+        'pesquisa': pesquisa,
+        'filtro': filtro,
+        'avaliar_id': int(avaliar) if avaliar.isdigit() else '',
+        'total_pendentes': entregas_base.filter(
+            status=STATUS_ENTREGA_PENDENTE
+        ).count(),
+    })
+
+
 @tipo_permitido('professor')
 def avaliacoesp(request):
-    return render(request, 'professor/avaliacoesp.html')
+
+    professor_logado = obter_professor(request)
+    entregas = entregas_do_professor(professor_logado)
+
+    avaliadas = entregas.filter(
+        status=STATUS_ENTREGA_AVALIADA
+    ).order_by('-data_avaliacao', '-data_envio')
+
+    avaliacoes = [
+        {
+            'id': entrega.pk,
+            'aluno': nome_do_aluno(entrega.id_aluno),
+            'atividade': entrega.titulo,
+            'nota': entrega.nota,
+            'feedback': entrega.feedback,
+            'data': entrega.data_avaliacao,
+        }
+        for entrega in avaliadas
+    ]
+
+    return render(request, 'professor/avaliacoesp.html', {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'avaliacoes': avaliacoes,
+        'total_avaliacoes': len(avaliacoes),
+        'avaliacoes_pendentes': entregas.filter(
+            status=STATUS_ENTREGA_PENDENTE
+        ).count(),
+    })
+
+
 @tipo_permitido('professor')
 def mentoriasp(request):
-    return render(request, 'professor/mentoriasp.html')
+
+    professor_logado = obter_professor(request)
+    hoje = timezone.localdate()
+
+    # Todas as mentorias aparecem para todos os professores.
+    todas = list(
+        Mentoria.objects.select_related(
+            'empresa',
+            'id_professor__perfil__user'
+        ).annotate(
+            inscritos=Count('participacao', distinct=True)
+        )
+    )
+
+    for mentoria in todas:
+        mentoria.minha = mentoria.id_professor_id == professor_logado.pk
+        mentoria.realizada = mentoria.data < hoje
+        mentoria.carga_texto = formatar_horas(mentoria.carga_horaria)
+
+    # Próximas primeiro (da mais perto para a mais longe), depois as realizadas
+    proximas = sorted(
+        (m for m in todas if not m.realizada),
+        key=lambda m: (m.data, m.horario or datetime.time.max)
+    )
+    realizadas = sorted(
+        (m for m in todas if m.realizada),
+        key=lambda m: m.data,
+        reverse=True
+    )
+
+    return render(request, 'professor/mentoriasp.html', {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'mentorias': proximas + realizadas,
+    })
+
+
 @tipo_permitido('professor')
 def agendap(request):
-    return render(request, 'professor/agendap.html')
+
+    obter_professor(request)
+    hoje = timezone.localdate()
+
+    eventos = []
+
+    # Mentorias que ainda vão acontecer
+    mentorias = Mentoria.objects.filter(
+        data__gte=hoje
+    ).select_related('empresa')
+
+    for mentoria in mentorias:
+
+        horario = ''
+
+        if mentoria.horario:
+            horario = mentoria.horario.strftime('%H:%M')
+
+            fim = datetime.datetime.combine(
+                mentoria.data,
+                mentoria.horario
+            ) + datetime.timedelta(hours=float(mentoria.carga_horaria))
+
+            if fim.date() == mentoria.data:
+                horario += ' às ' + fim.strftime('%H:%M')
+
+        partes = [
+            mentoria.empresa.nome if mentoria.empresa else '',
+            mentoria.modalidade,
+        ]
+
+        eventos.append({
+            'data': mentoria.data,
+            'ordem': mentoria.horario or datetime.time.max,
+            'titulo': mentoria.tema,
+            'descricao': ' · '.join(p for p in partes if p),
+            'horario': horario,
+            'tipo': 'Mentoria',
+        })
+
+    # Prazos das atividades dessas mentorias que ainda estão abertas
+    atividades = Atividade.objects.filter(
+        data_entrega__gte=hoje
+    ).select_related('id_mentoria')
+
+    for atividade in atividades:
+
+        if atividade_concluida(atividade):
+            continue
+
+        eventos.append({
+            'data': atividade.data_entrega,
+            'ordem': datetime.time.max,
+            'titulo': atividade.titulo,
+            'descricao': f'Prazo de entrega · {atividade.id_mentoria.tema}',
+            'horario': 'Dia todo',
+            'tipo': 'Prazo',
+        })
+
+    eventos.sort(key=lambda evento: (evento['data'], evento['ordem']))
+
+    return render(request, 'professor/agendap.html', {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'eventos': eventos[:50],
+    })
 # ---------------------------------------------------------------------
 # EMPRESA
 # ---------------------------------------------------------------------
