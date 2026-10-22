@@ -1,370 +1,334 @@
+
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
 
-<head>
+{% block title %}
+AMS Hub - Empresa
+{% endblock %}
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block css %}
+<link rel="stylesheet" href="{% static 'Empresa.css' %}">
+{% endblock %}
 
-    <title>AMS Hub - Empresa</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'Empresa.css' %}">
+{% block menu %}
+<ul>
+    <li class="active">
+        <a href="{% url 'empresa' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
 
-</head>
+    <li>
+        <a href="{% url 'cadastrarmentoriase' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Cadastrar Mentorias</span>
+        </a>
+    </li>
 
-<body>
+    <li>
+        <a href="{% url 'criartarefase' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Criar Tarefas</span>
+        </a>
+    </li>
 
-<div class="container-fluid p-0">
+    <li>
+        <a href="{% url 'oportunidadese' %}">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Oportunidades</span>
+        </a>
+    </li>
 
-    <div class="row g-0 min-vh-100">
+    <li>
+        <a href="{% url 'index' %}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
 
-        <aside class="sidebar col-lg-2">
+{% block saudacao %}
+<h1>Olá, {{ nome_usuario }}!</h1>
+{% endblock %}
 
-            <div>
+{% block descricao %}
+Gerencie mentorias, tarefas e oportunidades de emprego.
+{% endblock %}
 
-                <div class="logo text-center">
+{% block perfil %}
+<div class="perfil">
+    <img
+        src="{% static 'imagens/empresa.png' %}"
+        alt="Empresa"
+    >
 
-                    <img src="{% static 'imagens/logoempresa.png.png' %}"
-                         alt="Logo">
+    <div>
+        <strong>{{ nome_usuario }}</strong>
+        <small>Empresa</small>
+    </div>
+</div>
+{% endblock %}
 
+{% block content %}
+
+<div class="empresa-dashboard">
+
+    <!-- CARDS PRINCIPAIS -->
+    <section class="empresa-cards">
+
+        <a href="{% url 'cadastrarmentoriase' %}"
+           class="empresa-card">
+
+            <div class="empresa-card-icone">
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <span class="empresa-card-label">
+                Mentorias Ativas
+            </span>
+
+            <h2>{{ total_mentorias_ativas|default:"0" }}</h2>
+
+            <div class="empresa-card-rodape">
+                <span>Gerenciar mentorias</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+
+        </a>
+
+        <a href="{% url 'criartarefase' %}"
+           class="empresa-card">
+
+            <div class="empresa-card-icone">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+
+            <span class="empresa-card-label">
+                Tarefas Criadas
+            </span>
+
+            <h2>{{ total_tarefas|default:"0" }}</h2>
+
+            <div class="empresa-card-rodape">
+                <span>Gerenciar tarefas</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+
+        </a>
+
+        <a href="{% url 'oportunidadese' %}"
+           class="empresa-card">
+
+            <div class="empresa-card-icone">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+
+            <span class="empresa-card-label">
+                Vagas Abertas
+            </span>
+
+            <h2>{{ total_vagas_abertas|default:"0" }}</h2>
+
+            <div class="empresa-card-rodape">
+                <span>Ver oportunidades</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+
+        </a>
+
+    </section>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <section class="empresa-conteudo">
+
+        <!-- OPORTUNIDADES -->
+        <div class="empresa-painel">
+
+            <div class="empresa-painel-cabecalho">
+                <div>
+                    <h2>Oportunidades Publicadas</h2>
+                    <p>Acompanhe as vagas cadastradas pela empresa.</p>
                 </div>
 
+                <a href="{% url 'oportunidadese' %}">
+                    Ver todas
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
 
-                <ul class="nav flex-column">
+            <div class="table-responsive">
 
-                    <li class="nav-item active">
+                <table class="table empresa-tabela align-middle mb-0">
 
-                        <a href="{% url 'empresa' %}" class="nav-link">
+                    <thead>
+                        <tr>
+                            <th>Vaga</th>
+                            <th>Tipo</th>
+                            <th>Modelo</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
 
-                            <i class="fa-solid fa-house"></i>
+                    <tbody>
 
-                            <span>Dashboard</span>
+                        {% for vaga in vagas_publicadas %}
 
-                        </a>
+                        <tr>
+                            <td>
+                                <strong>{{ vaga.cargo }}</strong>
+                            </td>
 
-                    </li>
+                            <td>
+                                {{ vaga.tipo|default:"—" }}
+                            </td>
 
+                            <td>
+                                {{ vaga.modalidade|default:"—" }}
+                            </td>
 
-                    <li class="nav-item">
+                            <td>
+                                {% if vaga.aberta %}
+                                    <span class="empresa-status empresa-status-ativo">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        Aberta
+                                    </span>
+                                {% else %}
+                                    <span class="empresa-status empresa-status-encerrado">
+                                        <i class="fa-solid fa-circle-xmark"></i>
+                                        Encerrada
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
 
-                        <a href="{% url 'cadastrarmentoriase' %}" class="nav-link">
+                        {% empty %}
 
-                            <i class="fa-solid fa-users"></i>
+                        <tr>
+                            <td colspan="4">
+                                <div class="empresa-estado-vazio">
+                                    <i class="fa-regular fa-folder-open"></i>
+                                    <p>Nenhuma oportunidade publicada.</p>
+                                </div>
+                            </td>
+                        </tr>
 
-                            <span>Cadastrar Mentorias</span>
+                        {% endfor %}
 
-                        </a>
+                    </tbody>
 
-                    </li>
-
-
-                    <li class="nav-item">
-
-                        <a href="{% url 'criartarefase' %}" class="nav-link">
-
-                            <i class="fa-solid fa-list-check"></i>
-
-                            <span>Criar Tarefas</span>
-
-                        </a>
-
-                    </li>
-
-
-                    <li class="nav-item">
-
-                        <a href="{% url 'oportunidadese' %}" class="nav-link">
-
-                            <i class="fa-solid fa-briefcase"></i>
-
-                            <span>Oportunidades</span>
-
-                        </a>
-
-                    </li>
-
-
-                    <li class="nav-item">
-
-                        <a href="{% url 'index' %}" class="nav-link">
-
-                            <i class="fa-solid fa-right-from-bracket"></i>
-
-                            <span>Sair</span>
-
-                        </a>
-
-                    </li>
-
-                </ul>
+                </table>
 
             </div>
 
-        </aside>
+        </div>
 
-        <main class="content col-lg-10">
+        <!-- COLUNA LATERAL -->
+        <div class="empresa-paineis-laterais">
 
-            <header class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <!-- MENTORIAS -->
+            <div class="empresa-painel">
 
-                <div class="search">
+                <div class="empresa-painel-cabecalho">
+                    <div>
+                        <h2>Mentorias Recentes</h2>
+                        <p>Últimas mentorias cadastradas.</p>
+                    </div>
 
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                    <input type="text"
-                           placeholder="Pesquisar...">
-
+                    <a href="{% url 'cadastrarmentoriase' %}"
+                       aria-label="Ver mentorias">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
                 </div>
 
-                <div class="top-icons d-flex align-items-center gap-4">
+                <div class="empresa-lista">
 
-                    <i class="fa-regular fa-bell"></i>
+                    {% for mentoria in mentorias_recentes %}
 
-                    <i class="fa-solid fa-gear"></i>
+                    <div class="empresa-lista-item">
 
-
-                    <div class="perfil d-flex align-items-center gap-2">
-
-                        <img src="{% static 'imagens/empresa.png' %}"
-                             alt="Empresa">
+                        <div class="empresa-lista-icone">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
 
                         <div>
-
-                            <h1>Bem-vindo(a), {{ nome_usuario }}!</h1>
-                            <span>Empresa</span>
-
+                            <strong>{{ mentoria.tema }}</strong>
+                            <small>
+                                {{ mentoria.data|date:"d/m/Y" }}
+                            </small>
                         </div>
 
                     </div>
 
+                    {% empty %}
+
+                    <div class="empresa-estado-vazio">
+                        <i class="fa-regular fa-calendar"></i>
+                        <p>Nenhuma mentoria cadastrada.</p>
+                    </div>
+
+                    {% endfor %}
+
                 </div>
 
-            </header>
+            </div>
 
-            <section class="welcome">
+            <!-- TAREFAS -->
+            <div class="empresa-painel">
 
-                <h1>Bem-vindo(a)!</h1>
+                <div class="empresa-painel-cabecalho">
+                    <div>
+                        <h2>Tarefas Recentes</h2>
+                        <p>Atividades criadas pela empresa.</p>
+                    </div>
 
-                <p>
-                    Gerencie mentorias, tarefas e oportunidades de emprego.
-                </p>
-
-            </section>
-
-            <section class="cards row g-4 mb-4">
-
-                <div class="col-xl-4 col-md-6">
-
-                    <a href="{% url 'cadastrarmentoriase' %}" class="text-decoration-none">
-
-                        <div class="card purple h-100">
-
-                            <i class="fa-solid fa-users"></i>
-
-                            <h2>{{ total_mentorias_ativas }}</h2>
-
-                            <p>Mentorias Ativas</p>
-
-                        </div>
-
+                    <a href="{% url 'criartarefase' %}"
+                       aria-label="Ver tarefas">
+                        <i class="fa-solid fa-arrow-right"></i>
                     </a>
-
                 </div>
 
-                <div class="col-xl-4 col-md-6">
+                <div class="empresa-lista">
 
-                    <a href="{% url 'criartarefase' %}" class="text-decoration-none">
+                    {% for tarefa in tarefas_recentes %}
 
-                        <div class="card h-100">
+                    <div class="empresa-lista-item">
 
+                        <div class="empresa-lista-icone">
                             <i class="fa-solid fa-list-check"></i>
-
-                            <h2>{{ total_tarefas }}</h2>
-
-                            <p>Tarefas Criadas</p>
-
                         </div>
 
-                    </a>
-
-                </div>
-
-                <div class="col-xl-4 col-md-6">
-
-                    <a href="{% url 'oportunidadese' %}" class="text-decoration-none">
-
-                        <div class="card h-100">
-
-                            <i class="fa-solid fa-briefcase"></i>
-
-                            <h2>{{ total_vagas_abertas }}</h2>
-
-                            <p>Vagas Abertas</p>
-
-                        </div>
-
-                    </a>
-
-                </div>
-
-            </section>
-
-            <section class="grid row g-4">
-
-                <div class="col-xl-8">
-
-                    <div class="students h-100">
-
-                        <div class="title">
-
-                            <h2>Oportunidades Publicadas</h2>
-
-                            <a href="{% url 'oportunidadese' %}">Ver todas</a>
-
-                        </div>
-
-
-                        <div class="table-responsive">
-
-                            <table class="table align-middle mb-0">
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>Vaga</th>
-
-                                        <th>Tipo</th>
-
-                                        <th>Modelo</th>
-
-                                        <th>Status</th>
-
-                                    </tr>
-
-                                </thead>
-
-
-                                <tbody>
-
-                                    {% for vaga in vagas_publicadas %}
-
-                                    <tr>
-
-                                        <td>{{ vaga.cargo }}</td>
-
-                                        <td>{{ vaga.tipo|default:"—" }}</td>
-
-                                        <td>{{ vaga.modalidade|default:"—" }}</td>
-
-                                        <td>
-
-                                            {% if vaga.aberta %}
-                                            <span class="status ativo">
-                                                Aberta
-                                            </span>
-                                            {% else %}
-                                            <span class="status pendente">
-                                                Encerrada
-                                            </span>
-                                            {% endif %}
-
-                                        </td>
-
-                                    </tr>
-
-                                    {% empty %}
-
-                                    <tr>
-
-                                        <td colspan="4" class="text-center py-4">
-                                            Nenhuma oportunidade publicada.
-                                        </td>
-
-                                    </tr>
-
-                                    {% endfor %}
-
-                                </tbody>
-
-                            </table>
-
+                        <div>
+                            <strong>{{ tarefa.titulo }}</strong>
+                            <small>
+                                {% if tarefa.concluida %}
+                                    Concluída
+                                {% else %}
+                                    {{ tarefa.status|default:"Cadastrada" }}
+                                {% endif %}
+                            </small>
                         </div>
 
                     </div>
 
-                </div>
+                    {% empty %}
 
-
-                <div class="col-xl-4">
-
-                    <div class="right-panel">
-
-                        <div class="box">
-
-                            <div class="title">
-
-                                <h2>Mentorias</h2>
-
-                            </div>
-
-                            <ul>
-
-                                {% for mentoria in mentorias_recentes %}
-
-                                <li>{{ mentoria.tema }}</li>
-
-                                {% empty %}
-
-                                <li>Nenhuma mentoria cadastrada.</li>
-
-                                {% endfor %}
-
-                            </ul>
-
-                        </div>
-
-                        <div class="box">
-
-                            <div class="title">
-
-                                <h2>Tarefas Recentes</h2>
-
-                            </div>
-
-                            <ul>
-
-                                {% for tarefa in tarefas_recentes %}
-
-                                <li>{% if tarefa.concluida %}✔{% else %}•{% endif %} {{ tarefa.titulo }}</li>
-
-                                {% empty %}
-
-                                <li>Nenhuma tarefa criada.</li>
-
-                                {% endfor %}
-
-                            </ul>
-
-                        </div>
-
+                    <div class="empresa-estado-vazio">
+                        <i class="fa-regular fa-clipboard"></i>
+                        <p>Nenhuma tarefa criada.</p>
                     </div>
 
+                    {% endfor %}
+
                 </div>
 
-            </section>
+            </div>
 
-        </main>
+        </div>
 
-    </div>
+    </section>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-
-</html>
+{% endblock %}

@@ -1,472 +1,338 @@
-* {
-    box-sizing: border-box;
+
+/* ========================================
+   AMS HUB - DASHBOARD EMPRESA
+======================================== */
+
+.empresa-dashboard {
+    --empresa-roxo: #6528e0;
+    --empresa-roxo-hover: #5120b5;
+    --empresa-roxo-claro: #f2edff;
+    --empresa-texto: #25243a;
+    --empresa-cinza: #77788a;
+    --empresa-borda: #eceaf3;
+    --empresa-sombra: 0 8px 25px rgba(40, 25, 80, 0.06);
+
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    width: 100%;
 }
 
-body {
+/* ========================================
+   CARDS
+======================================== */
+
+.empresa-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.empresa-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 25px;
+    min-width: 0;
+    background: white;
+    border: 1px solid var(--empresa-borda);
+    border-radius: 18px;
+    box-shadow: var(--empresa-sombra);
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.empresa-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(40, 25, 80, 0.11);
+    border-color: #d9caff;
+}
+
+.empresa-card-icone {
+    width: 54px;
+    height: 54px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    background: var(--empresa-roxo-claro);
+    color: var(--empresa-roxo);
+    font-size: 23px;
+    margin-bottom: 20px;
+}
+
+.empresa-card-label {
+    color: var(--empresa-cinza);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.empresa-card h2 {
+    color: var(--empresa-texto);
+    font-size: 36px;
+    font-weight: 750;
+    margin: 0 0 22px;
+}
+
+.empresa-card-rodape {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--empresa-borda);
+    color: var(--empresa-roxo);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.empresa-card-rodape i {
+    transition: transform 0.2s;
+}
+
+.empresa-card:hover .empresa-card-rodape i {
+    transform: translateX(4px);
+}
+
+/* ========================================
+   CONTEÚDO
+======================================== */
+
+.empresa-conteudo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.empresa-paineis-laterais {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    min-width: 0;
+}
+
+.empresa-painel {
+    background: white;
+    border: 1px solid var(--empresa-borda);
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--empresa-sombra);
+    min-width: 0;
+}
+
+.empresa-painel-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 23px;
+}
+
+.empresa-painel-cabecalho h2 {
+    color: var(--empresa-texto);
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.empresa-painel-cabecalho p {
+    color: var(--empresa-cinza);
+    font-size: 13px;
     margin: 0;
-    background: #f4f5fb;
-    font-family: 'Segoe UI', sans-serif;
-    color: #222;
 }
 
-.sidebar {
-
-    min-height: 100vh;
-
-    background: linear-gradient(
-        180deg,
-        #2d225c,
-        #6b4cff
-    );
-
-    color: white;
-
-    padding: 30px 20px;
-
-    border-radius: 0 25px 25px 0;
+.empresa-painel-cabecalho a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--empresa-roxo);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 650;
+    white-space: nowrap;
 }
 
-.logo {
-    margin-bottom: 40px;
+.empresa-painel-cabecalho a:hover {
+    color: var(--empresa-roxo-hover);
+    text-decoration: underline;
 }
 
-.logo img {
-    width: 160px;
-    max-width: 100%;
+/* ========================================
+   TABELA
+======================================== */
+
+.empresa-tabela {
+    width: 100%;
 }
 
-.sidebar .nav-item {
+.empresa-tabela thead th {
+    background: #f7f5ff;
+    color: #5c1fd1;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 15px;
+    border: none;
+    white-space: nowrap;
+}
+
+.empresa-tabela tbody td {
+    padding: 17px 15px;
+    font-size: 13px;
+    color: #666;
+    border-bottom: 1px solid var(--empresa-borda);
+}
+
+.empresa-tabela tbody td strong {
+    color: var(--empresa-texto);
+    font-weight: 650;
+}
+
+.empresa-tabela tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ========================================
+   STATUS
+======================================== */
+
+.empresa-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.empresa-status-ativo {
+    background: #e2f8ea;
+    color: #23804c;
+}
+
+.empresa-status-encerrado {
+    background: #fff0e0;
+    color: #a76b1c;
+}
+
+/* ========================================
+   MENTORIAS E TAREFAS
+======================================== */
+
+.empresa-lista {
+    display: flex;
+    flex-direction: column;
+}
+
+.empresa-lista-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--empresa-borda);
+}
+
+.empresa-lista-item:first-child {
+    padding-top: 0;
+}
+
+.empresa-lista-item:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.empresa-lista-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: var(--empresa-roxo-claro);
+    color: var(--empresa-roxo);
+    font-size: 17px;
+}
+
+.empresa-lista-item > div:last-child {
+    min-width: 0;
+}
+
+.empresa-lista-item strong {
+    display: block;
+    color: var(--empresa-texto);
+    font-size: 14px;
+    font-weight: 650;
+    margin-bottom: 5px;
+    overflow-wrap: anywhere;
+}
+
+.empresa-lista-item small {
+    display: block;
+    color: var(--empresa-cinza);
+    font-size: 12px;
+}
+
+/* ========================================
+   ESTADO VAZIO
+======================================== */
+
+.empresa-estado-vazio {
+    padding: 24px 10px;
+    text-align: center;
+    color: #999;
+}
+
+.empresa-estado-vazio > i {
+    display: block;
+    color: #b7a4e8;
+    font-size: 28px;
     margin-bottom: 12px;
 }
 
-.sidebar .nav-link {
-
-    color: white;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-    padding: 16px;
-
-    border-radius: 12px;
-
-    font-size: 16px;
-
-    transition: .3s;
-}
-
-.sidebar .nav-link i {
-
-    width: 20px;
-
-    text-align: center;
-}
-.sidebar .nav-link:hover,
-.sidebar .nav-item.active .nav-link {
-
-    background: #8467ff;
-
-    color: white;
-}
-
-.content {
-
-    padding: 30px 40px;
-
-}
-
-.search {
-
-    width: 420px;
-
-    height: 50px;
-
-    background: white;
-
-    border-radius: 12px;
-
-    display: flex;
-
-    align-items: center;
-
-    padding: 0 18px;
-
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-
-
-.search i {
-
-    color: #777;
-
-}
-
-
-.search input {
-
-    border: none;
-
-    outline: none;
-
-    width: 100%;
-
-    margin-left: 10px;
-
-    font-size: 15px;
-
-}
-
-.top-icons > i {
-
-    font-size: 20px;
-
-    color: #666;
-
-    cursor: pointer;
-
-}
-
-.perfil img {
-
-    width: 50px;
-
-    height: 50px;
-
-    border-radius: 50%;
-
-    object-fit: cover;
-
-}
-
-
-.perfil h3 {
-
-    font-size: 16px;
-
-    margin: 0;
-
-}
-
-
-.perfil span {
-
-    color: #777;
-
+.empresa-estado-vazio p {
+    color: var(--empresa-cinza);
     font-size: 13px;
-
-}
-
-.welcome {
-
-    margin-top: 35px;
-
-    margin-bottom: 30px;
-
-}
-
-
-.welcome h1 {
-
-    font-size: 34px;
-
-    margin-bottom: 8px;
-
-}
-
-
-.welcome p {
-
-    color: #666;
-
-}
-.card {
-
-    border: none;
-
-    background: white;
-
-    padding: 28px;
-
-    border-radius: 18px;
-
-    box-shadow: 0 8px 20px rgba(0,0,0,.08);
-
-    transition: .3s;
-
-}
-
-.card:hover {
-
-    transform: translateY(-4px);
-
-    box-shadow: 0 12px 25px rgba(0,0,0,.12);
-
-}
-
-
-.card > i {
-
-    font-size: 28px;
-
-    color: #6b4cff;
-
-    margin-bottom: 18px;
-
-}
-
-
-.card h2 {
-
-    font-size: 36px;
-
-    margin-bottom: 5px;
-
-}
-
-
-.card p {
-
-    color: #666;
-
     margin: 0;
-
 }
 
-.card.purple {
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
 
-    background: linear-gradient(
-        135deg,
-        #6b4cff,
-        #9b85ff
-    );
-
-    color: white;
+@media (max-width: 1200px) {
+    .empresa-conteudo {
+        grid-template-columns: 1fr;
+    }
 }
 
-
-.card.purple i,
-.card.purple p {
-
-    color: white;
-
+@media (max-width: 900px) {
+    .empresa-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
-.students {
-
-    background: white;
-
-    border-radius: 18px;
-
-    padding: 25px;
-
-    box-shadow: 0 8px 20px rgba(0,0,0,.08);
-
-}
-
-.title {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    margin-bottom: 20px;
-
-}
-
-
-.title h2 {
-
-    margin: 0;
-
-}
-
-
-.title a {
-
-    color: #6b4cff;
-
-    text-decoration: none;
-
-    font-weight: bold;
-
-}
-
-.students table thead th {
-
-    text-align: left;
-
-    background: #f5f5f5;
-
-    padding: 15px;
-
-    border: none;
-
-}
-
-
-.students table tbody td {
-
-    padding: 15px;
-
-    border-bottom: 1px solid #eee;
-
-}
-.status {
-
-    padding: 6px 14px;
-
-    border-radius: 20px;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    display: inline-block;
-
-}
-
-.ativo {
-
-    background: #d8ffe6;
-
-    color: #1b8d4b;
-
-}
-.estagio {
-
-    background: #dce7ff;
-
-    color: #2958d5;
-
-}
-
-.pendente {
-
-    background: #fff2d6;
-
-    color: #c68600;
-
-}
-
-.right-panel {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 25px;
-
-}
-
-
-.box {
-
-    background: white;
-
-    padding: 25px;
-
-    border-radius: 18px;
-
-    box-shadow: 0 8px 20px rgba(0,0,0,.08);
-
-}
-
-
-.box ul {
-
-    list-style: none;
-
-    padding: 0;
-
-    margin: 0;
-
-}
-
-
-.box li {
-
-    padding: 14px 0;
-
-    border-bottom: 1px solid #ececec;
-
-    color: #555;
-
-}
-
-
-.box li:last-child {
-
-    border-bottom: none;
-
-}
-
-@media (max-width: 991px) {
-
-    .sidebar {
-
-        min-height: auto;
-
-        border-radius: 0;
-
+@media (max-width: 600px) {
+    .empresa-cards {
+        grid-template-columns: 1fr;
+        gap: 14px;
     }
 
-    .content {
-
-        padding: 25px;
-
-    }
-
-}
-
-
-@media (max-width: 768px) {
-
-    .search {
-
-        width: 100%;
-
-    }
-
-    header {
-
-        align-items: flex-start !important;
-
-    }
-
-    .top-icons {
-
-        width: 100%;
-
-        flex-wrap: wrap;
-
-    }
-
-}
-
-
-@media (max-width: 576px) {
-
-    .content {
-
+    .empresa-painel,
+    .empresa-card {
         padding: 20px;
-
     }
 
-    .welcome h1 {
-
-        font-size: 28px;
-
+    .empresa-card h2 {
+        font-size: 30px;
     }
 
-    .card {
-
-        padding: 22px;
-
+    .empresa-painel-cabecalho {
+        flex-wrap: wrap;
     }
-
 }
