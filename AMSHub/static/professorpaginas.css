@@ -323,3 +323,81 @@
         padding: 16px;
     }
 }
+
+/* ========================================
+   PROFESSOR - GERENCIAR ATIVIDADES
+======================================== */
+
+.atividades-professor .form-label {
+    color: #444;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.atividades-professor .form-control,
+.atividades-professor .form-select,
+.atividades-professor .input-group-text {
+    border: 1px solid #e5e0ef;
+    border-radius: 11px;
+    padding: 12px 14px;
+    font-size: 14px;
+}
+
+.atividades-professor .input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.atividades-professor .input-group-text {
+    background: #f7f4ff;
+    color: #5c1fd1;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.atividades-professor .form-control:focus,
+.atividades-professor .form-select:focus {
+    border-color: #7438ff;
+    box-shadow: 0 0 0 3px rgba(116, 56, 255, 0.1);
+}
+
+.atividades-professor textarea {
+    resize: vertical;
+}
+
+.atividades-professor .atividade-concluida {
+    background: #e2f8ea;
+    color: #23804c;
+}
+
+.atividades-professor .atividade-andamento {
+    background: #fff2d6;
+    color: #a76b1c;
+}
+
+.atividades-professor .btn-outline-primary {
+    color: #5c1fd1;
+    border-color: #5c1fd1;
+    border-radius: 10px;
+}
+
+.atividades-professor .btn-outline-primary:hover {
+    color: #fff;
+    background: #5c1fd1;
+    border-color: #5c1fd1;
+}
+
+.atividades-professor .painel-tabela {
+    margin-bottom: 24px;
+}
+
+.atividades-professor .table td {
+    vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+    .atividades-professor .botao-principal {
+        width: 100%;
+    }
+}

@@ -1465,6 +1465,169 @@ def agendap(request):
         'nome_usuario': nome_do_usuario(request),
         'eventos': eventos[:50],
     })
+
+
+@tipo_permitido('professor')
+def atividadesp(request):
+
+    professor_logado = obter_professor(request)
+    hoje = timezone.localdate()
+
+    # Somente mentorias vinculadas ao professor logado.
+    mentorias = Mentoria.objects.filter(
+        id_professor=professor_logado
+    ).order_by('-data', '-id_mentoria')
+
+    # Atividades das mentorias desse professor.
+    minhas = Atividade.objects.filter(
+        id_mentoria__id_professor=professor_logado
+    )
+
+    editando = None
+    editar_id = id_para_editar(request)
+
+    if editar_id is not None:
+        editando = minhas.filter(pk=editar_id).first()
+
+        if editando is None:
+            messages.error(
+                request,
+                'Atividade não encontrada ou sem permissão para editar.'
+            )
+            return redirect('atividadesp')
+
+    form = {}
+
+    if request.method == 'POST':
+
+        form = request.POST
+
+        mentoria_id = form.get('mentoria', '').strip()
+        titulo = form.get('titulo', '').strip()
+        descricao = form.get('descricao', '').strip()
+        data_entrega = ler_data(
+            form.get('data_entrega', '').strip()
+        )
+        horas = ler_horas(
+            form.get('horas', '').strip()
+        )
+        status = form.get('status', 'Pendente').strip()
+
+        mentoria = None
+
+        if mentoria_id.isdecimal():
+            mentoria = mentorias.filter(
+                pk=int(mentoria_id)
+            ).first()
+
+        erro = None
+
+        if mentoria is None:
+            erro = 'Selecione uma mentoria vinculada a você.'
+
+        elif not titulo or len(titulo) > 200:
+            erro = 'Informe um título de até 200 caracteres.'
+
+        elif not descricao:
+            erro = 'Informe a descrição da atividade.'
+
+        elif data_entrega is None:
+            erro = 'Informe uma data de entrega válida.'
+
+        elif (
+            data_entrega < hoje
+            and not (
+                editando
+                and editando.data_entrega == data_entrega
+            )
+        ):
+            erro = 'O prazo de entrega não pode estar no passado.'
+
+        elif horas is None or horas <= 0:
+            erro = 'Informe uma carga horária maior que zero.'
+
+        elif status not in (
+            'Pendente',
+            'Em andamento',
+            'Concluída'
+        ):
+            erro = 'Selecione um status válido.'
+
+        if erro is None:
+
+            atividade = editando or Atividade()
+
+            atividade.id_mentoria = mentoria
+            atividade.titulo = titulo
+            atividade.descricao = descricao
+            atividade.data_entrega = data_entrega
+            atividade.horas = horas
+            atividade.status = status
+
+            atividade.save()
+
+            if editando:
+                messages.success(
+                    request,
+                    'Atividade atualizada com sucesso!'
+                )
+            else:
+                messages.success(
+                    request,
+                    'Atividade cadastrada com sucesso!'
+                )
+
+            return redirect('atividadesp')
+
+        messages.error(request, erro)
+
+    elif editando:
+
+        form = {
+            'mentoria': str(editando.id_mentoria_id),
+            'titulo': editando.titulo,
+            'descricao': editando.descricao,
+            'data_entrega': (
+                editando.data_entrega.isoformat()
+                if editando.data_entrega else ''
+            ),
+            'horas': str(editando.horas),
+            'status': editando.status,
+        }
+
+    atividades = minhas.select_related(
+        'id_mentoria'
+    ).order_by('-id_atividade')
+
+    total_atividades = minhas.count()
+
+    atividades_concluidas = minhas.filter(
+        status__iexact='Concluída'
+    ).count()
+
+    atividades_pendentes = minhas.filter(
+        status__iexact='Pendente'
+    ).count()
+
+    contexto = {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'mentorias': mentorias,
+        'atividades': atividades,
+        'total_atividades': total_atividades,
+        'atividades_pendentes': atividades_pendentes,
+        'atividades_concluidas': atividades_concluidas,
+        'form': form,
+        'editando': editando,
+    }
+
+    return render(
+        request,
+        'professor/atividadesp.html',
+        contexto
+    )
+
+
 # ---------------------------------------------------------------------
 # EMPRESA
 # ---------------------------------------------------------------------

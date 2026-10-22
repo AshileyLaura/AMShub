@@ -29,6 +29,7 @@ from AMSHub.views import (
     cadastrarmentoriase,
     criartarefase,
     oportunidadese,
+    atividadesp,
 )
 
 
@@ -54,6 +55,8 @@ urlpatterns = [
     path('professor/avaliacoes/', avaliacoesp, name='avaliacoesp'),
     path('professor/mentorias/', mentoriasp, name='mentoriasp'),
     path('professor/agenda/', agendap, name='agendap'),
+    path('professor/atividades/',atividadesp,name='atividadesp'),
+    
     # ALUNO
 
     path(

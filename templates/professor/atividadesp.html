@@ -1,0 +1,643 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+AMS Hub - Gerenciar Atividades
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'professorpaginas.css' %}">
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url 'professor' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'portfoliosp' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'avaliacoesp' %}">
+            <i class="fa-solid fa-star"></i>
+            <span>Avaliações</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'mentoriasp' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'atividadesp' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'agendap' %}">
+            <i class="fa-solid fa-calendar"></i>
+            <span>Agenda</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'logout' %}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block saudacao %}
+<h1>Gerenciar Atividades</h1>
+{% endblock %}
+
+{% block descricao %}
+Cadastre tarefas e acompanhe as atividades das suas mentorias.
+{% endblock %}
+
+{% block perfil %}
+<div class="perfil">
+    <img
+        src="{% static 'imagens/professor.png.png' %}"
+        alt="Professor"
+    >
+
+    <div>
+        <strong>{{ nome_usuario }}</strong>
+        <small>Professor</small>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<section class="professor-pagina atividades-professor">
+
+    <!-- MENSAGENS DO DJANGO -->
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if 'error' in message.tags %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show"
+             role="alert">
+
+            {{ message }}
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Fechar">
+            </button>
+
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- CABEÇALHO DA PÁGINA -->
+
+    <div class="pagina-cabecalho">
+
+        <div>
+            <h2>Atividades das Mentorias</h2>
+            <p>
+                Organize tarefas, defina prazos e acompanhe
+                as atividades cadastradas.
+            </p>
+        </div>
+
+        <span class="contador">
+            <i class="fa-solid fa-list-check me-1"></i>
+            {{ total_atividades|default:"0" }} atividades
+        </span>
+
+    </div>
+
+    <!-- INDICADORES -->
+
+    <div class="grade-resumo">
+
+        <div class="card-resumo">
+
+            <div class="card-icone">
+                <i class="fa-solid fa-clipboard-list"></i>
+            </div>
+
+            <div>
+                <h3>{{ total_atividades|default:"0" }}</h3>
+                <p>Total de atividades</p>
+            </div>
+
+        </div>
+
+        <div class="card-resumo">
+
+            <div class="card-icone">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div>
+                <h3>{{ atividades_pendentes|default:"0" }}</h3>
+                <p>Atividades pendentes</p>
+            </div>
+
+        </div>
+
+        <div class="card-resumo">
+
+            <div class="card-icone">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div>
+                <h3>{{ atividades_concluidas|default:"0" }}</h3>
+                <p>Atividades concluídas</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FORMULÁRIO -->
+
+    <div class="painel-tabela mb-4">
+
+        <div class="d-flex align-items-center gap-3 mb-4">
+
+            <div class="card-icone">
+                <i class="fa-solid fa-circle-plus"></i>
+            </div>
+
+            <div>
+                <h3 class="mb-1">
+                    {% if editando %}
+                        Editar Atividade
+                    {% else %}
+                        Cadastrar Nova Atividade
+                    {% endif %}
+                </h3>
+
+                <p class="text-muted mb-0">
+                    Preencha os dados da tarefa que será
+                    disponibilizada aos alunos.
+                </p>
+            </div>
+
+        </div>
+
+        {% if not mentorias %}
+        <div class="alert alert-warning">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            Nenhuma mentoria disponível para vincular atividades.
+        </div>
+        {% endif %}
+
+        <form
+            method="post"
+            action="{% url 'atividadesp' %}"
+            class="formulario-atividades"
+        >
+
+            {% csrf_token %}
+
+            {% if editando %}
+            <input
+                type="hidden"
+                name="id"
+                value="{{ editando.pk }}"
+            >
+            {% endif %}
+
+            <div class="row g-3">
+
+                <!-- TÍTULO -->
+
+                <div class="col-md-6">
+
+                    <label for="titulo" class="form-label">
+                        Título da atividade
+                    </label>
+
+                    <input
+                        type="text"
+                        id="titulo"
+                        name="titulo"
+                        class="form-control"
+                        maxlength="200"
+                        placeholder="Ex.: Criar uma página web"
+                        value="{{ form.titulo|default:'' }}"
+                        required
+                    >
+
+                </div>
+
+                <!-- MENTORIA -->
+
+                <div class="col-md-6">
+
+                    <label for="mentoria" class="form-label">
+                        Mentoria vinculada
+                    </label>
+
+                    <select
+                        id="mentoria"
+                        name="mentoria"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="">
+                            Selecione uma mentoria
+                        </option>
+
+                        {% for mentoria in mentorias %}
+
+                        <option
+                            value="{{ mentoria.pk }}"
+                            {% if form.mentoria == mentoria.pk|stringformat:"s" %}selected{% endif %}
+                        >
+                            {{ mentoria.tema }}
+                            — {{ mentoria.data|date:"d/m/Y" }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- PRAZO -->
+
+                <div class="col-md-6">
+
+                    <label for="data_entrega" class="form-label">
+                        Prazo de entrega
+                    </label>
+
+                    <input
+                        type="date"
+                        id="data_entrega"
+                        name="data_entrega"
+                        class="form-control"
+                        value="{{ form.data_entrega|default:'' }}"
+                        required
+                    >
+
+                </div>
+
+                <!-- HORAS -->
+
+                <div class="col-md-6">
+
+                    <label for="horas" class="form-label">
+                        Carga horária
+                    </label>
+
+                    <div class="input-group">
+
+                        <input
+                            type="number"
+                            id="horas"
+                            name="horas"
+                            class="form-control"
+                            min="0"
+                            max="999.99"
+                            step="0.5"
+                            placeholder="Ex.: 4"
+                            value="{{ form.horas|default:'' }}"
+                            required
+                        >
+
+                        <span class="input-group-text">
+                            horas
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- STATUS -->
+
+                <div class="col-md-6">
+
+                    <label for="status" class="form-label">
+                        Status
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                        class="form-select"
+                    >
+
+                        <option value="Pendente"
+                            {% if not form.status or form.status == 'Pendente' %}selected{% endif %}>
+                            Pendente
+                        </option>
+
+                        <option value="Em andamento"
+                            {% if form.status == 'Em andamento' %}selected{% endif %}>
+                            Em andamento
+                        </option>
+
+                        <option value="Concluída"
+                            {% if form.status == 'Concluída' %}selected{% endif %}>
+                            Concluída
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- DESCRIÇÃO -->
+
+                <div class="col-12">
+
+                    <label for="descricao" class="form-label">
+                        Descrição da atividade
+                    </label>
+
+                    <textarea
+                        id="descricao"
+                        name="descricao"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Explique o que os alunos deverão desenvolver..."
+                        required
+                    >{{ form.descricao|default:'' }}</textarea>
+
+                </div>
+
+            </div>
+
+            <!-- BOTÕES -->
+
+            <div class="d-flex justify-content-end flex-wrap gap-2 mt-4">
+
+                {% if editando %}
+
+                <a
+                    href="{% url 'atividadesp' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Cancelar edição
+                </a>
+
+                {% endif %}
+
+                <button
+                    type="submit"
+                    class="botao-principal"
+                    {% if not mentorias %}disabled{% endif %}
+                >
+
+                    {% if editando %}
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Salvar Alterações
+                    {% else %}
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Cadastrar Atividade
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- LISTAGEM -->
+
+    <div class="painel-tabela">
+
+        <div class="pagina-cabecalho">
+
+            <div>
+                <h3 class="mb-1">Atividades Cadastradas</h3>
+
+                <p>
+                    Visualize as tarefas vinculadas às suas mentorias.
+                </p>
+            </div>
+
+        </div>
+
+        <!-- PESQUISA LOCAL -->
+
+        <div class="filtros-pagina">
+
+            <div class="campo-pesquisa">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="search"
+                    id="pesquisarAtividades"
+                    placeholder="Pesquisar atividade ou mentoria..."
+                    aria-label="Pesquisar atividades"
+                >
+
+            </div>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table
+                class="table align-middle"
+                id="tabelaAtividades"
+            >
+
+                <thead>
+
+                    <tr>
+                        <th>Atividade</th>
+                        <th>Mentoria</th>
+                        <th>Prazo</th>
+                        <th>Horas</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for atividade in atividades %}
+
+                    <tr class="atividade-linha">
+
+                        <td>
+
+                            <strong>
+                                {{ atividade.titulo }}
+                            </strong>
+
+                            <small class="d-block text-muted mt-1">
+                                {{ atividade.descricao|truncatechars:65 }}
+                            </small>
+
+                        </td>
+
+                        <td>
+                            {{ atividade.id_mentoria.tema }}
+                        </td>
+
+                        <td>
+                            {{ atividade.data_entrega|date:"d/m/Y"|default:"—" }}
+                        </td>
+
+                        <td>
+                            {{ atividade.horas }}h
+                        </td>
+
+                        <td>
+
+                            {% if atividade.status == 'Concluída' %}
+
+                            <span class="etiqueta atividade-concluida">
+                                <i class="fa-solid fa-check me-1"></i>
+                                Concluída
+                            </span>
+
+                            {% elif atividade.status == 'Em andamento' %}
+
+                            <span class="etiqueta atividade-andamento">
+                                <i class="fa-solid fa-spinner me-1"></i>
+                                Em andamento
+                            </span>
+
+                            {% else %}
+
+                            <span class="etiqueta">
+                                <i class="fa-solid fa-clock me-1"></i>
+                                {{ atividade.status|default:"Pendente" }}
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{% url 'atividadesp' %}?editar={{ atividade.pk }}"
+                                class="btn btn-sm btn-outline-primary"
+                            >
+                                <i class="fa-solid fa-pen"></i>
+                                Editar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="6">
+
+                            <div class="estado-vazio">
+
+                                <i class="fa-solid fa-clipboard-list"></i>
+
+                                <h3>Nenhuma atividade cadastrada</h3>
+
+                                <p>
+                                    As atividades criadas aparecerão aqui.
+                                </p>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <p
+            id="nenhumResultadoAtividades"
+            class="text-center text-muted py-3 d-none"
+        >
+            Nenhuma atividade corresponde à pesquisa.
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const pesquisa = document.getElementById("pesquisarAtividades");
+
+    const linhas = document.querySelectorAll(
+        "#tabelaAtividades .atividade-linha"
+    );
+
+    const mensagem = document.getElementById(
+        "nenhumResultadoAtividades"
+    );
+
+    if (!pesquisa) {
+        return;
+    }
+
+    pesquisa.addEventListener("input", function () {
+
+        const termo = pesquisa.value
+            .toLowerCase()
+            .trim();
+
+        let encontrados = 0;
+
+        linhas.forEach(function (linha) {
+
+            const texto = linha.textContent.toLowerCase();
+
+            const corresponde = texto.includes(termo);
+
+            linha.classList.toggle("d-none", !corresponde);
+
+            if (corresponde) {
+                encontrados++;
+            }
+
+        });
+
+        mensagem.classList.toggle(
+            "d-none",
+            encontrados > 0 || linhas.length === 0
+        );
+
+    });
+
+});
+</script>
+
+{% endblock %}
