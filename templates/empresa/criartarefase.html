@@ -58,6 +58,15 @@ Organize atividades e acompanhe o desenvolvimento dos alunos.
 
 <section class="empresa-pagina">
 
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="pagina-cabecalho">
         <div>
             <h2>Gerenciamento de Tarefas</h2>
@@ -69,13 +78,34 @@ Organize atividades e acompanhe o desenvolvimento dos alunos.
 
         <div class="painel-titulo">
             <i class="fa-solid fa-clipboard-list"></i>
-            <h3>Nova Tarefa</h3>
+            <h3>{% if editando %}Editar Tarefa{% else %}Nova Tarefa{% endif %}</h3>
         </div>
 
-        <form method="post" class="formulario-empresa">
+        {% if not mentorias %}
+        <div class="alert alert-warning">
+            Você ainda não tem mentorias. Cadastre uma em
+            <a href="{% url 'cadastrarmentoriase' %}">Cadastrar Mentorias</a>
+            para poder criar tarefas.
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'criartarefase' %}" class="formulario-empresa">
             {% csrf_token %}
+            {% if editando %}<input type="hidden" name="id" value="{{ editando.pk }}">{% endif %}
 
             <div class="form-grid">
+
+                <div class="campo-formulario campo-completo">
+                    <label for="mentoria">Mentoria da tarefa</label>
+                    <select id="mentoria" name="mentoria" required>
+                        <option value="">Selecione a mentoria</option>
+                        {% for mentoria in mentorias %}
+                        <option value="{{ mentoria.pk }}" {% if form.mentoria == mentoria.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ mentoria.tema }} — {{ mentoria.data|date:"d/m/Y" }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
                 <div class="campo-formulario">
                     <label for="titulo">Título da tarefa</label>
@@ -83,6 +113,8 @@ Organize atividades e acompanhe o desenvolvimento dos alunos.
                         type="text"
                         id="titulo"
                         name="titulo"
+                        maxlength="200"
+                        value="{{ form.titulo }}"
                         placeholder="Ex.: Desenvolver uma página web"
                         required
                     >
@@ -90,26 +122,26 @@ Organize atividades e acompanhe o desenvolvimento dos alunos.
 
                 <div class="campo-formulario">
                     <label for="prazo">Prazo de entrega</label>
-                    <input type="date" id="prazo" name="prazo" required>
+                    <input type="date" id="prazo" name="prazo" value="{{ form.prazo }}" required>
                 </div>
 
                 <div class="campo-formulario">
                     <label for="prioridade">Prioridade</label>
                     <select id="prioridade" name="prioridade">
-                        <option value="Baixa">Baixa</option>
-                        <option value="Média">Média</option>
-                        <option value="Alta">Alta</option>
+                        <option value="Baixa" {% if form.prioridade == 'Baixa' %}selected{% endif %}>Baixa</option>
+                        <option value="Média" {% if form.prioridade == 'Média' %}selected{% endif %}>Média</option>
+                        <option value="Alta" {% if form.prioridade == 'Alta' %}selected{% endif %}>Alta</option>
                     </select>
                 </div>
 
                 <div class="campo-formulario">
                     <label for="horas">Horas complementares</label>
                     <input
-                        type="number"
+                        type="text"
                         id="horas"
                         name="horas"
-                        min="0"
-                        placeholder="Ex.: 5"
+                        value="{{ form.horas }}"
+                        placeholder="Ex.: 5, 1h30 ou 2,5"
                     >
                 </div>
 
@@ -121,17 +153,17 @@ Organize atividades e acompanhe o desenvolvimento dos alunos.
                         rows="4"
                         placeholder="Explique o que o aluno deverá desenvolver..."
                         required
-                    ></textarea>
+                    >{{ form.descricao }}</textarea>
                 </div>
 
             </div>
 
             <div class="form-acoes">
-                <button type="submit" class="botao-principal" disabled
-                        title="Aguardando integração com o banco">
-                    <i class="fa-solid fa-plus"></i>
-                    Criar Tarefa
+                <button type="submit" class="botao-principal" {% if not mentorias %}disabled{% endif %}>
+                    <i class="fa-solid {% if editando %}fa-floppy-disk{% else %}fa-plus{% endif %}"></i>
+                    {% if editando %}Salvar alterações{% else %}Criar Tarefa{% endif %}
                 </button>
+                {% if editando %}<a href="{% url 'criartarefase' %}" class="btn btn-outline-secondary ms-2">Cancelar edição</a>{% endif %}
             </div>
 
         </form>
@@ -150,22 +182,30 @@ Organize atividades e acompanhe o desenvolvimento dos alunos.
                 <thead>
                     <tr>
                         <th>Tarefa</th>
+                        <th>Mentoria</th>
                         <th>Prazo</th>
                         <th>Prioridade</th>
                         <th>Status</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for tarefa in tarefas %}
                     <tr>
                         <td>{{ tarefa.titulo }}</td>
-                        <td>{{ tarefa.prazo|date:"d/m/Y" }}</td>
+                        <td>{{ tarefa.id_mentoria.tema }}</td>
+                        <td>{{ tarefa.data_entrega|date:"d/m/Y"|default:"—" }}</td>
                         <td>{{ tarefa.prioridade }}</td>
-                        <td>{{ tarefa.status }}</td>
+                        <td>{{ tarefa.situacao_texto }}</td>
+                        <td>
+                            <a href="{% url 'criartarefase' %}?editar={{ tarefa.pk }}" class="btn btn-sm btn-outline-primary">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </a>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center py-4">
+                        <td colspan="6" class="text-center py-4">
                             Nenhuma tarefa cadastrada.
                         </td>
                     </tr>

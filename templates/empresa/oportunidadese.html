@@ -59,6 +59,15 @@ Divulgue oportunidades de estágio e emprego para os alunos.
 
 <section class="empresa-pagina">
 
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="pagina-cabecalho">
         <div>
             <h2>Oportunidades de Emprego</h2>
@@ -70,11 +79,12 @@ Divulgue oportunidades de estágio e emprego para os alunos.
 
         <div class="painel-titulo">
             <i class="fa-solid fa-briefcase"></i>
-            <h3>Publicar Nova Oportunidade</h3>
+            <h3>{% if editando %}Editar Oportunidade{% else %}Publicar Nova Oportunidade{% endif %}</h3>
         </div>
 
-        <form method="post" class="formulario-empresa">
+        <form method="post" action="{% url 'oportunidadese' %}" class="formulario-empresa">
             {% csrf_token %}
+            {% if editando %}<input type="hidden" name="id" value="{{ editando.pk }}">{% endif %}
 
             <div class="form-grid">
 
@@ -84,6 +94,8 @@ Divulgue oportunidades de estágio e emprego para os alunos.
                         type="text"
                         id="titulo"
                         name="titulo"
+                        maxlength="200"
+                        value="{{ form.titulo }}"
                         placeholder="Ex.: Estágio em Desenvolvimento"
                         required
                     >
@@ -93,18 +105,18 @@ Divulgue oportunidades de estágio e emprego para os alunos.
                     <label for="tipo">Tipo de oportunidade</label>
                     <select id="tipo" name="tipo" required>
                         <option value="">Selecione</option>
-                        <option value="Estágio">Estágio</option>
-                        <option value="Emprego">Emprego</option>
-                        <option value="Aprendiz">Jovem Aprendiz</option>
+                        <option value="Estágio" {% if form.tipo == 'Estágio' %}selected{% endif %}>Estágio</option>
+                        <option value="Emprego" {% if form.tipo == 'Emprego' %}selected{% endif %}>Emprego</option>
+                        <option value="Jovem Aprendiz" {% if form.tipo == 'Jovem Aprendiz' %}selected{% endif %}>Jovem Aprendiz</option>
                     </select>
                 </div>
 
                 <div class="campo-formulario">
                     <label for="modalidade">Modalidade</label>
                     <select id="modalidade" name="modalidade">
-                        <option value="Presencial">Presencial</option>
-                        <option value="Remoto">Remoto</option>
-                        <option value="Híbrido">Híbrido</option>
+                        <option value="Presencial" {% if form.modalidade == 'Presencial' %}selected{% endif %}>Presencial</option>
+                        <option value="Remoto" {% if form.modalidade == 'Remoto' %}selected{% endif %}>Remoto</option>
+                        <option value="Híbrido" {% if form.modalidade == 'Híbrido' %}selected{% endif %}>Híbrido</option>
                     </select>
                 </div>
 
@@ -114,18 +126,20 @@ Divulgue oportunidades de estágio e emprego para os alunos.
                         type="text"
                         id="localizacao"
                         name="localizacao"
+                        maxlength="150"
+                        value="{{ form.localizacao }}"
                         placeholder="Ex.: São Paulo - SP"
                     >
                 </div>
 
                 <div class="campo-formulario">
                     <label for="prazo">Prazo para inscrição</label>
-                    <input type="date" id="prazo" name="prazo">
+                    <input type="date" id="prazo" name="prazo" value="{{ form.prazo }}" required>
                 </div>
 
                 <div class="campo-formulario">
                     <label for="vagas">Quantidade de vagas</label>
-                    <input type="number" id="vagas" name="vagas" min="1">
+                    <input type="number" id="vagas" name="vagas" min="0" max="9999" value="{{ form.vagas }}" placeholder="0 = sem limite">
                 </div>
 
                 <div class="campo-formulario campo-completo">
@@ -136,7 +150,7 @@ Divulgue oportunidades de estágio e emprego para os alunos.
                         rows="4"
                         placeholder="Descreva a vaga e as atividades..."
                         required
-                    ></textarea>
+                    >{{ form.descricao }}</textarea>
                 </div>
 
                 <div class="campo-formulario campo-completo">
@@ -145,18 +159,19 @@ Divulgue oportunidades de estágio e emprego para os alunos.
                         id="requisitos"
                         name="requisitos"
                         rows="3"
+                        maxlength="500"
                         placeholder="Informe os conhecimentos necessários..."
-                    ></textarea>
+                    >{{ form.requisitos }}</textarea>
                 </div>
 
             </div>
 
             <div class="form-acoes">
-                <button type="submit" class="botao-principal" disabled
-                        title="Aguardando integração com o banco">
-                    <i class="fa-solid fa-paper-plane"></i>
-                    Publicar Oportunidade
+                <button type="submit" class="botao-principal">
+                    <i class="fa-solid {% if editando %}fa-floppy-disk{% else %}fa-paper-plane{% endif %}"></i>
+                    {% if editando %}Salvar alterações{% else %}Publicar Oportunidade{% endif %}
                 </button>
+                {% if editando %}<a href="{% url 'oportunidadese' %}" class="btn btn-outline-secondary ms-2">Cancelar edição</a>{% endif %}
             </div>
 
         </form>
@@ -180,30 +195,51 @@ Divulgue oportunidades de estágio e emprego para os alunos.
                     <i class="fa-solid fa-briefcase"></i>
                 </div>
 
-                <h3>{{ oportunidade.titulo }}</h3>
+                <h3>{{ oportunidade.cargo }}</h3>
 
                 <p>{{ oportunidade.descricao|truncatewords:25 }}</p>
 
                 <div class="oportunidade-detalhes">
+                    {% if oportunidade.localizacao %}
                     <span>
                         <i class="fa-solid fa-location-dot"></i>
                         {{ oportunidade.localizacao }}
                     </span>
+                    {% endif %}
 
+                    {% if oportunidade.modalidade %}
                     <span>
                         <i class="fa-solid fa-laptop"></i>
                         {{ oportunidade.modalidade }}
                     </span>
+                    {% endif %}
 
                     <span>
                         <i class="fa-solid fa-calendar"></i>
-                        {{ oportunidade.prazo|date:"d/m/Y" }}
+                        Até {{ oportunidade.data_limite|date:"d/m/Y" }}
                     </span>
+
+                    {% if oportunidade.quantidade %}
+                    <span>
+                        <i class="fa-solid fa-users"></i>
+                        {{ oportunidade.quantidade }} vaga{{ oportunidade.quantidade|pluralize }}
+                    </span>
+                    {% endif %}
                 </div>
 
+                {% if oportunidade.tipo %}
                 <span class="etiqueta-oportunidade">
                     {{ oportunidade.tipo }}
                 </span>
+                {% endif %}
+
+                <span class="etiqueta-oportunidade">
+                    {% if oportunidade.aberta %}Aberta{% else %}Encerrada{% endif %}
+                </span>
+
+                <a href="{% url 'oportunidadese' %}?editar={{ oportunidade.pk }}" class="btn btn-sm btn-outline-primary mt-2">
+                    <i class="fa-solid fa-pen"></i> Editar
+                </a>
 
             </article>
 

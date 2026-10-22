@@ -56,7 +56,15 @@ class Mentoria(models.Model):
     tema = models.CharField(max_length=200)
     descricao = models.TextField()
     data = models.DateField()
-    carga_horaria = models.IntegerField()
+    carga_horaria = models.DecimalField(
+        max_digits=5,
+        decimal_places=2
+    )
+
+    area = models.CharField(max_length=100, blank=True, default='')
+    horario = models.TimeField(null=True, blank=True)
+    vagas = models.PositiveIntegerField(null=True, blank=True)
+    modalidade = models.CharField(max_length=20, blank=True, default='')
 
     def __str__(self):
         return self.tema
@@ -160,6 +168,11 @@ class Atividade(models.Model):
         default='Pendente'
     )
 
+    prioridade = models.CharField(
+        max_length=10,
+        default='Média'
+    )
+
     def __str__(self):
         return self.titulo
 
@@ -261,9 +274,14 @@ class Vaga(models.Model):
     )
 
     cargo = models.CharField(max_length=200)
-    descricao = models.CharField(max_length=200)
-    requisitos = models.CharField(max_length=500)
+    descricao = models.TextField()
+    requisitos = models.CharField(max_length=500, blank=True)
     data_limite = models.DateField()
+
+    tipo = models.CharField(max_length=30, blank=True, default='')
+    modalidade = models.CharField(max_length=20, blank=True, default='')
+    localizacao = models.CharField(max_length=150, blank=True, default='')
+    quantidade = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return str(self.id_vaga)

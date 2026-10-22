@@ -57,12 +57,6 @@ AMS Hub - Detalhes da Mentoria
             <span>Pendências</span>
         </a>
     </li>
-    <li>
-        <a href="{% url 'index' %}">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Sair</span>
-        </a>
-    </li>
 
 </ul>
 
@@ -176,7 +170,7 @@ Confira todas as informações da mentoria.
 
         <div>
             <span>Carga horária</span>
-            <strong>{{ mentoria.carga_horaria }}h</strong>
+            <strong>{{ mentoria.carga_horaria|floatformat:"-2" }}h</strong>
         </div>
 
     </div>

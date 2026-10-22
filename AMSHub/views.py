@@ -11,6 +11,9 @@ from django.contrib.auth.password_validation import validate_password
 from django.urls import reverse
 from django.utils import timezone
 from functools import wraps
+import datetime
+from decimal import Decimal, InvalidOperation
+import re
 from .models import (
     Perfil,
     Aluno,
@@ -304,11 +307,36 @@ def professor(request):
         'nome_usuario': nome_do_usuario(request),
     }
     return render(request, 'Professor.html', contexto)
+def obter_empresa(request):
+    """Empresa do usuário logado (cada empresa só mexe no que é dela)."""
+    return get_object_or_404(
+        Empresa,
+        perfil__user=request.user
+    )
 @tipo_permitido('empresa')
 def empresa(request):
+    empresa_logada = obter_empresa(request)
+    hoje = timezone.localdate()
+    mentorias = Mentoria.objects.filter(empresa=empresa_logada)
+    atividades = Atividade.objects.filter(id_mentoria__empresa=empresa_logada)
+    vagas = Vaga.objects.filter(id_empresa=empresa_logada)
+    vagas_publicadas = list(vagas.order_by('-id_vaga')[:5])
+    for vaga in vagas_publicadas:
+        vaga.aberta = vaga.data_limite >= hoje
+    tarefas_recentes = list(
+        atividades.select_related('id_mentoria').order_by('-id_atividade')[:4]
+    )
+    for tarefa in tarefas_recentes:
+        tarefa.concluida = atividade_concluida(tarefa)
     contexto = {
         'usuario': request.user,
         'nome_usuario': nome_do_usuario(request),
+        'total_mentorias_ativas': mentorias.filter(data__gte=hoje).count(),
+        'total_tarefas': atividades.count(),
+        'total_vagas_abertas': vagas.filter(data_limite__gte=hoje).count(),
+        'vagas_publicadas': vagas_publicadas,
+        'mentorias_recentes': mentorias.order_by('-id_mentoria')[:3],
+        'tarefas_recentes': tarefas_recentes,
     }
     return render(request, 'Empresa.html', contexto)
 # ---------------------------------------------------------------------
@@ -1114,12 +1142,294 @@ def agendap(request):
 # ---------------------------------------------------------------------
 # EMPRESA
 # ---------------------------------------------------------------------
+MODALIDADES_MENTORIA = ('Online', 'Presencial', 'Híbrida')
+PRIORIDADES_TAREFA = ('Baixa', 'Média', 'Alta')
+TIPOS_VAGA = ('Estágio', 'Emprego', 'Jovem Aprendiz')
+MODALIDADES_VAGA = ('Presencial', 'Remoto', 'Híbrido')
+def ler_data(texto):
+    """Converte 'AAAA-MM-DD' em data; devolve None se for inválida."""
+    try:
+        return datetime.date.fromisoformat(texto)
+    except ValueError:
+        return None
+def ler_horas(texto):
+    """Lê horas como '2', '1,5', '1.5', '1h30', '2h' ou '1h30m'.
+    Devolve Decimal (ex.: 1h30 -> 1.5) ou None se for inválido."""
+    texto = texto.strip().lower().replace(' ', '')
+    achou = re.fullmatch(r'(\d{1,3})h(?:(\d{1,2})m?)?', texto)
+    if achou:
+        minutos = int(achou.group(2) or 0)
+        if minutos > 59:
+            return None
+        return (Decimal(achou.group(1)) + Decimal(minutos) / 60).quantize(Decimal('0.01'))
+    try:
+        valor = Decimal(texto.replace(',', '.'))
+    except InvalidOperation:
+        return None
+    if not valor.is_finite() or valor < 0 or valor > 999:
+        return None
+    return valor.quantize(Decimal('0.01'))
+def formatar_horas(valor):
+    """1.5 -> '1h30', 2 -> '2h', 0.5 -> '30min'."""
+    minutos = int((Decimal(valor) * 60).quantize(Decimal('1')))
+    horas, resto = divmod(minutos, 60)
+    if horas and resto:
+        return f'{horas}h{resto:02d}'
+    if horas:
+        return f'{horas}h'
+    return f'{resto}min'
+def ler_horario(texto):
+    """Converte 'HH:MM' em horário; devolve None se for inválido."""
+    try:
+        return datetime.time.fromisoformat(texto)
+    except ValueError:
+        return None
+def id_para_editar(request):
+    """Lê o ?editar=ID da URL (ou o campo escondido 'id' do formulário)."""
+    valor = request.POST.get('id', '') if request.method == 'POST' else request.GET.get('editar', '')
+    valor = valor.strip()
+    return int(valor) if valor.isdecimal() else None
 @tipo_permitido('empresa')
 def cadastrarmentoriase(request):
-    return render(request, 'empresa/cadastrarmentoriase.html')
+    empresa_logada = obter_empresa(request)
+    hoje = timezone.localdate()
+    minhas = Mentoria.objects.filter(empresa=empresa_logada)
+    editando = None
+    editar_id = id_para_editar(request)
+    if editar_id is not None:
+        # Só dá para editar mentoria da própria empresa.
+        editando = minhas.filter(pk=editar_id).first()
+        if editando is None:
+            messages.error(request, 'Mentoria não encontrada.')
+            return redirect('cadastrarmentoriase')
+    form = {}
+    if request.method == 'POST':
+        form = request.POST
+        titulo = form.get('titulo', '').strip()
+        area = form.get('area', '').strip()
+        data_mentoria = ler_data(form.get('data', '').strip())
+        horario = ler_horario(form.get('horario', '').strip())
+        vagas = form.get('vagas', '').strip()
+        carga_horaria = ler_horas(form.get('carga_horaria', ''))
+        modalidade = form.get('modalidade', '').strip()
+        descricao = form.get('descricao', '').strip()
+        erro = None
+        if not titulo or len(titulo) > 200:
+            erro = 'Informe um título de até 200 caracteres.'
+        elif not area or len(area) > 100:
+            erro = 'Informe a área de conhecimento (até 100 caracteres).'
+        elif data_mentoria is None or horario is None:
+            erro = 'Informe uma data e um horário válidos.'
+        elif data_mentoria < hoje and not (editando and editando.data == data_mentoria):
+            erro = 'A data da mentoria não pode estar no passado.'
+        elif vagas and (not vagas.isdecimal() or int(vagas) > 9999):
+            erro = 'Informe as vagas de 0 a 9999 (0 ou vazio = sem limite).'
+        elif carga_horaria is None or carga_horaria <= 0:
+            erro = 'Informe a carga horária, por exemplo 2, 1,5 ou 1h30.'
+        elif modalidade not in MODALIDADES_MENTORIA:
+            erro = 'Escolha uma modalidade válida.'
+        elif not descricao:
+            erro = 'Descreva a mentoria.'
+        if erro is None:
+            mentoria = editando or Mentoria(empresa=empresa_logada)
+            mentoria.tema = titulo
+            mentoria.descricao = descricao
+            mentoria.data = data_mentoria
+            mentoria.carga_horaria = carga_horaria
+            mentoria.area = area
+            mentoria.horario = horario
+            mentoria.vagas = int(vagas or 0)
+            mentoria.modalidade = modalidade
+            mentoria.save()
+            messages.success(
+                request,
+                'Mentoria atualizada com sucesso!' if editando else 'Mentoria cadastrada com sucesso!'
+            )
+            return redirect('cadastrarmentoriase')
+        messages.error(request, erro)
+    elif editando:
+        form = {
+            'titulo': editando.tema,
+            'area': editando.area,
+            'data': editando.data.isoformat(),
+            'horario': editando.horario.strftime('%H:%M') if editando.horario else '',
+            'vagas': editando.vagas if editando.vagas is not None else '',
+            'carga_horaria': formatar_horas(editando.carga_horaria),
+            'modalidade': editando.modalidade,
+            'descricao': editando.descricao,
+        }
+    mentorias = list(minhas.annotate(
+        inscritos=Count('participacao', distinct=True)
+    ).order_by('-data', '-id_mentoria'))
+    for mentoria in mentorias:
+        mentoria.carga_texto = formatar_horas(mentoria.carga_horaria)
+    return render(request, 'empresa/cadastrarmentoriase.html', {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'mentorias': mentorias,
+        'form': form,
+        'editando': editando,
+    })
 @tipo_permitido('empresa')
 def criartarefase(request):
-    return render(request, 'empresa/criartarefase.html')
+    empresa_logada = obter_empresa(request)
+    hoje = timezone.localdate()
+    mentorias = Mentoria.objects.filter(
+        empresa=empresa_logada
+    ).order_by('-data', '-id_mentoria')
+    minhas = Atividade.objects.filter(id_mentoria__empresa=empresa_logada)
+    editando = None
+    editar_id = id_para_editar(request)
+    if editar_id is not None:
+        editando = minhas.filter(pk=editar_id).first()
+        if editando is None:
+            messages.error(request, 'Tarefa não encontrada.')
+            return redirect('criartarefase')
+    form = {}
+    if request.method == 'POST':
+        form = request.POST
+        mentoria_id = form.get('mentoria', '').strip()
+        titulo = form.get('titulo', '').strip()
+        prazo = ler_data(form.get('prazo', '').strip())
+        prioridade = form.get('prioridade', '').strip()
+        horas = ler_horas(form.get('horas', '') or '0')
+        descricao = form.get('descricao', '').strip()
+        # Só vale uma mentoria que pertença à empresa logada.
+        mentoria = None
+        if mentoria_id.isdecimal():
+            mentoria = mentorias.filter(pk=int(mentoria_id)).first()
+        erro = None
+        if mentoria is None:
+            erro = 'Escolha uma das mentorias da sua empresa.'
+        elif not titulo or len(titulo) > 200:
+            erro = 'Informe um título de até 200 caracteres.'
+        elif prazo is None:
+            erro = 'Informe um prazo de entrega válido.'
+        elif prazo < hoje and not (editando and editando.data_entrega == prazo):
+            erro = 'O prazo de entrega não pode estar no passado.'
+        elif prioridade not in PRIORIDADES_TAREFA:
+            erro = 'Escolha uma prioridade válida.'
+        elif horas is None:
+            erro = 'Informe as horas, por exemplo 2, 1,5 ou 1h30.'
+        elif not descricao:
+            erro = 'Explique o que o aluno deverá desenvolver.'
+        if erro is None:
+            tarefa = editando or Atividade(status='Pendente')
+            tarefa.id_mentoria = mentoria
+            tarefa.titulo = titulo
+            tarefa.descricao = descricao
+            tarefa.data_entrega = prazo
+            tarefa.horas = horas
+            tarefa.prioridade = prioridade
+            tarefa.save()
+            messages.success(
+                request,
+                'Tarefa atualizada com sucesso!' if editando else 'Tarefa criada com sucesso!'
+            )
+            return redirect('criartarefase')
+        messages.error(request, erro)
+    elif editando:
+        form = {
+            'mentoria': str(editando.id_mentoria_id),
+            'titulo': editando.titulo,
+            'prazo': editando.data_entrega.isoformat() if editando.data_entrega else '',
+            'prioridade': editando.prioridade,
+            'horas': formatar_horas(editando.horas),
+            'descricao': editando.descricao,
+        }
+    tarefas = list(
+        minhas.select_related('id_mentoria').order_by('-id_atividade')
+    )
+    for tarefa in tarefas:
+        tarefa.situacao, tarefa.situacao_texto = situacao_atividade(
+            tarefa,
+            hoje
+        )
+    return render(request, 'empresa/criartarefase.html', {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'mentorias': mentorias,
+        'tarefas': tarefas,
+        'form': form,
+        'editando': editando,
+    })
 @tipo_permitido('empresa')
 def oportunidadese(request):
-    return render(request, 'empresa/oportunidadese.html')
+    empresa_logada = obter_empresa(request)
+    hoje = timezone.localdate()
+    minhas = Vaga.objects.filter(id_empresa=empresa_logada)
+    editando = None
+    editar_id = id_para_editar(request)
+    if editar_id is not None:
+        editando = minhas.filter(pk=editar_id).first()
+        if editando is None:
+            messages.error(request, 'Oportunidade não encontrada.')
+            return redirect('oportunidadese')
+    form = {}
+    if request.method == 'POST':
+        form = request.POST
+        titulo = form.get('titulo', '').strip()
+        tipo = form.get('tipo', '').strip()
+        modalidade = form.get('modalidade', '').strip()
+        localizacao = form.get('localizacao', '').strip()
+        prazo = ler_data(form.get('prazo', '').strip())
+        quantidade = form.get('vagas', '').strip()
+        descricao = form.get('descricao', '').strip()
+        requisitos = form.get('requisitos', '').strip()
+        erro = None
+        if not titulo or len(titulo) > 200:
+            erro = 'Informe um título de até 200 caracteres.'
+        elif tipo not in TIPOS_VAGA:
+            erro = 'Escolha o tipo de oportunidade.'
+        elif modalidade not in MODALIDADES_VAGA:
+            erro = 'Escolha uma modalidade válida.'
+        elif len(localizacao) > 150:
+            erro = 'A localização pode ter até 150 caracteres.'
+        elif prazo is None:
+            erro = 'Informe o prazo para inscrição.'
+        elif prazo < hoje and not (editando and editando.data_limite == prazo):
+            erro = 'O prazo para inscrição não pode estar no passado.'
+        elif quantidade and (not quantidade.isdecimal() or int(quantidade) > 9999):
+            erro = 'Informe as vagas de 0 a 9999 (0 ou vazio = sem limite).'
+        elif not descricao:
+            erro = 'Descreva a oportunidade.'
+        elif len(requisitos) > 500:
+            erro = 'Os requisitos podem ter até 500 caracteres.'
+        if erro is None:
+            vaga = editando or Vaga(id_empresa=empresa_logada)
+            vaga.cargo = titulo
+            vaga.descricao = descricao
+            vaga.requisitos = requisitos
+            vaga.data_limite = prazo
+            vaga.tipo = tipo
+            vaga.modalidade = modalidade
+            vaga.localizacao = localizacao
+            vaga.quantidade = int(quantidade) if quantidade else 0
+            vaga.save()
+            messages.success(
+                request,
+                'Oportunidade atualizada com sucesso!' if editando else 'Oportunidade publicada com sucesso!'
+            )
+            return redirect('oportunidadese')
+        messages.error(request, erro)
+    elif editando:
+        form = {
+            'titulo': editando.cargo,
+            'tipo': editando.tipo,
+            'modalidade': editando.modalidade,
+            'localizacao': editando.localizacao,
+            'prazo': editando.data_limite.isoformat(),
+            'vagas': editando.quantidade if editando.quantidade is not None else '',
+            'descricao': editando.descricao,
+            'requisitos': editando.requisitos,
+        }
+    oportunidades = list(minhas.order_by('-id_vaga'))
+    for oportunidade in oportunidades:
+        oportunidade.aberta = oportunidade.data_limite >= hoje
+    return render(request, 'empresa/oportunidadese.html', {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'oportunidades': oportunidades,
+        'form': form,
+        'editando': editando,
+    })

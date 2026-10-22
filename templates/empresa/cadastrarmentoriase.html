@@ -58,6 +58,15 @@ Organize e acompanhe as mentorias oferecidas pela empresa.
 
 <section class="empresa-pagina">
 
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="pagina-cabecalho">
         <div>
             <h2>Gerenciamento de Mentorias</h2>
@@ -69,11 +78,12 @@ Organize e acompanhe as mentorias oferecidas pela empresa.
 
         <div class="painel-titulo">
             <i class="fa-solid fa-circle-plus"></i>
-            <h3>Nova Mentoria</h3>
+            <h3>{% if editando %}Editar Mentoria{% else %}Nova Mentoria{% endif %}</h3>
         </div>
 
-        <form method="post" class="formulario-empresa">
+        <form method="post" action="{% url 'cadastrarmentoriase' %}" class="formulario-empresa">
             {% csrf_token %}
+            {% if editando %}<input type="hidden" name="id" value="{{ editando.pk }}">{% endif %}
 
             <div class="form-grid">
 
@@ -83,6 +93,8 @@ Organize e acompanhe as mentorias oferecidas pela empresa.
                         type="text"
                         id="titulo"
                         name="titulo"
+                        maxlength="200"
+                        value="{{ form.titulo }}"
                         placeholder="Ex.: Desenvolvimento Web"
                         required
                     >
@@ -94,6 +106,8 @@ Organize e acompanhe as mentorias oferecidas pela empresa.
                         type="text"
                         id="area"
                         name="area"
+                        maxlength="100"
+                        value="{{ form.area }}"
                         placeholder="Ex.: Tecnologia"
                         required
                     >
@@ -101,12 +115,12 @@ Organize e acompanhe as mentorias oferecidas pela empresa.
 
                 <div class="campo-formulario">
                     <label for="data">Data</label>
-                    <input type="date" id="data" name="data" required>
+                    <input type="date" id="data" name="data" value="{{ form.data }}" required>
                 </div>
 
                 <div class="campo-formulario">
                     <label for="horario">Horário</label>
-                    <input type="time" id="horario" name="horario" required>
+                    <input type="time" id="horario" name="horario" value="{{ form.horario }}" required>
                 </div>
 
                 <div class="campo-formulario">
@@ -115,7 +129,21 @@ Organize e acompanhe as mentorias oferecidas pela empresa.
                         type="number"
                         id="vagas"
                         name="vagas"
-                        min="1"
+                        min="0"
+                        max="9999"
+                        value="{{ form.vagas }}"
+                        placeholder="0 = sem limite"
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="carga_horaria">Carga horária (horas)</label>
+                    <input
+                        type="text"
+                        id="carga_horaria"
+                        name="carga_horaria"
+                        value="{{ form.carga_horaria }}"
+                        placeholder="Ex.: 2, 1h30 ou 2,5"
                         required
                     >
                 </div>
@@ -124,9 +152,9 @@ Organize e acompanhe as mentorias oferecidas pela empresa.
                     <label for="modalidade">Modalidade</label>
                     <select id="modalidade" name="modalidade" required>
                         <option value="">Selecione</option>
-                        <option value="Online">Online</option>
-                        <option value="Presencial">Presencial</option>
-                        <option value="Híbrida">Híbrida</option>
+                        <option value="Online" {% if form.modalidade == 'Online' %}selected{% endif %}>Online</option>
+                        <option value="Presencial" {% if form.modalidade == 'Presencial' %}selected{% endif %}>Presencial</option>
+                        <option value="Híbrida" {% if form.modalidade == 'Híbrida' %}selected{% endif %}>Híbrida</option>
                     </select>
                 </div>
 
@@ -138,17 +166,17 @@ Organize e acompanhe as mentorias oferecidas pela empresa.
                         rows="4"
                         placeholder="Descreva os objetivos da mentoria..."
                         required
-                    ></textarea>
+                    >{{ form.descricao }}</textarea>
                 </div>
 
             </div>
 
             <div class="form-acoes">
-                <button type="submit" class="botao-principal" disabled
-                        title="Aguardando integração com o banco">
-                    <i class="fa-solid fa-plus"></i>
-                    Cadastrar Mentoria
+                <button type="submit" class="botao-principal">
+                    <i class="fa-solid {% if editando %}fa-floppy-disk{% else %}fa-plus{% endif %}"></i>
+                    {% if editando %}Salvar alterações{% else %}Cadastrar Mentoria{% endif %}
                 </button>
+                {% if editando %}<a href="{% url 'cadastrarmentoriase' %}" class="btn btn-outline-secondary ms-2">Cancelar edição</a>{% endif %}
             </div>
         </form>
     </div>
@@ -166,20 +194,38 @@ Organize e acompanhe as mentorias oferecidas pela empresa.
                         <th>Mentoria</th>
                         <th>Data</th>
                         <th>Modalidade</th>
-                        <th>Vagas</th>
+                        <th>Carga horária</th>
+                        <th>Inscritos / Vagas</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for mentoria in mentorias %}
                     <tr>
-                        <td>{{ mentoria.titulo }}</td>
-                        <td>{{ mentoria.data|date:"d/m/Y" }}</td>
-                        <td>{{ mentoria.modalidade }}</td>
-                        <td>{{ mentoria.vagas }}</td>
+                        <td>
+                            {{ mentoria.tema }}
+                            {% if mentoria.area %}
+                            <br><small class="text-muted">{{ mentoria.area }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ mentoria.data|date:"d/m/Y" }}
+                            {% if mentoria.horario %}às {{ mentoria.horario|time:"H:i" }}{% endif %}
+                        </td>
+                        <td>{{ mentoria.modalidade|default:"—" }}</td>
+                        <td>{{ mentoria.carga_texto }}</td>
+                        <td>
+                            {{ mentoria.inscritos }}{% if mentoria.vagas %} / {{ mentoria.vagas }}{% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'cadastrarmentoriase' %}?editar={{ mentoria.pk }}" class="btn btn-sm btn-outline-primary">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </a>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center py-4">
+                        <td colspan="6" class="text-center py-4">
                             Nenhuma mentoria cadastrada.
                         </td>
                     </tr>

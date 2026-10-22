@@ -38,7 +38,7 @@
 
                     <li class="nav-item active">
 
-                        <a href="#" class="nav-link">
+                        <a href="{% url 'empresa' %}" class="nav-link">
 
                             <i class="fa-solid fa-house"></i>
 
@@ -158,43 +158,55 @@
 
                 <div class="col-xl-4 col-md-6">
 
-                    <div class="card purple h-100">
+                    <a href="{% url 'cadastrarmentoriase' %}" class="text-decoration-none">
 
-                        <i class="fa-solid fa-users"></i>
+                        <div class="card purple h-100">
 
-                        <h2>12</h2>
+                            <i class="fa-solid fa-users"></i>
 
-                        <p>Mentorias Ativas</p>
+                            <h2>{{ total_mentorias_ativas }}</h2>
 
-                    </div>
+                            <p>Mentorias Ativas</p>
 
-                </div>
+                        </div>
 
-                <div class="col-xl-4 col-md-6">
-
-                    <div class="card h-100">
-
-                        <i class="fa-solid fa-list-check"></i>
-
-                        <h2>28</h2>
-
-                        <p>Tarefas Criadas</p>
-
-                    </div>
+                    </a>
 
                 </div>
 
                 <div class="col-xl-4 col-md-6">
 
-                    <div class="card h-100">
+                    <a href="{% url 'criartarefase' %}" class="text-decoration-none">
 
-                        <i class="fa-solid fa-briefcase"></i>
+                        <div class="card h-100">
 
-                        <h2>7</h2>
+                            <i class="fa-solid fa-list-check"></i>
 
-                        <p>Vagas Abertas</p>
+                            <h2>{{ total_tarefas }}</h2>
 
-                    </div>
+                            <p>Tarefas Criadas</p>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+                <div class="col-xl-4 col-md-6">
+
+                    <a href="{% url 'oportunidadese' %}" class="text-decoration-none">
+
+                        <div class="card h-100">
+
+                            <i class="fa-solid fa-briefcase"></i>
+
+                            <h2>{{ total_vagas_abertas }}</h2>
+
+                            <p>Vagas Abertas</p>
+
+                        </div>
+
+                    </a>
 
                 </div>
 
@@ -210,7 +222,7 @@
 
                             <h2>Oportunidades Publicadas</h2>
 
-                            <a href="#">Ver todas</a>
+                            <a href="{% url 'oportunidadese' %}">Ver todas</a>
 
                         </div>
 
@@ -225,7 +237,7 @@
 
                                         <th>Vaga</th>
 
-                                        <th>Área</th>
+                                        <th>Tipo</th>
 
                                         <th>Modelo</th>
 
@@ -238,61 +250,43 @@
 
                                 <tbody>
 
+                                    {% for vaga in vagas_publicadas %}
+
                                     <tr>
 
-                                        <td>Desenvolvedor Java</td>
+                                        <td>{{ vaga.cargo }}</td>
 
-                                        <td>TI</td>
+                                        <td>{{ vaga.tipo|default:"—" }}</td>
 
-                                        <td>Híbrido</td>
+                                        <td>{{ vaga.modalidade|default:"—" }}</td>
 
                                         <td>
 
+                                            {% if vaga.aberta %}
                                             <span class="status ativo">
                                                 Aberta
                                             </span>
-
-                                        </td>
-
-                                    </tr>
-
-
-                                    <tr>
-
-                                        <td>Estágio Front-end</td>
-
-                                        <td>DS</td>
-
-                                        <td>Remoto</td>
-
-                                        <td>
-
-                                            <span class="status ativo">
-                                                Aberta
-                                            </span>
-
-                                        </td>
-
-                                    </tr>
-
-
-                                    <tr>
-
-                                        <td>Analista de Dados</td>
-
-                                        <td>BI</td>
-
-                                        <td>Presencial</td>
-
-                                        <td>
-
+                                            {% else %}
                                             <span class="status pendente">
-                                                Em análise
+                                                Encerrada
                                             </span>
+                                            {% endif %}
 
                                         </td>
 
                                     </tr>
+
+                                    {% empty %}
+
+                                    <tr>
+
+                                        <td colspan="4" class="text-center py-4">
+                                            Nenhuma oportunidade publicada.
+                                        </td>
+
+                                    </tr>
+
+                                    {% endfor %}
 
                                 </tbody>
 
@@ -305,14 +299,9 @@
                 </div>
 
 
-    
-
                 <div class="col-xl-4">
 
                     <div class="right-panel">
-
-
-                      
 
                         <div class="box">
 
@@ -324,11 +313,15 @@
 
                             <ul>
 
-                                <li>Mentoria Java</li>
+                                {% for mentoria in mentorias_recentes %}
 
-                                <li>Mentoria Banco de Dados</li>
+                                <li>{{ mentoria.tema }}</li>
 
-                                <li>Mentoria Desenvolvimento Web</li>
+                                {% empty %}
+
+                                <li>Nenhuma mentoria cadastrada.</li>
+
+                                {% endfor %}
 
                             </ul>
 
@@ -344,18 +337,19 @@
 
                             <ul>
 
-                                <li>✔ API REST</li>
+                                {% for tarefa in tarefas_recentes %}
 
-                                <li>✔ Dashboard React</li>
+                                <li>{% if tarefa.concluida %}✔{% else %}•{% endif %} {{ tarefa.titulo }}</li>
 
-                                <li>✔ Banco MySQL</li>
+                                {% empty %}
 
-                                <li>✔ Testes Unitários</li>
+                                <li>Nenhuma tarefa criada.</li>
+
+                                {% endfor %}
 
                             </ul>
 
                         </div>
-
 
                     </div>
 
