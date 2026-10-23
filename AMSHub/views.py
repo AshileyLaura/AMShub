@@ -1922,3 +1922,85 @@ def oportunidadese(request):
         'form': form,
         'editando': editando,
     })
+
+
+
+@tipos_permitidos(
+    'professor',
+    'empresa',
+    'coordenador',
+    'supervisor'
+)
+def meuperfil(request):
+
+    perfil = request.user.perfil
+
+    cargos = {
+        'professor': 'Professor',
+        'empresa': 'Empresa',
+        'coordenador': 'Coordenador',
+        'supervisor': 'Supervisor'
+    }
+
+    paginas = {
+        'professor': 'professor',
+        'empresa': 'empresa',
+        'coordenador': 'coordenador',
+        'supervisor': 'supervisor'
+    }
+
+    if request.method == 'POST':
+
+        acao = request.POST.get('acao')
+
+        if acao == 'enviar_foto':
+
+            arquivo = request.FILES.get('foto')
+            erro = validar_foto(arquivo)
+
+            if erro:
+                messages.error(request, erro)
+
+            else:
+                if perfil.foto:
+                    perfil.foto.delete(save=False)
+
+                perfil.foto = arquivo
+                perfil.save(update_fields=['foto'])
+
+                messages.success(
+                    request,
+                    'Foto atualizada com sucesso!'
+                )
+
+        elif acao == 'remover_foto':
+
+            if perfil.foto:
+                perfil.foto.delete(save=True)
+
+            messages.success(
+                request,
+                'Foto removida com sucesso!'
+            )
+
+        else:
+            messages.error(
+                request,
+                'Operação inválida.'
+            )
+
+        return redirect('meuperfil')
+
+    contexto = {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'cargo_usuario': cargos.get(perfil.tipo, ''),
+        'tipo_usuario': perfil.tipo,
+        'pagina_inicial': paginas.get(perfil.tipo, 'index')
+    }
+
+    return render(
+        request,
+        'meuperfil.html',
+        contexto
+    )

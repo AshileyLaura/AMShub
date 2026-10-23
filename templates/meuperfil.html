@@ -1,0 +1,267 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+AMS Hub - Meu Perfil
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'meuperfil.css' %}">
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url pagina_inicial %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'meuperfil' %}">
+            <i class="fa-solid fa-user"></i>
+            <span>Meu Perfil</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'logout' %}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block saudacao %}
+<h1>Meu Perfil</h1>
+{% endblock %}
+
+{% block descricao %}
+Visualize e gerencie suas informações pessoais.
+{% endblock %}
+
+{% block perfil %}
+<a href="{% url 'meuperfil' %}" class="perfil-link">
+    <div class="perfil">
+
+        <img
+            src="{% if usuario.perfil.foto %}{{ usuario.perfil.foto.url }}{% else %}{% static 'imagens/aluno.png' %}{% endif %}"
+            alt="Foto do perfil"
+        >
+
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>{{ cargo_usuario }}</small>
+        </div>
+
+    </div>
+</a>
+{% endblock %}
+
+{% block content %}
+
+<section class="perfil-container">
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if 'error' in message.tags %}alert-danger{% else %}alert-success{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="perfil-card perfil-header">
+
+        <div class="foto-perfil">
+            <img
+                src="{% if usuario.perfil.foto %}{{ usuario.perfil.foto.url }}{% else %}{% static 'imagens/aluno.png' %}{% endif %}"
+                alt="Foto do usuário"
+            >
+        </div>
+
+        <div class="dados-principais">
+
+            <h2>{{ nome_usuario }}</h2>
+
+            <p>{{ cargo_usuario }} • AMS Hub</p>
+
+            <span class="status-usuario">
+                <i class="fa-solid fa-circle"></i>
+                {% if usuario.is_active %}
+                    Conta ativa
+                {% else %}
+                    Conta inativa
+                {% endif %}
+            </span>
+
+            <div class="acoes-foto">
+
+                <form
+                    method="post"
+                    enctype="multipart/form-data"
+                    class="form-foto"
+                >
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="acao"
+                        value="enviar_foto"
+                    >
+
+                    <label for="foto" class="botao-foto">
+                        <i class="fa-solid fa-camera"></i>
+                        Escolher foto
+                    </label>
+
+                    <input
+                        type="file"
+                        id="foto"
+                        name="foto"
+                        accept="image/jpeg,image/png,image/webp"
+                        required
+                        hidden
+                    >
+
+                    <span id="nome-arquivo" class="nome-arquivo">
+                        Nenhum arquivo selecionado
+                    </span>
+
+                    <button
+                        type="submit"
+                        class="botao-foto botao-salvar"
+                    >
+                        <i class="fa-solid fa-upload"></i>
+                        Salvar foto
+                    </button>
+
+                </form>
+
+                {% if usuario.perfil.foto %}
+
+                <form method="post" class="form-foto">
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="acao"
+                        value="remover_foto"
+                    >
+
+                    <button
+                        type="submit"
+                        class="botao-foto botao-remover"
+                    >
+                        <i class="fa-solid fa-trash"></i>
+                        Remover foto
+                    </button>
+                </form>
+
+                {% endif %}
+
+                <small class="dica-foto">
+                    JPG, PNG ou WEBP, até 2 MB.
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="perfil-card">
+
+        <div class="titulo-secao">
+            <i class="fa-solid fa-user"></i>
+            <h3>Informações pessoais</h3>
+        </div>
+
+        <div class="informacoes-grid">
+
+            <div class="campo">
+                <span>Nome completo</span>
+                <strong>{{ nome_usuario }}</strong>
+            </div>
+
+            <div class="campo">
+                <span>Usuário de acesso</span>
+                <strong>{{ usuario.username }}</strong>
+            </div>
+
+            <div class="campo">
+                <span>E-mail</span>
+                <strong>
+                    {{ usuario.email|default:"Não informado" }}
+                </strong>
+            </div>
+
+            <div class="campo">
+                <span>Cadastrado em</span>
+                <strong>
+                    {{ usuario.date_joined|date:"d/m/Y" }}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="perfil-card">
+
+        <div class="titulo-secao">
+            <i class="fa-solid fa-id-badge"></i>
+            <h3>Informações do perfil</h3>
+        </div>
+
+        <div class="informacoes-grid">
+
+            <div class="campo">
+                <span>Tipo de usuário</span>
+                <strong>{{ cargo_usuario }}</strong>
+            </div>
+
+            <div class="campo">
+                <span>Sistema</span>
+                <strong>AMS Hub</strong>
+            </div>
+
+            <div class="campo">
+                <span>Situação da conta</span>
+                <strong>
+                    {% if usuario.is_active %}
+                        Ativa
+                    {% else %}
+                        Inativa
+                    {% endif %}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const inputFoto = document.getElementById('foto');
+    const nomeArquivo = document.getElementById('nome-arquivo');
+
+    if (inputFoto && nomeArquivo) {
+        inputFoto.addEventListener('change', function () {
+            nomeArquivo.textContent = inputFoto.files.length
+                ? inputFoto.files[0].name
+                : 'Nenhum arquivo selecionado';
+        });
+    }
+
+});
+</script>
+{% endblock %}

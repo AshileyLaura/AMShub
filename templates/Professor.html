@@ -83,21 +83,24 @@ Bem-vindo(a) ao painel do professor.
 
 
 {% block perfil %}
+<a href="{% url 'meuperfil' %}" class="perfil-link"
+   style="text-decoration: none; color: inherit;">
 
-<div class="perfil">
+    <div class="perfil">
 
-    <img src="{% static 'imagens/professor.png.png' %}"
-         alt="Professor">
+        <img
+            src="{% if usuario.perfil.foto %}{{ usuario.perfil.foto.url }}{% else %}{% static 'imagens/professor.png.png' %}{% endif %}"
+            alt="Foto de perfil"
+        >
 
-    <div>
-
-        <strong>{{ nome_usuario }}</strong>
-        <small>Professor</small>
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>{{ usuario.perfil.get_tipo_display }}</small>
+        </div>
 
     </div>
 
-</div>
-
+</a>
 {% endblock %}
 
 

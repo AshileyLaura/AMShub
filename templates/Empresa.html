@@ -58,17 +58,24 @@ Gerencie mentorias, tarefas e oportunidades de emprego.
 {% endblock %}
 
 {% block perfil %}
-<div class="perfil">
-    <img
-        src="{% static 'imagens/empresa.png' %}"
-        alt="Empresa"
-    >
+<a href="{% url 'meuperfil' %}" class="perfil-link"
+   style="text-decoration: none; color: inherit;">
 
-    <div>
-        <strong>{{ nome_usuario }}</strong>
-        <small>Empresa</small>
+    <div class="perfil">
+
+        <img
+            src="{% if usuario.perfil.foto %}{{ usuario.perfil.foto.url }}{% else %}{% static 'imagens/empresa.png' %}{% endif %}"
+            alt="Foto de perfil"
+        >
+
+        <div>
+            <strong>{{ nome_usuario }}</strong>
+            <small>{{ usuario.perfil.get_tipo_display }}</small>
+        </div>
+
     </div>
-</div>
+
+</a>
 {% endblock %}
 
 {% block content %}
