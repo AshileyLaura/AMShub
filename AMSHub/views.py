@@ -70,22 +70,23 @@ def obter_aluno(request):
         perfil__user=request.user
     )
 def atividades_do_aluno(aluno):
-    """Atividades das mentorias em que o aluno participa."""
-    mentorias = Participacao.objects.filter(
+    """Retorna atividades de mentorias que o aluno está inscrito OU de mentorias da empresa do aluno."""
+    mentorias_inscritas = Participacao.objects.filter(
         id_aluno=aluno
-    ).values_list(
-        'id_mentoria',
-        flat=True
-    )
+    ).values_list('id_mentoria', flat=True)
+
+    filtros = Q(id_mentoria__in=mentorias_inscritas)
+    
+    if aluno.empresa_id:
+        filtros |= Q(id_mentoria__empresa=aluno.empresa)
+
     return Atividade.objects.filter(
-        id_mentoria__in=mentorias
-    ).select_related(
+        filtros
+    ).distinct().select_related(
         'id_mentoria__id_professor__perfil__user',
-        'id_mentoria__id_supervisor__perfil__user'
-    ).order_by(
-        'data_entrega',
-        'id_atividade'
-    )
+        'id_mentoria__id_supervisor__perfil__user',
+        'id_mentoria__empresa'
+    ).order_by('data_entrega', 'id_atividade')
 def atividade_concluida(atividade):
     return (atividade.status or '').strip().lower() in STATUS_CONCLUIDO
 def classificar_atividades(atividades, hoje):
@@ -343,17 +344,11 @@ def obter_professor(request):
 
 
 def entregas_do_professor(professor_logado):
-    """Entregas das mentorias em que ele é o professor, mais as entregas de
-    mentorias sem professor definido (ou sem mentoria), para não ficarem
-    perdidas sem ninguém para avaliar."""
-    return EntregaPortfolio.objects.filter(
-        Q(id_mentoria__id_professor=professor_logado)
-        | Q(id_mentoria__id_professor__isnull=True)
-    ).select_related(
+    """Retorna todas as entregas de portfólios enviadas pelos alunos para avaliação."""
+    return EntregaPortfolio.objects.all().select_related(
         'id_aluno__perfil__user',
         'id_mentoria'
     )
-
 
 def nome_do_aluno(aluno):
     usuario = aluno.perfil.user
@@ -446,6 +441,38 @@ def coordenador(request):
         1 for a in alunos if resumo_do_aluno(a, hoje)[1]
     )
     return render(request, 'Coordenador.html', contexto)
+def aprovar_certificados(request):
+    """Permite ao coordenador aprovar ou recusar certificados pendentes de alunos."""
+    if request.method == 'POST':
+        id_certificado = request.POST.get('id_certificado', '').strip()
+        acao = request.POST.get('acao', '').strip()
+
+        if id_certificado.isdigit():
+            certificado = get_object_or_404(Certificado, pk=int(id_certificado))
+            if acao == 'aprovar':
+                certificado.status = 'Aprovado'
+                messages.success(request, f'Certificado do aluno {certificado.id_aluno.perfil.user.get_full_name()} aprovado com sucesso!')
+            elif acao == 'rejeitar':
+                certificado.status = 'Recusado'
+                messages.success(request, f'Certificado do aluno {certificado.id_aluno.perfil.user.get_full_name()} recusado.')
+            certificado.save()
+            
+        return redirect('aprovar_certificados')
+
+    certificados_pendentes = Certificado.objects.filter(
+        status__icontains='anális'
+    ).select_related('id_aluno__perfil__user')
+
+    certificados_avaliados = Certificado.objects.exclude(
+        status__icontains='anális'
+    ).select_related('id_aluno__perfil__user').order_by('-id_certificado')
+
+    contexto = contexto_gestao(request)
+    contexto.update({
+        'certificados_pendentes': certificados_pendentes,
+        'certificados_avaliados': certificados_avaliados,
+    })
+    return render(request, 'aprovar_certificados.html', contexto)
 @tipos_permitidos('supervisor')
 def supervisor(request):
     return render(request, 'Supervisor.html', contexto_gestao(request))

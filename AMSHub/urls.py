@@ -32,6 +32,7 @@ from AMSHub.views import (
     oportunidadese,
     atividadesp,
     meuperfil,
+    aprovar_certificados,
 )
 
 
@@ -50,6 +51,7 @@ urlpatterns = [
     path('gestao/mentorias/',mentoriasgestao,name='mentoriasgestao'),
     path('gestao/relatorios/',relatoriosgestao,name='relatoriosgestao'),
     path('coordenador/gerenciar-alunos/',gerenciaalunosc,name='gerenciaalunosc'),
+    path('coordenador/certificados/', aprovar_certificados, name='aprovar_certificados'),
     path('empresa/cadastrar-mentorias/', cadastrarmentoriase, name='cadastrarmentoriase'),
     path('empresa/criar-tarefas/', criartarefase, name='criartarefase'),
     path('empresa/oportunidades/', oportunidadese, name='oportunidadese'),

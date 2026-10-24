@@ -32,8 +32,11 @@
                 <button type="submit">Entrar</button>
             </form>
             {% if erro %}
-                <p>{{ erro }}</p>
-            {% endif %}
+                <div class="erro-mensagem" style="margin-top: 15px; padding: 10px 15px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 6px; font-size: 0.9rem; text-align: center;">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i>
+                    {{ erro }}
+                </div>
+            {% endif %} 
         </div>
     </div>
 </div>
