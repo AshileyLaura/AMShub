@@ -70,22 +70,96 @@ Organize seus compromissos e acompanhe os próximos eventos.
 
 {% block content %}
 
+<style>
+    .agenda-nav { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+    .agenda-nav h3 { margin:0; font-size:1.25rem; }
+    .agenda-nav .botoes { display:flex; gap:8px; }
+    .agenda-legenda { display:flex; gap:16px; flex-wrap:wrap; font-size:.85rem; margin-bottom:12px; }
+    .agenda-legenda span::before { content:""; display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; background:var(--cor); }
+    .agenda-grade { width:100%; table-layout:fixed; border-collapse:collapse; }
+    .agenda-grade th { text-align:center; padding:8px 0; font-size:.8rem; text-transform:uppercase; opacity:.7; }
+    .agenda-grade td { vertical-align:top; height:110px; padding:6px; border:1px solid rgba(128,128,128,.25); }
+    .agenda-grade td.fora { opacity:.4; }
+    .agenda-grade td.hoje { background:rgba(79,70,229,.10); }
+    .agenda-dia { font-weight:600; font-size:.85rem; margin-bottom:4px; }
+    .agenda-evento { display:block; font-size:.72rem; line-height:1.2; padding:2px 5px; margin-bottom:3px; border-radius:4px; color:#fff; background:var(--cor); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .tipo-mentoria { --cor:#4f46e5; }
+    .tipo-atividade { --cor:#d97706; }
+    .tipo-viagem { --cor:#059669; }
+    @media (max-width: 768px) {
+        .agenda-grade td { height:70px; padding:3px; }
+        .agenda-evento { font-size:0; height:8px; padding:0; }
+    }
+</style>
+
 <section class="professor-pagina">
 
     <div class="pagina-cabecalho">
         <div>
             <h2>Minha Agenda</h2>
-            <p>Confira seus próximos compromissos.</p>
+            <p>Mentorias, prazos de atividades e viagens.</p>
         </div>
     </div>
 
     <div class="painel-tabela">
 
+        <div class="agenda-nav">
+            <h3>{{ titulo_mes }}</h3>
+            <div class="botoes">
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'agendap' %}?mes={{ mes_anterior }}">
+                    <i class="fa-solid fa-chevron-left"></i> Anterior
+                </a>
+                {% if not eh_mes_atual %}
+                <a class="btn btn-sm btn-outline-primary" href="{% url 'agendap' %}">Hoje</a>
+                {% endif %}
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'agendap' %}?mes={{ mes_proximo }}">
+                    Próximo <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="agenda-legenda">
+            <span class="tipo-mentoria">Mentoria</span>
+            <span class="tipo-atividade">Prazo de atividade</span>
+            <span class="tipo-viagem">Viagem</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="agenda-grade">
+                <thead>
+                    <tr>
+                        {% for nome in dias_semana %}<th>{{ nome }}</th>{% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for semana in semanas %}
+                    <tr>
+                        {% for dia in semana %}
+                        <td class="{% if not dia.do_mes %}fora{% endif %} {% if dia.hoje %}hoje{% endif %}">
+                            <div class="agenda-dia">{{ dia.data|date:"j" }}</div>
+                            {% for evento in dia.eventos %}
+                            <span class="agenda-evento tipo-{{ evento.tipo }}"
+                                  title="{{ evento.tipo_nome }}: {{ evento.titulo }} — {{ evento.horario }}">
+                                {{ evento.titulo }}
+                            </span>
+                            {% endfor %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="painel-tabela mt-4">
+
         <h3>Próximos Eventos</h3>
 
         <div class="lista-eventos">
 
-            {% for evento in eventos %}
+            {% for evento in proximos %}
 
             <article class="evento-item">
 
@@ -100,13 +174,11 @@ Organize seus compromissos e acompanhe os próximos eventos.
 
                     <span>
                         <i class="fa-solid fa-clock"></i>
-                        {{ evento.horario|default:"Horário não informado" }}
+                        {{ evento.horario }}
                     </span>
                 </div>
 
-                <span class="etiqueta">
-                    {{ evento.tipo|default:"Evento" }}
-                </span>
+                <span class="etiqueta">{{ evento.tipo_nome }}</span>
 
             </article>
 

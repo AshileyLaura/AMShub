@@ -15,6 +15,7 @@ from functools import wraps
 import datetime
 from decimal import Decimal, InvalidOperation
 import re
+import calendar
 from .models import (
     Perfil,
     Aluno,
@@ -1524,73 +1525,116 @@ def mentoriasp(request):
     })
 
 
+MESES = [
+    '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+]
 @tipo_permitido('professor')
 def agendap(request):
 
     obter_professor(request)
     hoje = timezone.localdate()
 
+    # Mês mostrado no calendário (?mes=AAAA-MM); sem isso, o mês atual
+    ano, mes = hoje.year, hoje.month
+    texto_mes = request.GET.get('mes', '').strip()
+    achou = re.fullmatch(r'(\d{4})-(\d{2})', texto_mes)
+    if achou and 1 <= int(achou.group(2)) <= 12 and 2000 <= int(achou.group(1)) <= 2100:
+        ano, mes = int(achou.group(1)), int(achou.group(2))
+
+    primeiro = datetime.date(ano, mes, 1)
+    proximo_mes = (primeiro + datetime.timedelta(days=32)).replace(day=1)
+    ultimo = proximo_mes - datetime.timedelta(days=1)
+    mes_anterior = (primeiro - datetime.timedelta(days=1)).replace(day=1)
+
     eventos = []
 
-    # Mentorias que ainda vão acontecer
-    mentorias = Mentoria.objects.filter(
-        data__gte=hoje
-    ).select_related('empresa')
-
-    for mentoria in mentorias:
-
+    # Mentorias
+    for mentoria in Mentoria.objects.select_related('empresa'):
         horario = ''
-
         if mentoria.horario:
             horario = mentoria.horario.strftime('%H:%M')
-
             fim = datetime.datetime.combine(
-                mentoria.data,
-                mentoria.horario
+                mentoria.data, mentoria.horario
             ) + datetime.timedelta(hours=float(mentoria.carga_horaria))
-
             if fim.date() == mentoria.data:
                 horario += ' às ' + fim.strftime('%H:%M')
-
         partes = [
             mentoria.empresa.nome if mentoria.empresa else '',
             mentoria.modalidade,
         ]
-
         eventos.append({
             'data': mentoria.data,
             'ordem': mentoria.horario or datetime.time.max,
             'titulo': mentoria.tema,
             'descricao': ' · '.join(p for p in partes if p),
-            'horario': horario,
-            'tipo': 'Mentoria',
+            'horario': horario or 'Horário não informado',
+            'tipo': 'mentoria',
+            'tipo_nome': 'Mentoria',
         })
 
-    # Prazos das atividades dessas mentorias que ainda estão abertas
-    atividades = Atividade.objects.filter(
-        data_entrega__gte=hoje
-    ).select_related('id_mentoria')
-
-    for atividade in atividades:
-
+    # Prazos de entrega das atividades que ainda estão abertas
+    for atividade in Atividade.objects.filter(
+        data_entrega__isnull=False
+    ).select_related('id_mentoria'):
         if atividade_concluida(atividade):
             continue
-
         eventos.append({
             'data': atividade.data_entrega,
             'ordem': datetime.time.max,
             'titulo': atividade.titulo,
             'descricao': f'Prazo de entrega · {atividade.id_mentoria.tema}',
             'horario': 'Dia todo',
-            'tipo': 'Prazo',
+            'tipo': 'atividade',
+            'tipo_nome': 'Atividade',
         })
 
-    eventos.sort(key=lambda evento: (evento['data'], evento['ordem']))
+    # Viagens
+    for viagem in Viagem.objects.select_related(
+        'empresa', 'id_aluno__perfil__user'
+    ):
+        eventos.append({
+            'data': viagem.data,
+            'ordem': datetime.time.max,
+            'titulo': viagem.descricao,
+            'descricao': f'{nome_do_aluno(viagem.id_aluno)} · {viagem.empresa.nome}',
+            'horario': 'Dia todo',
+            'tipo': 'viagem',
+            'tipo_nome': 'Viagem',
+        })
+
+    eventos.sort(key=lambda e: (e['data'], e['ordem']))
+
+    # Monta as semanas do mês (domingo a sábado)
+    por_dia = {}
+    for evento in eventos:
+        por_dia.setdefault(evento['data'], []).append(evento)
+
+    semanas = []
+    for semana in calendar.Calendar(firstweekday=6).monthdatescalendar(ano, mes):
+        semanas.append([
+            {
+                'data': dia,
+                'do_mes': dia.month == mes,
+                'hoje': dia == hoje,
+                'eventos': por_dia.get(dia, []),
+            }
+            for dia in semana
+        ])
 
     return render(request, 'professor/agendap.html', {
         'usuario': request.user,
         'nome_usuario': nome_do_usuario(request),
-        'eventos': eventos[:50],
+        'semanas': semanas,
+        'dias_semana': ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        'titulo_mes': f'{MESES[mes]} de {ano}',
+        'mes_anterior': mes_anterior.strftime('%Y-%m'),
+        'mes_proximo': proximo_mes.strftime('%Y-%m'),
+        'eh_mes_atual': (ano, mes) == (hoje.year, hoje.month),
+        'eventos_do_mes': [
+            e for e in eventos if primeiro <= e['data'] <= ultimo
+        ],
+        'proximos': [e for e in eventos if e['data'] >= hoje][:8],
     })
 
 
