@@ -4,6 +4,7 @@ from AMSHub.views import (
     index,
     aluno,
     professor,
+    registrar_presenca_p,
     coordenador,
     supervisor,
     empresa,
@@ -44,6 +45,7 @@ urlpatterns = [
 
     path('aluno/', aluno, name='aluno'),
     path('professor/', professor, name='professor'),
+    path('professor/mentorias/<int:id_mentoria>/presenca/', registrar_presenca_p, name='registrar_presenca_p'),
     path('coordenador/', coordenador, name='coordenador'),
     path('supervisor/', supervisor, name='supervisor'),
     path('empresa/', empresa, name='empresa'),

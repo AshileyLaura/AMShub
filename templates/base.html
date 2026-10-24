@@ -74,28 +74,39 @@
             <div class="top">
 
                 <div class="search">
-
                     <i class="fa-solid fa-magnifying-glass"></i>
-
-                    <input
-                        type="text"
-                        placeholder="Pesquisar"
-                    >
-
+                    <input type="text" placeholder="Pesquisar">
                 </div>
 
+                <!-- SINO DE NOTIFICAÇÕES -->
+                <div class="dropdown">
+                    <a href="#" class="text-secondary text-decoration-none position-relative" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-regular fa-bell fs-5"></i>
+                        {% if notificacoes_nao_lidas %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                {{ notificacoes_nao_lidas }}
+                            </span>
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end p-2 shadow" style="min-width: 250px;">
+                        <li class="dropdown-header font-weight-bold">Notificações</li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><span class="dropdown-item-text text-muted small">Sem novas notificações</span></li>
+                    </ul>
+                </div>
 
-                <i class="fa-regular fa-bell"></i>
+                <!-- ENGRENAGEM (REDIRECIONA PARA O PERFIL) -->
+                <a href="{% if user.perfil.tipo == 'aluno' %}{% url 'meuperfila' %}{% else %}{% url 'meuperfil' %}{% endif %}" class="text-secondary" title="Configurações do Perfil">
+                    <i class="fa-solid fa-gear fs-5"></i>
+                </a>
 
-                <i class="fa-solid fa-gear"></i>
-
-
+                <!-- PERFIL -->
                 {% block perfil %}
                 <a href="{% if user.perfil.tipo == 'aluno' %}{% url 'meuperfila' %}{% else %}{% url 'meuperfil' %}{% endif %}"
-                   class="perfil-link" style="text-decoration: none; color: inherit;">
+                class="perfil-link" style="text-decoration: none; color: inherit;">
                     <div class="perfil">
                         <img src="{% if user.perfil.foto %}{{ user.perfil.foto.url }}{% elif user.perfil.tipo == 'aluno' %}{% static 'imagens/aluno.png' %}{% elif user.perfil.tipo == 'empresa' %}{% static 'imagens/empresa.png' %}{% else %}{% static 'imagens/professor.png.png' %}{% endif %}"
-                             alt="Foto de perfil">
+                            alt="Foto de perfil">
                         <div>
                             <strong>{{ user.get_full_name|default:user.username }}</strong>
                             <small>{{ user.perfil.get_tipo_display }}</small>

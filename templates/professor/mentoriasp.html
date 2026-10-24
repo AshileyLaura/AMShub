@@ -146,9 +146,9 @@ Acompanhe as mentorias e o desenvolvimento dos alunos.
                     <span class="etiqueta">Em breve</span>
                 {% endif %}
 
-                {% if mentoria.minha %}
-                    <span class="etiqueta">Sua mentoria</span>
-                {% endif %}
+                <a href="{% url 'registrar_presenca_p' mentoria.pk %}" class="btn btn-sm btn-outline-primary ms-auto">
+                    <i class="fa-solid fa-clipboard-user me-1"></i> Lista de Presença
+                </a>
             </div>
 
         </article>

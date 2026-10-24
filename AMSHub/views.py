@@ -248,6 +248,24 @@ def contexto_gestao(request):
 # TELAS PRINCIPAIS
 # ---------------------------------------------------------------------
 @tipo_permitido('aluno')
+def pendenciasa(request):
+    aluno = obter_aluno(request)
+    em_atraso, proximas, outras = montar_pendencias(
+        aluno,
+        timezone.localdate()
+    )
+    return render(
+        request,
+        'aluno/pendenciasa.html',
+        {
+            'aluno': aluno,
+            'em_atraso': em_atraso,
+            'proximas': proximas,
+            'outras': outras,
+            'total_pendencias': len(em_atraso) + len(proximas) + len(outras),
+            'nome_usuario': nome_do_usuario(request)
+        }
+    )
 def aluno(request):
     aluno = obter_aluno(request)
     hoje = timezone.localdate()
@@ -367,6 +385,37 @@ def ler_nota(texto):
 
 
 @tipo_permitido('professor')
+def registrar_presenca_p(request, id_mentoria):
+    mentoria = get_object_or_404(Mentoria, pk=id_mentoria)
+    participacoes = Participacao.objects.filter(id_mentoria=mentoria).select_related('id_aluno__perfil__user')
+
+    if request.method == 'POST':
+        for participacao in participacoes:
+            presenca_key = f'presenca_{participacao.pk}'
+            horas_key = f'horas_{participacao.pk}'
+            
+            # Verifica se o checkbox foi marcado
+            participacao.presenca = presenca_key in request.POST
+            
+            # Atualiza as horas
+            horas_valor = request.POST.get(horas_key, '0').strip()
+            try:
+                participacao.horas = Decimal(horas_valor.replace(',', '.'))
+            except (InvalidOperation, TypeError):
+                participacao.horas = Decimal('0.00')
+
+            participacao.save()
+
+        messages.success(request, f'Presença e horas da mentoria "{mentoria.tema}" atualizadas!')
+        return redirect('mentoriasp')
+
+    contexto = {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'mentoria': mentoria,
+        'participacoes': participacoes,
+    }
+    return render(request, 'professor/registrar_presenca.html', contexto)
 def professor(request):
 
     professor_logado = obter_professor(request)

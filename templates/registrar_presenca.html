@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AMS Hub - Registrar Presença{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'Professor.css' %}">
+<link rel="stylesheet" href="{% static 'professorpaginas.css' %}">
+{% endblock %}
+
+{% block saudacao %}
+<h1>Registrar Presença e Horas</h1>
+{% endblock %}
+
+{% block descricao %}
+Gerencie a lista de chamada e atribua as horas aos alunos participantes.
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li><a href="{% url 'professor' %}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
+    <li><a href="{% url 'portfoliosp' %}"><i class="fa-solid fa-folder-open"></i><span>Portfólios</span></a></li>
+    <li><a href="{% url 'avaliacoesp' %}"><i class="fa-solid fa-star"></i><span>Avaliações</span></a></li>
+    <li class="active"><a href="{% url 'mentoriasp' %}"><i class="fa-solid fa-users"></i><span>Mentorias</span></a></li>
+    <li><a href="{% url 'atividadesp' %}"><i class="fa-solid fa-list-check"></i><span>Atividades</span></a></li>
+    <li><a href="{% url 'agendap' %}"><i class="fa-solid fa-calendar"></i><span>Agenda</span></a></li>
+    <li><a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i><span>Sair</span></a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<section class="professor-pagina">
+    <div class="pagina-cabecalho">
+        <div>
+            <h2>{{ mentoria.tema }}</h2>
+            <p>Data: {{ mentoria.data|date:"d/m/Y" }} | Carga Horária Prevista: {{ mentoria.carga_horaria }}h</p>
+        </div>
+        <a href="{% url 'mentoriasp' %}" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-1"></i> Voltar
+        </a>
+    </div>
+
+    <div class="painel-tabela mt-4">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Aluno</th>
+                            <th>Presença</th>
+                            <th>Horas Concedidas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for part in participacoes %}
+                        <tr>
+                            <td>
+                                <strong>{{ part.id_aluno.perfil.user.get_full_name|default:part.id_aluno.perfil.user.username }}</strong>
+                                <small class="d-block text-muted">{{ part.id_aluno.curso }} - {{ part.id_aluno.turma }}</small>
+                            </td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="presenca_{{ part.pk }}" id="presenca_{{ part.pk }}" {% if part.presenca %}checked{% endif %}>
+                                    <label class="form-check-label" for="presenca_{{ part.pk }}">Presente</label>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="number" step="0.5" min="0" max="100" name="horas_{{ part.pk }}" class="form-control" style="max-width: 120px;" value="{{ part.horas }}">
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center py-4">Nenhum aluno inscrito nesta mentoria ainda.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if participacoes %}
+            <div class="d-flex justify-content-end mt-3">
+                <button type="submit" class="botao-principal">
+                    <i class="fa-solid fa-floppy-disk me-2"></i> Salvar Presenças e Horas
+                </button>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</section>
+{% endblock %}

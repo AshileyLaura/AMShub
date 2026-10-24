@@ -1,69 +1,89 @@
 {% extends "gestao.html" %}
 {% load static %}
 
-
 {% block title %}
 AMS Hub - Supervisor
 {% endblock %}
 
-
 {% block menu %}
-
 <ul>
-
     <li class="active">
-        <i class="fa-solid fa-house"></i>
-        <span>Dashboard</span>
+        <a href="{% url 'supervisor' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
     </li>
-
     <li>
         <a href="{% url 'empresagestao' %}">
-    
             <i class="fa-solid fa-building"></i>
-    
             <span>Empresas</span>
-    
         </a>
     </li>
     <li>
         <a href="{% url 'mentoriasgestao' %}">
-    
             <i class="fa-solid fa-users"></i>
-    
             <span>Mentorias</span>
-    
         </a>
     </li>
-
     <li>
         <a href="{% url 'relatoriosgestao' %}">
-    
             <i class="fa-solid fa-chart-line"></i>
-    
-            <span>Gerenciar Relatórios</span>
-    
+            <span>Relatórios</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
     </li>
-
 </ul>
-
 {% endblock %}
-
 
 {% block saudacao %}
 Olá, {{ nome_usuario }}!
 {% endblock %}
 
-
 {% block descricao %}
-Acompanhe empresas, mentorias e os relatórios gerais do programa.
+Acompanhe empresas, mentorias e os relatórios gerais do programa AMS.
 {% endblock %}
 
+{% block conteudo_especifico %}
+<section class="gestao-box mb-4">
+    <div class="gestao-title">
+        <div>
+            <h2>Visão Geral da Supervisão</h2>
+            <p>Acompanhamento das empresas parceiras e relatórios gerais.</p>
+        </div>
+    </div>
 
+    <div class="relatorios-grid">
+        <a href="{% url 'empresagestao' %}" class="relatorio-item text-decoration-none">
+            <div class="item-icon"><i class="fa-solid fa-building"></i></div>
+            <div class="item-info">
+                <strong>Empresas Parceiras</strong>
+                <span>Consulte a lista e detalhes das empresas parceiras.</span>
+            </div>
+            <i class="fa-solid fa-chevron-right seta"></i>
+        </a>
+
+        <a href="{% url 'mentoriasgestao' %}" class="relatorio-item text-decoration-none">
+            <div class="item-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="item-info">
+                <strong>Mentorias AMS</strong>
+                <span>Acompanhe o cronograma e andamento das mentorias.</span>
+            </div>
+            <i class="fa-solid fa-chevron-right seta"></i>
+        </a>
+
+        <a href="{% url 'relatoriosgestao' %}" class="relatorio-item text-decoration-none">
+            <div class="item-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="item-info">
+                <strong>Relatórios do Programa</strong>
+                <span>Acesse o relatório de horas, estágios e desempenho.</span>
+            </div>
+            <i class="fa-solid fa-chevron-right seta"></i>
+        </a>
+    </div>
+</section>
+{% endblock %}
