@@ -41,7 +41,7 @@
 
             <div>
 
-                <h2>{{ total_empresas|default:"18" }}</h2>
+                <h2>{{ total_empresas }}</h2>
 
                 <p>Empresas Parceiras</p>
 
@@ -72,7 +72,7 @@
 
             <div>
 
-                <h2>{{ total_mentorias|default:"08" }}</h2>
+                <h2>{{ total_mentorias }}</h2>
 
                 <p>Mentorias</p>
 
@@ -98,14 +98,14 @@
         <div class="gestao-card h-100">
 
             <div class="gestao-card-icon">
-                <i class="fa-solid fa-chart-column"></i>
+                <i class="fa-solid fa-user-graduate"></i>
             </div>
 
             <div>
 
-                <h2>09</h2>
+                <h2>{{ total_alunos }}</h2>
 
-                <p>Relatórios</p>
+                <p>Alunos</p>
 
             </div>
 
@@ -189,63 +189,15 @@
 
             <div class="empresa-item">
 
-                <div class="item-icon">
-                    <i class="fa-solid fa-building"></i>
-                </div>
-
                 <div class="item-info">
 
-                    <strong>IBM</strong>
+                    <strong>Nenhuma empresa cadastrada</strong>
 
                     <span>
-                        Empresa parceira
+                        As empresas cadastradas aparecerão aqui.
                     </span>
 
                 </div>
-
-                <i class="fa-solid fa-chevron-right seta"></i>
-
-            </div>
-
-
-            <div class="empresa-item">
-
-                <div class="item-icon">
-                    <i class="fa-solid fa-building"></i>
-                </div>
-
-                <div class="item-info">
-
-                    <strong>TAB</strong>
-
-                    <span>
-                        Empresa parceira
-                    </span>
-
-                </div>
-
-                <i class="fa-solid fa-chevron-right seta"></i>
-
-            </div>
-
-
-            <div class="empresa-item">
-
-                <div class="item-icon">
-                    <i class="fa-solid fa-building"></i>
-                </div>
-
-                <div class="item-info">
-
-                    <strong>DevCool</strong>
-
-                    <span>
-                        Empresa parceira
-                    </span>
-
-                </div>
-
-                <i class="fa-solid fa-chevron-right seta"></i>
 
             </div>
 
@@ -299,7 +251,7 @@
                     <strong>{{ m.tema }}</strong>
 
                     <span>
-                        {{ m.empresa.nome|default:"Sem empresa" }} · {{ m.carga_horaria }}h
+                        {{ m.empresa.nome|default:"Sem empresa" }} · {{ m.carga_horaria|floatformat:"-2" }}h
                     </span>
 
                 </div>
@@ -314,84 +266,15 @@
 
             <div class="mentoria-item">
 
-                <div class="data-mentoria">
-
-                    <strong>12</strong>
-
-                    <span>OUT</span>
-
-                </div>
-
-
                 <div class="item-info">
 
-                    <strong>TAB - 3º DS</strong>
+                    <strong>Nenhuma mentoria agendada</strong>
 
                     <span>
-                        10:00 às 11:30
+                        As próximas mentorias aparecerão aqui.
                     </span>
 
                 </div>
-
-                <span class="tag-mentoria">
-                    Em breve
-                </span>
-
-            </div>
-
-
-            <div class="mentoria-item">
-
-                <div class="data-mentoria">
-
-                    <strong>16</strong>
-
-                    <span>OUT</span>
-
-                </div>
-
-
-                <div class="item-info">
-
-                    <strong>IBM - AMS Geral</strong>
-
-                    <span>
-                        10:00 às 12:00
-                    </span>
-
-                </div>
-
-                <span class="tag-mentoria">
-                    Em breve
-                </span>
-
-            </div>
-
-
-            <div class="mentoria-item">
-
-                <div class="data-mentoria">
-
-                    <strong>21</strong>
-
-                    <span>OUT</span>
-
-                </div>
-
-
-                <div class="item-info">
-
-                    <strong>Visita Técnica</strong>
-
-                    <span>
-                        07:00 às 15:00
-                    </span>
-
-                </div>
-
-                <span class="tag-mentoria">
-                    Em breve
-                </span>
 
             </div>
 

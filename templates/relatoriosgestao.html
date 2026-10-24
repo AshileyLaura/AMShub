@@ -59,7 +59,7 @@ Consulte os principais dados e indicadores do programa AMS.
     </li>
 
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -106,7 +106,7 @@ Consulte os principais dados e indicadores do programa AMS.
 
                 <div>
 
-                    <h3>{{ total_alunos|default:"124" }}</h3>
+                    <h3>{{ total_alunos }}</h3>
 
                     <p>Alunos</p>
 
@@ -129,7 +129,7 @@ Consulte os principais dados e indicadores do programa AMS.
 
                 <div>
 
-                    <h3>{{ total_empresas|default:"18" }}</h3>
+                    <h3>{{ total_empresas }}</h3>
 
                     <p>Empresas</p>
 
@@ -152,7 +152,7 @@ Consulte os principais dados e indicadores do programa AMS.
 
                 <div>
 
-                    <h3>{{ total_mentorias|default:"08" }}</h3>
+                    <h3>{{ total_mentorias }}</h3>
 
                     <p>Mentorias</p>
 
@@ -175,7 +175,7 @@ Consulte os principais dados e indicadores do programa AMS.
 
                 <div>
 
-                    <h3>{% if total_horas %}{{ total_horas|floatformat:"-1" }}h{% else %}3.420h{% endif %}</h3>
+                    <h3>{{ total_horas|floatformat:"-1" }}h</h3>
 
                     <p>Horas Registradas</p>
 
@@ -213,7 +213,7 @@ Consulte os principais dados e indicadores do programa AMS.
             </div>
 
 
-            <a href="#" class="btn-secundario">
+            <a href="{% url 'relatoriosgestao' %}?tipo=horas#relatorio" class="btn-secundario">
 
                 Visualizar
 
@@ -244,7 +244,7 @@ Consulte os principais dados e indicadores do programa AMS.
             </div>
 
 
-            <a href="#" class="btn-secundario">
+            <a href="{% url 'relatoriosgestao' %}?tipo=estagio#relatorio" class="btn-secundario">
 
                 Visualizar
 
@@ -275,7 +275,7 @@ Consulte os principais dados e indicadores do programa AMS.
             </div>
 
 
-            <a href="#" class="btn-secundario">
+            <a href="{% url 'relatoriosgestao' %}?tipo=empresas#relatorio" class="btn-secundario">
 
                 Visualizar
 
@@ -306,7 +306,7 @@ Consulte os principais dados e indicadores do programa AMS.
             </div>
 
 
-            <a href="#" class="btn-secundario">
+            <a href="{% url 'relatoriosgestao' %}?tipo=desempenho#relatorio" class="btn-secundario">
 
                 Visualizar
 
@@ -317,6 +317,48 @@ Consulte os principais dados e indicadores do programa AMS.
         </div>
 
     </div>
+
+    <!-- RELATÓRIO SELECIONADO -->
+
+    {% if relatorio_titulo %}
+    <div class="painel-tabela mt-4" id="relatorio">
+
+        <div class="pagina-topo">
+            <div>
+                <h2>{{ relatorio_titulo }}</h2>
+            </div>
+            <a href="{% url 'relatoriosgestao' %}" class="btn-limpar">Fechar</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        {% for coluna in relatorio_colunas %}
+                        <th>{{ coluna }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for linha in relatorio_linhas %}
+                    <tr>
+                        {% for valor in linha %}
+                        <td>{{ valor }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="{{ relatorio_colunas|length }}" class="text-center py-4">
+                            Nenhum dado encontrado.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    {% endif %}
 
 </section>
 

@@ -1,0 +1,234 @@
+{# Janela para ajustar (mover e dar zoom) a foto de perfil antes de salvar. #}
+{# Use com: {% include '_ajustar_foto.html' %} em qualquer tela de perfil que tenha <input id="foto"> dentro de um formulário. #}
+
+<style>
+    .ajuste-foto-area {
+        position: relative;
+        width: 320px;
+        max-width: 100%;
+        aspect-ratio: 1 / 1;
+        margin: 0 auto;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #222;
+        touch-action: none;
+        cursor: grab;
+    }
+    .ajuste-foto-area.arrastando { cursor: grabbing; }
+    .ajuste-foto-area canvas { width: 100%; height: 100%; display: block; }
+    .ajuste-foto-mascara {
+        position: absolute;
+        inset: 8%;
+        border-radius: 50%;
+        box-shadow: 0 0 0 999px rgba(0, 0, 0, .55);
+        border: 2px solid rgba(255, 255, 255, .9);
+        pointer-events: none;
+    }
+</style>
+
+<div class="modal fade" id="modalAjustarFoto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Ajustar foto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="ajuste-foto-area" id="ajusteFotoArea">
+                    <canvas id="ajusteFotoCanvas" width="320" height="320"></canvas>
+                    <div class="ajuste-foto-mascara"></div>
+                </div>
+
+                <label for="ajusteFotoZoom" class="form-label mt-3 mb-1">Zoom</label>
+                <input type="range" class="form-range" id="ajusteFotoZoom" min="1" max="3" step="0.01" value="1">
+
+                <small class="text-muted">Arraste a imagem para posicionar. O que ficar dentro do círculo será a sua foto.</small>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="ajusteFotoCancelar">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="ajusteFotoSalvar">
+                    <i class="fa-solid fa-floppy-disk me-2"></i>
+                    Salvar foto
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const entrada = document.getElementById('foto');
+    const modalEl = document.getElementById('modalAjustarFoto');
+    if (!entrada || !modalEl || !entrada.form || typeof bootstrap === 'undefined') {
+        return;
+    }
+
+    const modal = new bootstrap.Modal(modalEl);
+    const area = document.getElementById('ajusteFotoArea');
+    const tela = document.getElementById('ajusteFotoCanvas');
+    const ctx = tela.getContext('2d');
+    const zoomEl = document.getElementById('ajusteFotoZoom');
+    const TAM = tela.width;      // tamanho da pré-visualização
+    const SAIDA = 400;           // tamanho final da foto (pixels)
+
+    let imagem = null;
+    let zoom = 1, ox = 0, oy = 0;
+    let urlTemporaria = null;
+    let confirmou = false;
+
+    function escalaBase() {
+        return TAM / Math.min(imagem.naturalWidth, imagem.naturalHeight);
+    }
+
+    function limitar() {
+        const esc = escalaBase() * zoom;
+        const maxX = Math.max(0, (imagem.naturalWidth * esc - TAM) / 2);
+        const maxY = Math.max(0, (imagem.naturalHeight * esc - TAM) / 2);
+        ox = Math.min(maxX, Math.max(-maxX, ox));
+        oy = Math.min(maxY, Math.max(-maxY, oy));
+    }
+
+    function desenhar(contexto, lado) {
+        const f = lado / TAM;
+        const esc = escalaBase() * zoom * f;
+        const larg = imagem.naturalWidth * esc;
+        const alt = imagem.naturalHeight * esc;
+        contexto.fillStyle = '#ffffff';
+        contexto.fillRect(0, 0, lado, lado);
+        contexto.drawImage(
+            imagem,
+            lado / 2 - larg / 2 + ox * f,
+            lado / 2 - alt / 2 + oy * f,
+            larg,
+            alt
+        );
+    }
+
+    function atualizar() {
+        limitar();
+        desenhar(ctx, TAM);
+    }
+
+    function limparSelecao() {
+        entrada.value = '';
+        const nome = document.getElementById('nome-arquivo');
+        if (nome) { nome.textContent = 'Nenhum arquivo selecionado'; }
+    }
+
+    function liberarImagem() {
+        if (urlTemporaria) {
+            URL.revokeObjectURL(urlTemporaria);
+            urlTemporaria = null;
+        }
+        imagem = null;
+    }
+
+    entrada.addEventListener('change', function () {
+        const arquivo = entrada.files && entrada.files[0];
+        if (!arquivo) { return; }
+
+        if (!arquivo.type.startsWith('image/')) {
+            limparSelecao();
+            alert('Escolha um arquivo de imagem (JPG, PNG ou WEBP).');
+            return;
+        }
+
+        liberarImagem();
+        urlTemporaria = URL.createObjectURL(arquivo);
+        const nova = new Image();
+        nova.onload = function () {
+            imagem = nova;
+            zoom = 1; ox = 0; oy = 0;
+            zoomEl.value = 1;
+            confirmou = false;
+            atualizar();
+            modal.show();
+        };
+        nova.onerror = function () {
+            limparSelecao();
+            liberarImagem();
+            alert('Não foi possível abrir essa imagem.');
+        };
+        nova.src = urlTemporaria;
+    });
+
+    zoomEl.addEventListener('input', function () {
+        zoom = parseFloat(zoomEl.value);
+        if (imagem) { atualizar(); }
+    });
+
+    area.addEventListener('wheel', function (e) {
+        if (!imagem) { return; }
+        e.preventDefault();
+        zoom = Math.min(3, Math.max(1, zoom + (e.deltaY < 0 ? 0.1 : -0.1)));
+        zoomEl.value = zoom;
+        atualizar();
+    }, { passive: false });
+
+    let arrastando = false, ultimoX = 0, ultimoY = 0;
+
+    area.addEventListener('pointerdown', function (e) {
+        if (!imagem) { return; }
+        arrastando = true;
+        ultimoX = e.clientX;
+        ultimoY = e.clientY;
+        area.setPointerCapture(e.pointerId);
+        area.classList.add('arrastando');
+    });
+
+    area.addEventListener('pointermove', function (e) {
+        if (!arrastando) { return; }
+        const razao = TAM / area.clientWidth;  // converte pixels da tela para o canvas
+        ox += (e.clientX - ultimoX) * razao;
+        oy += (e.clientY - ultimoY) * razao;
+        ultimoX = e.clientX;
+        ultimoY = e.clientY;
+        atualizar();
+    });
+
+    function soltar() {
+        arrastando = false;
+        area.classList.remove('arrastando');
+    }
+    area.addEventListener('pointerup', soltar);
+    area.addEventListener('pointercancel', soltar);
+
+    document.getElementById('ajusteFotoSalvar').addEventListener('click', function () {
+        if (!imagem) { return; }
+
+        const saida = document.createElement('canvas');
+        saida.width = SAIDA;
+        saida.height = SAIDA;
+        desenhar(saida.getContext('2d'), SAIDA);
+
+        saida.toBlob(function (blob) {
+            if (!blob) {
+                alert('Não foi possível preparar a foto.');
+                return;
+            }
+            const recortada = new File([blob], 'foto.jpg', { type: 'image/jpeg' });
+            const lista = new DataTransfer();
+            lista.items.add(recortada);
+            entrada.files = lista.files;
+            confirmou = true;
+            modal.hide();
+            entrada.form.submit();
+        }, 'image/jpeg', 0.9);
+    });
+
+    // Se fechou sem salvar, descarta a escolha.
+    modalEl.addEventListener('hidden.bs.modal', function () {
+        if (!confirmou) { limparSelecao(); }
+        liberarImagem();
+    });
+});
+</script>

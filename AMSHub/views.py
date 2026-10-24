@@ -236,6 +236,7 @@ def contexto_gestao(request):
         'cargo_usuario': CARGOS.get(request.user.perfil.tipo, ''),
         'total_empresas': Empresa.objects.count(),
         'total_mentorias': Mentoria.objects.count(),
+        'total_alunos': Aluno.objects.count(),
         'empresas_recentes': Empresa.objects.order_by('nome')[:3],
         'proximas_mentorias': Mentoria.objects.filter(
             data__gte=hoje
@@ -341,9 +342,12 @@ def obter_professor(request):
 
 
 def entregas_do_professor(professor_logado):
-    """Entregas de portfólio das mentorias em que ele é o professor."""
+    """Entregas das mentorias em que ele é o professor, mais as entregas de
+    mentorias sem professor definido (ou sem mentoria), para não ficarem
+    perdidas sem ninguém para avaliar."""
     return EntregaPortfolio.objects.filter(
-        id_mentoria__id_professor=professor_logado
+        Q(id_mentoria__id_professor=professor_logado)
+        | Q(id_mentoria__id_professor__isnull=True)
     ).select_related(
         'id_aluno__perfil__user',
         'id_mentoria'
@@ -643,13 +647,78 @@ def mentoriasgestao(request):
 @tipos_permitidos('coordenador', 'supervisor')
 def relatoriosgestao(request):
     hoje = timezone.localdate()
-    total_horas = sum(
-        resumo_do_aluno(aluno, hoje)[0]
-        for aluno in Aluno.objects.all()
-    )
     contexto = contexto_gestao(request)
-    contexto['total_alunos'] = Aluno.objects.count()
-    contexto['total_horas'] = total_horas
+    alunos = list(
+        Aluno.objects.select_related('perfil__user', 'empresa')
+        .order_by('perfil__user__first_name', 'perfil__user__username')
+    )
+    resumos = {a.pk: resumo_do_aluno(a, hoje) for a in alunos}
+    contexto['total_horas'] = sum(r[0] for r in resumos.values())
+
+    tipo = request.GET.get('tipo', '').strip()
+    titulo = None
+    colunas = []
+    linhas = []
+
+    if tipo == 'horas':
+        titulo = 'Horas dos Alunos'
+        colunas = ['Aluno', 'Curso', 'Turma', 'Horas', 'Situação']
+        for a in alunos:
+            horas, atraso = resumos[a.pk]
+            linhas.append([
+                nome_do_aluno(a), a.curso, a.turma,
+                formatar_horas(horas),
+                'Com pendências' if atraso else 'Em dia',
+            ])
+    elif tipo == 'estagio':
+        titulo = 'Alunos em Estágio'
+        colunas = ['Aluno', 'Curso', 'Empresa']
+        for a in alunos:
+            if a.empresa_id:
+                linhas.append([nome_do_aluno(a), a.curso, a.empresa.nome])
+    elif tipo == 'empresas':
+        titulo = 'Empresas Parceiras'
+        colunas = ['Empresa', 'Alunos', 'Mentorias', 'Vagas abertas']
+        empresas = Empresa.objects.annotate(
+            n_alunos=Count('alunos', distinct=True),
+            n_mentorias=Count('mentorias', distinct=True),
+        ).order_by('nome')
+        for e in empresas:
+            abertas = Vaga.objects.filter(
+                id_empresa=e, data_limite__gte=hoje
+            ).count()
+            linhas.append([e.nome, e.n_alunos, e.n_mentorias, abertas])
+    elif tipo == 'desempenho':
+        titulo = 'Desempenho Geral'
+        colunas = ['Indicador', 'Valor']
+        atividades = list(Atividade.objects.all())
+        concluidas = sum(1 for a in atividades if atividade_concluida(a))
+        percentual = (
+            round(concluidas * 100 / len(atividades)) if atividades else 0
+        )
+        linhas = [
+            ['Alunos cadastrados', len(alunos)],
+            ['Alunos com pendências',
+             sum(1 for r in resumos.values() if r[1])],
+            ['Mentorias realizadas',
+             Mentoria.objects.filter(data__lt=hoje).count()],
+            ['Mentorias agendadas',
+             Mentoria.objects.filter(data__gte=hoje).count()],
+            ['Atividades cadastradas', len(atividades)],
+            ['Atividades concluídas', f'{concluidas} ({percentual}%)'],
+            ['Portfólios avaliados',
+             EntregaPortfolio.objects.filter(
+                 status=STATUS_ENTREGA_AVALIADA).count()],
+            ['Portfólios aguardando avaliação',
+             EntregaPortfolio.objects.filter(
+                 status=STATUS_ENTREGA_PENDENTE).count()],
+        ]
+
+    contexto['relatorio_tipo'] = tipo if titulo else ''
+    contexto['relatorio_titulo'] = titulo
+    contexto['relatorio_colunas'] = colunas
+    contexto['relatorio_linhas'] = linhas
+    contexto['total_empresas'] = Empresa.objects.count()
     return render(request, 'relatoriosgestao.html', contexto)
 @tipos_permitidos('coordenador')
 def gerenciaalunosc(request):
@@ -862,11 +931,68 @@ def login_view(request):
         )
     return render(request, pagina)
 def logout_view(request):
+    tipo = ''
+    if request.user.is_authenticated and hasattr(request.user, 'perfil'):
+        tipo = request.user.perfil.tipo
     logout(request)
+    if tipo in ('aluno', 'professor', 'coordenador', 'supervisor', 'empresa'):
+        return redirect(f'login_{tipo}')
     return redirect('login')
 # ---------------------------------------------------------------------
 # ÁREA DO ALUNO
 # ---------------------------------------------------------------------
+def mentorias_disponiveis(aluno, hoje):
+    """Mentorias futuras em que o aluno ainda não está inscrito e que têm vaga.
+    Vagas vazias ou 0 significam sem limite."""
+    ja_inscrito = Participacao.objects.filter(
+        id_aluno=aluno
+    ).values_list('id_mentoria', flat=True)
+    candidatas = Mentoria.objects.filter(
+        data__gte=hoje
+    ).exclude(
+        id_mentoria__in=ja_inscrito
+    ).annotate(
+        inscritos=Count('participacao', distinct=True)
+    ).select_related('empresa').order_by('data', 'id_mentoria')
+    return [
+        mentoria for mentoria in candidatas
+        if not mentoria.vagas or mentoria.inscritos < mentoria.vagas
+    ]
+@tipo_permitido('aluno')
+def inscreveremmentoriaa(request, id_mentoria):
+    """O aluno logado se inscreve (só ele mesmo) em uma mentoria."""
+    if request.method != 'POST':
+        return redirect('minhasmentoriasa')
+    aluno = obter_aluno(request)
+    hoje = timezone.localdate()
+    with transaction.atomic():
+        mentoria = get_object_or_404(
+            Mentoria.objects.select_for_update(),
+            id_mentoria=id_mentoria
+        )
+        if mentoria.data < hoje:
+            messages.error(request, 'Esta mentoria já aconteceu.')
+        elif Participacao.objects.filter(
+            id_aluno=aluno,
+            id_mentoria=mentoria
+        ).exists():
+            messages.error(request, 'Você já está inscrito nesta mentoria.')
+        elif mentoria.vagas and Participacao.objects.filter(
+            id_mentoria=mentoria
+        ).count() >= mentoria.vagas:
+            messages.error(request, 'Esta mentoria não tem mais vagas.')
+        else:
+            Participacao.objects.create(
+                id_aluno=aluno,
+                id_mentoria=mentoria,
+                horas=0,
+                presenca=False
+            )
+            messages.success(
+                request,
+                f'Inscrição feita em "{mentoria.tema}"!'
+            )
+    return redirect('minhasmentoriasa')
 @tipo_permitido('aluno')
 def minhasmentoriasa(request):
     aluno = obter_aluno(request)
@@ -894,6 +1020,7 @@ def minhasmentoriasa(request):
             'aluno': aluno,
             'proximas': proximas,
             'realizadas': realizadas,
+            'disponiveis': mentorias_disponiveis(aluno, hoje),
             'nome_usuario': nome_do_usuario(request)
         }
     )

@@ -3,10 +3,10 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="whidt=device-whidt, initial-scale=1.0">
-    <title>Login - Professor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Coordenador</title>
 <link rel="stylesheet" href="{% static 'loginCoordenador.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/front-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
 <body>
@@ -25,7 +25,8 @@
             <form method="POST">
                 {% csrf_token %}
         
-                <input type="text" name="username" placeholder="Usuário" required>
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" value="{{ email }}" required>
                 <input type="password" name="senha" placeholder="Senha" required>
         
                 <button type="submit">Entrar</button>

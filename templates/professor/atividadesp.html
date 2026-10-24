@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
@@ -70,21 +69,6 @@ AMS Hub - Gerenciar Atividades
 {% block descricao %}
 Cadastre tarefas e acompanhe as atividades das suas mentorias.
 {% endblock %}
-
-{% block perfil %}
-<div class="perfil">
-    <img
-        src="{% static 'imagens/professor.png.png' %}"
-        alt="Professor"
-    >
-
-    <div>
-        <strong>{{ nome_usuario }}</strong>
-        <small>Professor</small>
-    </div>
-</div>
-{% endblock %}
-
 {% block content %}
 
 <section class="professor-pagina atividades-professor">

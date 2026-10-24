@@ -43,7 +43,7 @@ AMS Hub - Coordenador
     </li>
 
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -64,28 +64,6 @@ Gerencie alunos, empresas, mentorias e acompanhe os relatórios do programa.
 {% endblock %}
 
 
-{% block perfil %}
-<a href="{% url 'meuperfil' %}" class="perfil-link"
-   style="text-decoration: none; color: inherit;">
-
-    <div class="perfil">
-
-        <img
-            src="{% if usuario.perfil.foto %}{{ usuario.perfil.foto.url }}{% else %}{% static 'imagens/professor.png.png' %}{% endif %}"
-            alt="Foto de perfil"
-        >
-
-        <div>
-            <strong>{{ nome_usuario }}</strong>
-            <small>{{ usuario.perfil.get_tipo_display }}</small>
-        </div>
-
-    </div>
-
-</a>
-{% endblock %}
-
-
 {% block conteudo_especifico %}
 
 <section class="gestao-box mb-4">
@@ -102,7 +80,7 @@ Gerencie alunos, empresas, mentorias e acompanhe os relatórios do programa.
 
         </div>
 
-        <a href="#">
+        <a href="{% url 'gerenciaalunosc' %}">
             Ver todos
         </a>
 
@@ -110,7 +88,7 @@ Gerencie alunos, empresas, mentorias e acompanhe os relatórios do programa.
 
     <div class="relatorios-grid">
 
-        <div class="relatorio-item">
+        <a href="{% url 'gerenciaalunosc' %}" class="relatorio-item text-decoration-none">
 
             <div class="item-icon">
                 <i class="fa-solid fa-user-graduate"></i>
@@ -118,7 +96,7 @@ Gerencie alunos, empresas, mentorias e acompanhe os relatórios do programa.
 
             <div class="item-info">
 
-                <strong>124 alunos cadastrados</strong>
+                <strong>{{ total_alunos }} aluno{{ total_alunos|pluralize }} cadastrado{{ total_alunos|pluralize }}</strong>
 
                 <span>
                     Consulte informações e situação dos alunos.
@@ -128,10 +106,10 @@ Gerencie alunos, empresas, mentorias e acompanhe os relatórios do programa.
 
             <i class="fa-solid fa-chevron-right seta"></i>
 
-        </div>
+        </a>
 
 
-        <div class="relatorio-item">
+        <a href="{% url 'relatoriosgestao' %}?tipo=horas" class="relatorio-item text-decoration-none">
 
             <div class="item-icon">
                 <i class="fa-solid fa-triangle-exclamation"></i>
@@ -139,7 +117,7 @@ Gerencie alunos, empresas, mentorias e acompanhe os relatórios do programa.
 
             <div class="item-info">
 
-                <strong>Alunos com pendências</strong>
+                <strong>{{ alunos_pendentes }} aluno{{ alunos_pendentes|pluralize }} com pendências</strong>
 
                 <span>
                     Consulte alunos que precisam de acompanhamento.
@@ -149,7 +127,7 @@ Gerencie alunos, empresas, mentorias e acompanhe os relatórios do programa.
 
             <i class="fa-solid fa-chevron-right seta"></i>
 
-        </div>
+        </a>
 
     </div>
 

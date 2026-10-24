@@ -58,6 +58,13 @@ AMS Hub - Detalhes da Mentoria
         </a>
     </li>
 
+    <li>
+        <a href="{% url 'logout' %}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
+    </li>
+
 </ul>
 
 {% endblock %}
@@ -70,24 +77,6 @@ AMS Hub - Detalhes da Mentoria
 
 {% block descricao %}
 Confira todas as informações da mentoria.
-{% endblock %}
-
-
-{% block perfil %}
-
-<a href="{% url 'meuperfila' %}" class="perfil-link">
-    <div class="perfil">
-
-        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
-
-        <div>
-            <strong>{{ nome_usuario }}</strong>
-            <small>Aluno</small>
-        </div>
-
-    </div>
-</a>
-
 {% endblock %}
 
 
@@ -143,7 +132,7 @@ Confira todas as informações da mentoria.
 
         <div>
             <span>Professor</span>
-            <strong>{{ mentoria.id_professor.nome }}</strong>
+            <strong>{{ mentoria.id_professor.perfil.user.get_full_name|default:mentoria.id_professor.perfil.user.username }}</strong>
         </div>
 
     </div>
@@ -157,7 +146,7 @@ Confira todas as informações da mentoria.
 
         <div>
             <span>Supervisor</span>
-            <strong>{{ mentoria.id_supervisor.nome }}</strong>
+            <strong>{{ mentoria.id_supervisor.perfil.user.get_full_name|default:mentoria.id_supervisor.perfil.user.username }}</strong>
         </div>
 
     </div>

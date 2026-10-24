@@ -54,7 +54,7 @@ AMS Hub - Pendências
         <span>Pendências</span>
     </li>
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -71,24 +71,6 @@ AMS Hub - Pendências
 
 {% block descricao %}
 Acompanhe tudo o que precisa ser resolvido.
-{% endblock %}
-
-
-{% block perfil %}
-
-<a href="{% url 'meuperfila' %}" class="perfil-link">
-    <div class="perfil">
-
-        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
-
-        <div>
-            <strong>{{ nome_usuario }}</strong>
-            <small>Aluno</small>
-        </div>
-
-    </div>
-</a>
-
 {% endblock %}
 
 

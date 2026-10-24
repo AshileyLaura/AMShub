@@ -57,22 +57,12 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
     </li>
 
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
     </li>
 </ul>
-{% endblock %}
-
-{% block perfil %}
-<div class="perfil">
-    <img src="{% static 'imagens/professor.png.png' %}" alt="Coordenador">
-    <div>
-        <strong>{{ nome_usuario }}</strong>
-        <small>Coordenador</small>
-    </div>
-</div>
 {% endblock %}
 
 {% block content %}

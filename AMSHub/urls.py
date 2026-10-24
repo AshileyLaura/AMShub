@@ -10,6 +10,7 @@ from AMSHub.views import (
     login_view,
     logout_view,
     minhasmentoriasa,
+    inscreveremmentoriaa,
     detalhesdamentoriaa,
     meusportifoliosa,
     cadastro,
@@ -70,6 +71,12 @@ urlpatterns = [
         'aluno/mentorias/detalhes/<int:id_mentoria>/',
         detalhesdamentoriaa,
         name='detalhesdamentoriaa'
+    ),
+
+    path(
+        'aluno/mentorias/inscrever/<int:id_mentoria>/',
+        inscreveremmentoriaa,
+        name='inscreveremmentoriaa'
     ),
 
     path(

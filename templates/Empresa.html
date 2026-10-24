@@ -41,7 +41,7 @@ AMS Hub - Empresa
     </li>
 
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -55,27 +55,6 @@ AMS Hub - Empresa
 
 {% block descricao %}
 Gerencie mentorias, tarefas e oportunidades de emprego.
-{% endblock %}
-
-{% block perfil %}
-<a href="{% url 'meuperfil' %}" class="perfil-link"
-   style="text-decoration: none; color: inherit;">
-
-    <div class="perfil">
-
-        <img
-            src="{% if usuario.perfil.foto %}{{ usuario.perfil.foto.url }}{% else %}{% static 'imagens/empresa.png' %}{% endif %}"
-            alt="Foto de perfil"
-        >
-
-        <div>
-            <strong>{{ nome_usuario }}</strong>
-            <small>{{ usuario.perfil.get_tipo_display }}</small>
-        </div>
-
-    </div>
-
-</a>
 {% endblock %}
 
 {% block content %}

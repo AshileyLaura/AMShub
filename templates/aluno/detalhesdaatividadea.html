@@ -56,7 +56,7 @@ AMS Hub - Detalhes da Atividade
         </a>
     </li>
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -73,24 +73,6 @@ AMS Hub - Detalhes da Atividade
 
 {% block descricao %}
 Visualize as informações da atividade.
-{% endblock %}
-
-
-{% block perfil %}
-
-<a href="{% url 'meuperfila' %}" class="perfil-link">
-    <div class="perfil">
-
-        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
-
-        <div>
-            <strong>{{ nome_usuario }}</strong>
-            <small>Aluno</small>
-        </div>
-
-    </div>
-</a>
-
 {% endblock %}
 
 
@@ -153,7 +135,7 @@ Visualize as informações da atividade.
 
             <div>
                 <span>Professor</span>
-                <strong>{{ mentoria.id_professor.nome }}</strong>
+                <strong>{{ mentoria.id_professor.perfil.user.get_full_name|default:mentoria.id_professor.perfil.user.username }}</strong>
             </div>
 
         </div>
@@ -167,7 +149,7 @@ Visualize as informações da atividade.
 
             <div>
                 <span>Supervisor</span>
-                <strong>{{ mentoria.id_supervisor.nome }}</strong>
+                <strong>{{ mentoria.id_supervisor.perfil.user.get_full_name|default:mentoria.id_supervisor.perfil.user.username }}</strong>
             </div>
 
         </div>

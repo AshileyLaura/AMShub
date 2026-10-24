@@ -56,7 +56,7 @@ AMS Hub - Minhas Mentorias
         </a>
     </li>
     <li>
-        <a href="{% url 'index' %}">
+        <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </a>
@@ -77,25 +77,80 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
 {% endblock %}
 
 
-{% block perfil %}
+{% block content %}
 
-<a href="{% url 'meuperfila' %}" class="perfil-link">
-    <div class="perfil">
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+{% endif %}
 
-        <img src="{% static 'imagens/aluno.png' %}" alt="Aluno">
+<!-- MENTORIAS DISPONÍVEIS -->
 
+<section class="proximas">
+
+    <div class="section-title">
         <div>
-            <strong>{{ nome_usuario }}</strong>
-            <small>Aluno</small>
+            <h2>Mentorias Disponíveis</h2>
+            <p>Inscreva-se para ver as atividades de cada mentoria.</p>
         </div>
+    </div>
+
+    <div class="mentorias-futuras">
+
+        {% for mentoria in disponiveis %}
+        <div class="mentoria-futura">
+
+            <div class="data-mentoria">
+                <span>{{ mentoria.data|date:"M"|upper }}</span>
+                <strong>{{ mentoria.data|date:"d" }}</strong>
+            </div>
+
+            <div class="mentoria-info">
+
+                <h3>{{ mentoria.tema }}</h3>
+
+                <p>
+                    <i class="fa-regular fa-calendar"></i>
+                    {{ mentoria.data|date:"d/m/Y" }}
+                    {% if mentoria.horario %}às {{ mentoria.horario|time:"H:i" }}{% endif %}
+                </p>
+
+                {% if mentoria.empresa %}
+                <p>
+                    <i class="fa-solid fa-building"></i>
+                    {{ mentoria.empresa.nome }}
+                </p>
+                {% endif %}
+
+                {% if mentoria.vagas %}
+                <p>
+                    <i class="fa-solid fa-users"></i>
+                    {{ mentoria.inscritos }} / {{ mentoria.vagas }} vagas preenchidas
+                </p>
+                {% endif %}
+
+            </div>
+
+            <form method="post" action="{% url 'inscreveremmentoriaa' mentoria.id_mentoria %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-primary">
+                    Inscrever-me
+                </button>
+            </form>
+
+        </div>
+        {% empty %}
+        <p>Nenhuma mentoria disponível no momento.</p>
+        {% endfor %}
 
     </div>
-</a>
 
-{% endblock %}
+</section>
 
-
-{% block content %}
 
 <!-- PRÓXIMAS MENTORIAS -->
 
@@ -131,14 +186,14 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
                 {% if p.id_mentoria.id_professor %}
                 <p>
                     <i class="fa-solid fa-user"></i>
-                    Professor(a) {{ p.id_mentoria.id_professor.nome }}
+                    Professor(a) {{ p.id_mentoria.id_professor.perfil.user.get_full_name|default:p.id_mentoria.id_professor.perfil.user.username }}
                 </p>
                 {% endif %}
 
                 {% if p.id_mentoria.id_supervisor %}
                 <p>
                     <i class="fa-solid fa-user-tie"></i>
-                    Supervisor(a) {{ p.id_mentoria.id_supervisor.nome }}
+                    Supervisor(a) {{ p.id_mentoria.id_supervisor.perfil.user.get_full_name|default:p.id_mentoria.id_supervisor.perfil.user.username }}
                 </p>
                 {% endif %}
 
@@ -193,7 +248,7 @@ Acompanhe suas mentorias realizadas e as próximas que acontecerão.
                     <span>
                         {{ p.id_mentoria.data|date:"d/m/Y" }}
                         {% if p.id_mentoria.id_professor %}
-                        • Professor(a) {{ p.id_mentoria.id_professor.nome }}
+                        • Professor(a) {{ p.id_mentoria.id_professor.perfil.user.get_full_name|default:p.id_mentoria.id_professor.perfil.user.username }}
                         {% endif %}
                     </span>
                 </div>

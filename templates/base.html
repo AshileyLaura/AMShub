@@ -34,8 +34,10 @@
 
         <div class="logo">
 
+            {% block logo %}
             <img src="{% static 'imagens/logoaluno.png' %}"
                  alt="AMS Hub">
+            {% endblock %}
 
             <h2>AMS HUB</h2>
 
@@ -89,6 +91,17 @@
 
 
                 {% block perfil %}
+                <a href="{% if user.perfil.tipo == 'aluno' %}{% url 'meuperfila' %}{% else %}{% url 'meuperfil' %}{% endif %}"
+                   class="perfil-link" style="text-decoration: none; color: inherit;">
+                    <div class="perfil">
+                        <img src="{% if user.perfil.foto %}{{ user.perfil.foto.url }}{% elif user.perfil.tipo == 'aluno' %}{% static 'imagens/aluno.png' %}{% elif user.perfil.tipo == 'empresa' %}{% static 'imagens/empresa.png' %}{% else %}{% static 'imagens/professor.png.png' %}{% endif %}"
+                             alt="Foto de perfil">
+                        <div>
+                            <strong>{{ user.get_full_name|default:user.username }}</strong>
+                            <small>{{ user.perfil.get_tipo_display }}</small>
+                        </div>
+                    </div>
+                </a>
                 {% endblock %}
 
             </div>

@@ -46,8 +46,10 @@ AMS Hub - Supervisor
     </li>
 
     <li>
-        <i class="fa-solid fa-right-from-bracket"></i>
-        <span>Sair</span>
+        <a href="{% url 'logout' %}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
     </li>
 
 </ul>
@@ -65,23 +67,3 @@ Acompanhe empresas, mentorias e os relatórios gerais do programa.
 {% endblock %}
 
 
-{% block perfil %}
-<a href="{% url 'meuperfil' %}" class="perfil-link"
-   style="text-decoration: none; color: inherit;">
-
-    <div class="perfil">
-
-        <img
-            src="{% if usuario.perfil.foto %}{{ usuario.perfil.foto.url }}{% else %}{% static 'imagens/professor.png.png' %}{% endif %}"
-            alt="Foto de perfil"
-        >
-
-        <div>
-            <strong>{{ nome_usuario }}</strong>
-            <small>{{ usuario.perfil.get_tipo_display }}</small>
-        </div>
-
-    </div>
-
-</a>
-{% endblock %}
