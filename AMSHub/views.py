@@ -32,12 +32,12 @@ from .models import (
     Horas,
     Notificacao,
     Atividade,
+    EntregaAtividade,
 )
+
 # ---------------------------------------------------------------------
 # FUNÇÕES AUXILIARES
 # ---------------------------------------------------------------------
-# Status de atividade que contam como "concluída".
-# Qualquer outro status (ex.: "Pendente") é tratado como não concluída.
 
 FORMATOS_FOTO = ('JPEG', 'PNG', 'WEBP')
 TAMANHO_MAX_FOTO = 2 * 1024 * 1024  # 2 MB
@@ -62,23 +62,33 @@ def validar_foto(arquivo):
     return None
 
 STATUS_CONCLUIDO = ('concluída', 'concluida', 'concluído', 'concluido')
+
 def nome_do_usuario(request):
     return request.user.get_full_name() or request.user.username
+
 def obter_aluno(request):
     return get_object_or_404(
         Aluno,
         perfil__user=request.user
     )
+
 def atividades_do_aluno(aluno):
-    """Retorna atividades de mentorias que o aluno está inscrito OU de mentorias da empresa do aluno."""
+    """
+    Retorna:
+    1. Atividades das mentorias em que o aluno está inscrito.
+    2. Atividades das mentorias vinculadas à empresa do aluno.
+    3. Atividades avulsas (sem mentoria vinculada).
+    """
     mentorias_inscritas = Participacao.objects.filter(
         id_aluno=aluno
     ).values_list('id_mentoria', flat=True)
 
     filtros = Q(id_mentoria__in=mentorias_inscritas)
-    
+
     if aluno.empresa_id:
         filtros |= Q(id_mentoria__empresa=aluno.empresa)
+
+    filtros |= Q(id_mentoria__isnull=True)
 
     return Atividade.objects.filter(
         filtros
@@ -87,8 +97,10 @@ def atividades_do_aluno(aluno):
         'id_mentoria__id_supervisor__perfil__user',
         'id_mentoria__empresa'
     ).order_by('data_entrega', 'id_atividade')
+
 def atividade_concluida(atividade):
     return (atividade.status or '').strip().lower() in STATUS_CONCLUIDO
+
 def classificar_atividades(atividades, hoje):
     """Separa as atividades em pendentes, concluídas e em atraso."""
     pendentes = []
@@ -102,6 +114,7 @@ def classificar_atividades(atividades, hoje):
         else:
             pendentes.append(atividade)
     return pendentes, concluidas, atrasadas
+
 def situacao_atividade(atividade, hoje):
     """Devolve (classe_css, texto) da situação de uma atividade."""
     if atividade_concluida(atividade):
@@ -109,6 +122,7 @@ def situacao_atividade(atividade, hoje):
     if atividade.data_entrega and atividade.data_entrega < hoje:
         return 'atraso', 'Em atraso'
     return 'pendente', 'Pendente'
+
 def classe_certificado(status):
     """Converte o texto do status do certificado em classe do CSS."""
     texto = (status or '').strip().lower()
@@ -117,8 +131,10 @@ def classe_certificado(status):
     if 'anális' in texto or 'analis' in texto:
         return 'analise'
     return 'pendente'
+
 def portfolio_pendente(portfolio):
     return (portfolio.status or '').strip().lower() == 'pendente'
+
 def montar_pendencias(aluno, hoje):
     """Monta as listas da tela de pendências a partir do banco."""
     pendentes, _, atrasadas = classificar_atividades(
@@ -181,6 +197,7 @@ def montar_pendencias(aluno, hoje):
                 'url': reverse('meusportifoliosa'),
             })
     return em_atraso, proximas, outras
+
 def redirecionar_por_tipo(tipo):
     destinos = {
         'aluno': 'aluno',
@@ -190,6 +207,7 @@ def redirecionar_por_tipo(tipo):
         'empresa': 'empresa',
     }
     return redirect(destinos.get(tipo, 'index'))
+
 def tipos_permitidos(*tipos):
     """Libera a tela para um ou mais tipos de usuário."""
     def decorator(view_func):
@@ -202,17 +220,21 @@ def tipos_permitidos(*tipos):
             return view_func(request, *args, **kwargs)
         return login_required(wrapper)
     return decorator
+
 def tipo_permitido(tipo):
     return tipos_permitidos(tipo)
+
 def index(request):
     return render(request, 'index.html')
+
 # ---------------------------------------------------------------------
-# FUNÇÕES AUXILIARES DA GESTÃO (coordenador e supervisor)
+# FUNÇÕES AUXILIARES DA GESTÃO
 # ---------------------------------------------------------------------
 CARGOS = {
     'coordenador': 'Coordenador',
     'supervisor': 'Supervisor',
 }
+
 def resumo_do_aluno(aluno, hoje):
     """Devolve (total de horas, tem atividade em atraso) de um aluno."""
     _, concluidas, atrasadas = classificar_atividades(
@@ -229,8 +251,9 @@ def resumo_do_aluno(aluno, hoje):
         + sum(h.quantidade for h in Horas.objects.filter(id_aluno=aluno))
     )
     return horas, bool(atrasadas)
+
 def contexto_gestao(request):
-    """Dados que o gestao.html (base) precisa em qualquer tela de gestão."""
+    """Dados que o gestao.html precisa em qualquer tela de gestão."""
     hoje = timezone.localdate()
     return {
         'usuario': request.user,
@@ -244,8 +267,9 @@ def contexto_gestao(request):
             data__gte=hoje
         ).select_related('empresa').order_by('data')[:3],
     }
+
 # ---------------------------------------------------------------------
-# TELAS PRINCIPAIS
+# TELAS PRINCIPAIS DO ALUNO E DASHBOARD
 # ---------------------------------------------------------------------
 @tipo_permitido('aluno')
 def pendenciasa(request):
@@ -266,6 +290,7 @@ def pendenciasa(request):
             'nome_usuario': nome_do_usuario(request)
         }
     )
+
 def aluno(request):
     aluno = obter_aluno(request)
     hoje = timezone.localdate()
@@ -274,7 +299,6 @@ def aluno(request):
         atividades,
         hoje
     )
-    # Horas contabilizadas
     horas_mentorias = sum(
         participacao.horas
         for participacao in Participacao.objects.filter(
@@ -309,7 +333,6 @@ def aluno(request):
         + horas_viagens
         + horas_complementares
     )
-    # Cards do dashboard
     certificados_pendentes = sum(
         1 for certificado in certificados
         if classe_certificado(certificado.status) != 'aprovado'
@@ -345,24 +368,20 @@ def aluno(request):
         'ultimas_atividades': ultimas_atividades,
     }
     return render(request, 'Aluno.html', contexto)
-# ---------------------------------------------------------------------
-# PROFESSOR (funções auxiliares)
-# ---------------------------------------------------------------------
 
+# ---------------------------------------------------------------------
+# PROFESSOR
+# ---------------------------------------------------------------------
 STATUS_ENTREGA_PENDENTE = 'Pendente'
 STATUS_ENTREGA_AVALIADA = 'Avaliado'
 
-
 def obter_professor(request):
-    """Professor do usuário logado (cada professor só vê o que é dele)."""
     return get_object_or_404(
         Professor,
         perfil__user=request.user
     )
 
-
 def entregas_do_professor(professor_logado):
-    """Retorna todas as entregas de portfólios enviadas pelos alunos para avaliação."""
     return EntregaPortfolio.objects.all().select_related(
         'id_aluno__perfil__user',
         'id_mentoria'
@@ -372,9 +391,7 @@ def nome_do_aluno(aluno):
     usuario = aluno.perfil.user
     return usuario.get_full_name() or usuario.username
 
-
 def ler_nota(texto):
-    """Lê uma nota de 0 a 10 (aceita vírgula). Devolve Decimal ou None."""
     try:
         valor = Decimal((texto or '').strip().replace(',', '.'))
     except InvalidOperation:
@@ -382,7 +399,6 @@ def ler_nota(texto):
     if not valor.is_finite() or valor < 0 or valor > 10:
         return None
     return valor.quantize(Decimal('0.1'))
-
 
 @tipo_permitido('professor')
 def registrar_presenca_p(request, id_mentoria):
@@ -394,10 +410,8 @@ def registrar_presenca_p(request, id_mentoria):
             presenca_key = f'presenca_{participacao.pk}'
             horas_key = f'horas_{participacao.pk}'
             
-            # Verifica se o checkbox foi marcado
             participacao.presenca = presenca_key in request.POST
             
-            # Atualiza as horas
             horas_valor = request.POST.get(horas_key, '0').strip()
             try:
                 participacao.horas = Decimal(horas_valor.replace(',', '.'))
@@ -416,12 +430,11 @@ def registrar_presenca_p(request, id_mentoria):
         'participacoes': participacoes,
     }
     return render(request, 'professor/registrar_presenca.html', contexto)
-def professor(request):
 
+def professor(request):
     professor_logado = obter_professor(request)
     hoje = timezone.localdate()
 
-    # Todas as mentorias aparecem para todos os professores.
     mentorias = Mentoria.objects.all()
     entregas = entregas_do_professor(professor_logado)
 
@@ -445,38 +458,7 @@ def professor(request):
     }
 
     return render(request, 'Professor.html', contexto)
-def obter_empresa(request):
-    """Empresa do usuário logado (cada empresa só mexe no que é dela)."""
-    return get_object_or_404(
-        Empresa,
-        perfil__user=request.user
-    )
-@tipo_permitido('empresa')
-def empresa(request):
-    empresa_logada = obter_empresa(request)
-    hoje = timezone.localdate()
-    mentorias = Mentoria.objects.filter(empresa=empresa_logada)
-    atividades = Atividade.objects.filter(id_mentoria__empresa=empresa_logada)
-    vagas = Vaga.objects.filter(id_empresa=empresa_logada)
-    vagas_publicadas = list(vagas.order_by('-id_vaga')[:5])
-    for vaga in vagas_publicadas:
-        vaga.aberta = vaga.data_limite >= hoje
-    tarefas_recentes = list(
-        atividades.select_related('id_mentoria').order_by('-id_atividade')[:4]
-    )
-    for tarefa in tarefas_recentes:
-        tarefa.concluida = atividade_concluida(tarefa)
-    contexto = {
-        'usuario': request.user,
-        'nome_usuario': nome_do_usuario(request),
-        'total_mentorias_ativas': mentorias.filter(data__gte=hoje).count(),
-        'total_tarefas': atividades.count(),
-        'total_vagas_abertas': vagas.filter(data_limite__gte=hoje).count(),
-        'vagas_publicadas': vagas_publicadas,
-        'mentorias_recentes': mentorias.order_by('-id_mentoria')[:3],
-        'tarefas_recentes': tarefas_recentes,
-    }
-    return render(request, 'Empresa.html', contexto)
+
 # ---------------------------------------------------------------------
 # GESTÃO: COORDENADOR E SUPERVISOR
 # ---------------------------------------------------------------------
@@ -490,31 +472,35 @@ def coordenador(request):
         1 for a in alunos if resumo_do_aluno(a, hoje)[1]
     )
     return render(request, 'Coordenador.html', contexto)
+
+@tipos_permitidos('coordenador')
 def aprovar_certificados(request):
-    """Permite ao coordenador aprovar ou recusar certificados pendentes de alunos."""
+    """Permite ao coordenador visualizar detalhes e aprovar/recusar certificados dos alunos."""
     if request.method == 'POST':
         id_certificado = request.POST.get('id_certificado', '').strip()
         acao = request.POST.get('acao', '').strip()
 
         if id_certificado.isdigit():
             certificado = get_object_or_404(Certificado, pk=int(id_certificado))
+            aluno_nome = certificado.id_aluno.perfil.user.get_full_name() or certificado.id_aluno.perfil.user.username
+
             if acao == 'aprovar':
                 certificado.status = 'Aprovado'
-                messages.success(request, f'Certificado do aluno {certificado.id_aluno.perfil.user.get_full_name()} aprovado com sucesso!')
+                messages.success(request, f'Certificado do aluno {aluno_nome} aprovado com sucesso!')
             elif acao == 'rejeitar':
                 certificado.status = 'Recusado'
-                messages.success(request, f'Certificado do aluno {certificado.id_aluno.perfil.user.get_full_name()} recusado.')
+                messages.success(request, f'Certificado do aluno {aluno_nome} recusado.')
             certificado.save()
             
         return redirect('aprovar_certificados')
 
     certificados_pendentes = Certificado.objects.filter(
         status__icontains='anális'
-    ).select_related('id_aluno__perfil__user')
+    ).select_related('id_aluno__perfil__user', 'id_aluno__empresa')
 
     certificados_avaliados = Certificado.objects.exclude(
         status__icontains='anális'
-    ).select_related('id_aluno__perfil__user').order_by('-id_certificado')
+    ).select_related('id_aluno__perfil__user', 'id_aluno__empresa').order_by('-id_certificado')
 
     contexto = contexto_gestao(request)
     contexto.update({
@@ -522,12 +508,13 @@ def aprovar_certificados(request):
         'certificados_avaliados': certificados_avaliados,
     })
     return render(request, 'aprovar_certificados.html', contexto)
+
 @tipos_permitidos('supervisor')
 def supervisor(request):
     return render(request, 'Supervisor.html', contexto_gestao(request))
+
 @tipos_permitidos('coordenador', 'supervisor')
 def empresagestao(request):
-    # Somente coordenadores podem criar ou editar empresas.
     if request.method == 'POST':
         if request.user.perfil.tipo != 'coordenador':
             messages.error(request, 'Somente o coordenador pode alterar empresas.')
@@ -721,6 +708,7 @@ def mentoriasgestao(request):
         'empresa_selecionada': empresa_selecionada,
     })
     return render(request, 'mentoriasgestao.html', contexto)
+
 @tipos_permitidos('coordenador', 'supervisor')
 def relatoriosgestao(request):
     hoje = timezone.localdate()
@@ -797,6 +785,7 @@ def relatoriosgestao(request):
     contexto['relatorio_linhas'] = linhas
     contexto['total_empresas'] = Empresa.objects.count()
     return render(request, 'relatoriosgestao.html', contexto)
+
 @tipos_permitidos('coordenador')
 def gerenciaalunosc(request):
     if request.method == 'POST':
@@ -907,7 +896,6 @@ def gerenciaalunosc(request):
     pesquisa = request.GET.get('q', '').strip()
     status_selecionado = request.GET.get('status', '').strip()
 
-    # Indicadores mostram os totais gerais, independentemente da pesquisa.
     consulta = Aluno.objects.select_related('perfil__user', 'empresa').order_by(
         'perfil__user__first_name'
     )
@@ -946,11 +934,9 @@ def gerenciaalunosc(request):
     })
     return render(request, 'gerenciaalunosc.html', contexto)
 
-
 # ---------------------------------------------------------------------
 # LOGIN / LOGOUT
 # ---------------------------------------------------------------------
-# Cada tela de login: (página HTML, tipo de usuário que pode entrar nela)
 TELAS_DE_LOGIN = {
     'login': ('loginAluno.html', 'aluno'),
     'login_aluno': ('loginAluno.html', 'aluno'),
@@ -959,6 +945,7 @@ TELAS_DE_LOGIN = {
     'login_supervisor': ('loginSupervisor.html', 'supervisor'),
     'login_empresa': ('loginempresa.html', 'empresa'),
 }
+
 def login_view(request):
     nome_da_rota = request.resolver_match.url_name
     pagina, tipo_da_tela = TELAS_DE_LOGIN.get(
@@ -1007,6 +994,7 @@ def login_view(request):
             }
         )
     return render(request, pagina)
+
 def logout_view(request):
     tipo = ''
     if request.user.is_authenticated and hasattr(request.user, 'perfil'):
@@ -1015,12 +1003,11 @@ def logout_view(request):
     if tipo in ('aluno', 'professor', 'coordenador', 'supervisor', 'empresa'):
         return redirect(f'login_{tipo}')
     return redirect('login')
+
 # ---------------------------------------------------------------------
-# ÁREA DO ALUNO
+# ÁREA DO ALUNO (FUNCIONALIDADES ESPECÍFICAS)
 # ---------------------------------------------------------------------
 def mentorias_disponiveis(aluno, hoje):
-    """Mentorias futuras em que o aluno ainda não está inscrito e que têm vaga.
-    Vagas vazias ou 0 significam sem limite."""
     ja_inscrito = Participacao.objects.filter(
         id_aluno=aluno
     ).values_list('id_mentoria', flat=True)
@@ -1035,9 +1022,9 @@ def mentorias_disponiveis(aluno, hoje):
         mentoria for mentoria in candidatas
         if not mentoria.vagas or mentoria.inscritos < mentoria.vagas
     ]
+
 @tipo_permitido('aluno')
 def inscreveremmentoriaa(request, id_mentoria):
-    """O aluno logado se inscreve (só ele mesmo) em uma mentoria."""
     if request.method != 'POST':
         return redirect('minhasmentoriasa')
     aluno = obter_aluno(request)
@@ -1070,6 +1057,7 @@ def inscreveremmentoriaa(request, id_mentoria):
                 f'Inscrição feita em "{mentoria.tema}"!'
             )
     return redirect('minhasmentoriasa')
+
 @tipo_permitido('aluno')
 def minhasmentoriasa(request):
     aluno = obter_aluno(request)
@@ -1096,11 +1084,12 @@ def minhasmentoriasa(request):
         {
             'aluno': aluno,
             'proximas': proximas,
-            'realizadas': realizadas,
+            'realizadas me': realizadas,
             'disponiveis': mentorias_disponiveis(aluno, hoje),
             'nome_usuario': nome_do_usuario(request)
         }
     )
+
 @tipo_permitido('aluno')
 def detalhesdamentoriaa(request, id_mentoria):
     aluno = obter_aluno(request)
@@ -1134,6 +1123,7 @@ def detalhesdamentoriaa(request, id_mentoria):
             'nome_usuario': nome_do_usuario(request)
         }
     )
+
 @tipo_permitido('aluno')
 def meuperfila(request):
     aluno = obter_aluno(request)
@@ -1149,7 +1139,7 @@ def meuperfila(request):
                 messages.error(request, erro)
             else:
                 if perfil.foto:
-                    perfil.foto.delete(save=False)  # apaga a foto antiga
+                    perfil.foto.delete(save=False)
                 perfil.foto = arquivo
                 perfil.save(update_fields=['foto'])
                 messages.success(request, 'Foto atualizada com sucesso!')
@@ -1173,6 +1163,7 @@ def meuperfila(request):
             'nome_usuario': nome_do_usuario(request)
         }
     )
+
 @tipo_permitido('aluno')
 def meusportifoliosa(request):
     aluno = obter_aluno(request)
@@ -1282,6 +1273,7 @@ def atividadesa(request):
             'nome_usuario': nome_do_usuario(request)
         }
     )
+
 @tipo_permitido('aluno')
 def detalhesdaatividadea(request, id_atividade):
     aluno = obter_aluno(request)
@@ -1289,10 +1281,66 @@ def detalhesdaatividadea(request, id_atividade):
         atividades_do_aluno(aluno),
         id_atividade=id_atividade
     )
+
+    if request.method == 'POST':
+        tipo_envio = request.POST.get('tipo_envio', '').strip()
+        texto_resposta = request.POST.get('texto_resposta', '').strip()
+        link = request.POST.get('link', '').strip()
+        arquivo = request.FILES.get('arquivo')
+
+        erro = None
+
+        if tipo_envio == 'texto':
+            if not texto_resposta:
+                erro = 'Escreva a resposta da atividade.'
+            link = ''
+            arquivo = None
+        elif tipo_envio == 'link':
+            if not link or len(link) > 1000:
+                erro = 'Informe um link válido.'
+            else:
+                try:
+                    URLValidator(schemes=['http', 'https'])(link)
+                except ValidationError:
+                    erro = 'Informe um link HTTP ou HTTPS válido.'
+            texto_resposta = ''
+            arquivo = None
+        elif tipo_envio == 'arquivo':
+            if not arquivo:
+                erro = 'Selecione um arquivo para enviar.'
+            elif arquivo.size > 10 * 1024 * 1024:
+                erro = 'O arquivo deve ter no máximo 10 MB.'
+            texto_resposta = ''
+            link = ''
+        else:
+            erro = 'Selecione um tipo de envio válido.'
+
+        if erro:
+            messages.error(request, erro)
+        else:
+            EntregaAtividade.objects.create(
+                id_aluno=aluno,
+                id_atividade=atividade,
+                texto_resposta=texto_resposta,
+                link=link,
+                arquivo=arquivo
+            )
+            atividade.status = 'Concluída'
+            atividade.save(update_fields=['status'])
+            messages.success(request, 'Atividade entregue com sucesso!')
+
+        return redirect('detalhesdaatividadea', id_atividade=id_atividade)
+
+    entregas = EntregaAtividade.objects.filter(
+        id_aluno=aluno,
+        id_atividade=atividade
+    )
+
     situacao, situacao_texto = situacao_atividade(
         atividade,
         timezone.localdate()
     )
+
     return render(
         request,
         'aluno/detalhesdaatividadea.html',
@@ -1302,28 +1350,11 @@ def detalhesdaatividadea(request, id_atividade):
             'mentoria': atividade.id_mentoria,
             'situacao': situacao,
             'situacao_texto': situacao_texto,
+            'entregas': entregas,
             'nome_usuario': nome_do_usuario(request)
         }
     )
-@tipo_permitido('aluno')
-def pendenciasa(request):
-    aluno = obter_aluno(request)
-    em_atraso, proximas, outras = montar_pendencias(
-        aluno,
-        timezone.localdate()
-    )
-    return render(
-        request,
-        'aluno/pendenciasa.html',
-        {
-            'aluno': aluno,
-            'em_atraso': em_atraso,
-            'proximas': proximas,
-            'outras': outras,
-            'total_pendencias': len(em_atraso) + len(proximas) + len(outras),
-            'nome_usuario': nome_do_usuario(request)
-        }
-    )
+
 @tipo_permitido('aluno')
 def certificadoa(request):
     aluno = obter_aluno(request)
@@ -1331,56 +1362,68 @@ def certificadoa(request):
         curso = request.POST.get('curso', '').strip()[:200]
         instituicao = request.POST.get('instituicao', '').strip()[:200]
         carga_horaria = request.POST.get('carga_horaria', '').strip()
-        if (
-            not curso
-            or not instituicao
-            or not carga_horaria.isdigit()
-            or int(carga_horaria) < 1
-        ):
-            messages.error(
-                request,
-                'Preencha todos os campos corretamente.'
-            )
+        tipo_comprovante = request.POST.get('tipo_comprovante', 'arquivo').strip()
+        link = request.POST.get('link', '').strip()
+        arquivo = request.FILES.get('arquivo')
+
+        erro = None
+        if not curso or not instituicao or not carga_horaria.isdigit() or int(carga_horaria) < 1:
+            erro = 'Preencha os dados do curso e carga horária corretamente.'
+        elif tipo_comprovante == 'link':
+            if not link or len(link) > 1000:
+                erro = 'Informe um link válido.'
+            else:
+                try:
+                    URLValidator(schemes=['http', 'https'])(link)
+                except ValidationError:
+                    erro = 'Informe um link HTTP ou HTTPS válido.'
+            arquivo = None
+        elif tipo_comprovante == 'arquivo':
+            if not arquivo:
+                erro = 'Selecione o arquivo do certificado (PDF ou imagem).'
+            elif arquivo.size > 10 * 1024 * 1024:
+                erro = 'O arquivo do certificado deve ter no máximo 10 MB.'
+            link = ''
+        else:
+            erro = 'Selecione o tipo de comprovante.'
+
+        if erro:
+            messages.error(request, erro)
         else:
             Certificado.objects.create(
                 id_aluno=aluno,
                 curso=curso,
                 instituicao=instituicao,
                 carga_horaria=int(carga_horaria),
-                status='Em análise'
+                status='Em análise',
+                arquivo=arquivo,
+                link=link
             )
-            messages.success(
-                request,
-                'Certificado enviado para análise.'
-            )
+            messages.success(request, 'Certificado enviado para análise do coordenador.')
+
         return redirect('certificadoa')
+
     certificados = list(
-        Certificado.objects.filter(
-            id_aluno=aluno
-        ).order_by('-id_certificado')
+        Certificado.objects.filter(id_aluno=aluno).order_by('-id_certificado')
     )
     for certificado in certificados:
         certificado.classe = classe_certificado(certificado.status)
+
     return render(
         request,
         'aluno/certificadoa.html',
         {
             'aluno': aluno,
             'certificados': certificados,
-            'total_aprovados': sum(
-                1 for c in certificados if c.classe == 'aprovado'
-            ),
-            'total_analise': sum(
-                1 for c in certificados if c.classe == 'analise'
-            ),
-            'total_pendentes': sum(
-                1 for c in certificados if c.classe == 'pendente'
-            ),
+            'total_aprovados': sum(1 for c in certificados if c.classe == 'aprovado'),
+            'total_analise': sum(1 for c in certificados if c.classe == 'analise'),
+            'total_pendentes': sum(1 for c in certificados if c.classe == 'pendente'),
             'nome_usuario': nome_do_usuario(request)
         }
     )
+
 # ---------------------------------------------------------------------
-# CADASTRO
+# CADASTRO DE USUÁRIOS
 # ---------------------------------------------------------------------
 def cadastro(request):
     if request.method == 'POST':
@@ -1444,35 +1487,28 @@ def cadastro(request):
         )
         return redirect('index')
     return render(request, 'cadastro.html')
+
 # ---------------------------------------------------------------------
-# PROFESSOR
+# OUTRAS VIEWS DE PROFESSOR
 # ---------------------------------------------------------------------
 @tipo_permitido('professor')
 def portfoliosp(request):
-
     professor_logado = obter_professor(request)
     entregas_base = entregas_do_professor(professor_logado)
 
-    # Salvar a avaliação (nota + feedback) de uma entrega
     if request.method == 'POST':
-
         id_entrega = request.POST.get('id_entrega', '').strip()
         nota = ler_nota(request.POST.get('nota', ''))
         feedback = request.POST.get('feedback', '').strip()
 
         if not id_entrega.isdigit():
             messages.error(request, 'Entrega inválida.')
-
         elif nota is None:
             messages.error(request, 'Informe uma nota de 0 a 10.')
-
         elif len(feedback) > 2000:
             messages.error(request, 'O feedback deve ter até 2000 caracteres.')
-
         else:
-            # Só dá para avaliar entrega de mentoria do próprio professor.
             entrega = entregas_base.filter(pk=int(id_entrega)).first()
-
             if entrega is None:
                 messages.error(request, 'Entrega não encontrada.')
             else:
@@ -1507,7 +1543,6 @@ def portfoliosp(request):
     else:
         filtro = ''
 
-    # Pendentes primeiro (a ordenação do Python é estável: mantém a data)
     portfolios = sorted(
         consulta,
         key=lambda entrega: entrega.status != STATUS_ENTREGA_PENDENTE
@@ -1528,10 +1563,8 @@ def portfoliosp(request):
         ).count(),
     })
 
-
 @tipo_permitido('professor')
 def avaliacoesp(request):
-
     professor_logado = obter_professor(request)
     entregas = entregas_do_professor(professor_logado)
 
@@ -1561,14 +1594,11 @@ def avaliacoesp(request):
         ).count(),
     })
 
-
 @tipo_permitido('professor')
 def mentoriasp(request):
-
     professor_logado = obter_professor(request)
     hoje = timezone.localdate()
 
-    # Todas as mentorias aparecem para todos os professores.
     todas = list(
         Mentoria.objects.select_related(
             'empresa',
@@ -1583,7 +1613,6 @@ def mentoriasp(request):
         mentoria.realizada = mentoria.data < hoje
         mentoria.carga_texto = formatar_horas(mentoria.carga_horaria)
 
-    # Próximas primeiro (da mais perto para a mais longe), depois as realizadas
     proximas = sorted(
         (m for m in todas if not m.realizada),
         key=lambda m: (m.data, m.horario or datetime.time.max)
@@ -1600,18 +1629,16 @@ def mentoriasp(request):
         'mentorias': proximas + realizadas,
     })
 
-
 MESES = [
     '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ]
+
 @tipo_permitido('professor')
 def agendap(request):
-
     obter_professor(request)
     hoje = timezone.localdate()
 
-    # Mês mostrado no calendário (?mes=AAAA-MM); sem isso, o mês atual
     ano, mes = hoje.year, hoje.month
     texto_mes = request.GET.get('mes', '').strip()
     achou = re.fullmatch(r'(\d{4})-(\d{2})', texto_mes)
@@ -1625,7 +1652,6 @@ def agendap(request):
 
     eventos = []
 
-    # Mentorias
     for mentoria in Mentoria.objects.select_related('empresa'):
         horario = ''
         if mentoria.horario:
@@ -1649,7 +1675,6 @@ def agendap(request):
             'tipo_nome': 'Mentoria',
         })
 
-    # Prazos de entrega das atividades que ainda estão abertas
     for atividade in Atividade.objects.filter(
         data_entrega__isnull=False
     ).select_related('id_mentoria'):
@@ -1659,13 +1684,12 @@ def agendap(request):
             'data': atividade.data_entrega,
             'ordem': datetime.time.max,
             'titulo': atividade.titulo,
-            'descricao': f'Prazo de entrega · {atividade.id_mentoria.tema}',
+            'descricao': f'Prazo de entrega · {atividade.id_mentoria.tema if atividade.id_mentoria else "Avulsa"}',
             'horario': 'Dia todo',
             'tipo': 'atividade',
             'tipo_nome': 'Atividade',
         })
 
-    # Viagens
     for viagem in Viagem.objects.select_related(
         'empresa', 'id_aluno__perfil__user'
     ):
@@ -1681,7 +1705,6 @@ def agendap(request):
 
     eventos.sort(key=lambda e: (e['data'], e['ordem']))
 
-    # Monta as semanas do mês (domingo a sábado)
     por_dia = {}
     for evento in eventos:
         por_dia.setdefault(evento['data'], []).append(evento)
@@ -1713,29 +1736,25 @@ def agendap(request):
         'proximos': [e for e in eventos if e['data'] >= hoje][:8],
     })
 
-
 @tipo_permitido('professor')
 def atividadesp(request):
-
     professor_logado = obter_professor(request)
     hoje = timezone.localdate()
 
-    # Somente mentorias vinculadas ao professor logado.
     mentorias = Mentoria.objects.filter(
         id_professor=professor_logado
     ).order_by('-data', '-id_mentoria')
 
-    # Atividades das mentorias desse professor.
+    # Busca atividades vinculadas ao professor ou avulsas
     minhas = Atividade.objects.filter(
-        id_mentoria__id_professor=professor_logado
-    )
+        Q(id_mentoria__id_professor=professor_logado) | Q(id_mentoria__isnull=True)
+    ).distinct()
 
     editando = None
     editar_id = id_para_editar(request)
 
     if editar_id is not None:
         editando = minhas.filter(pk=editar_id).first()
-
         if editando is None:
             messages.error(
                 request,
@@ -1746,7 +1765,6 @@ def atividadesp(request):
     form = {}
 
     if request.method == 'POST':
-
         form = request.POST
 
         mentoria_id = form.get('mentoria', '').strip()
@@ -1761,7 +1779,6 @@ def atividadesp(request):
         status = form.get('status', 'Pendente').strip()
 
         mentoria = None
-
         if mentoria_id.isdecimal():
             mentoria = mentorias.filter(
                 pk=int(mentoria_id)
@@ -1769,18 +1786,12 @@ def atividadesp(request):
 
         erro = None
 
-        if mentoria is None:
-            erro = 'Selecione uma mentoria vinculada a você.'
-
-        elif not titulo or len(titulo) > 200:
+        if not titulo or len(titulo) > 200:
             erro = 'Informe um título de até 200 caracteres.'
-
         elif not descricao:
             erro = 'Informe a descrição da atividade.'
-
         elif data_entrega is None:
             erro = 'Informe uma data de entrega válida.'
-
         elif (
             data_entrega < hoje
             and not (
@@ -1789,10 +1800,8 @@ def atividadesp(request):
             )
         ):
             erro = 'O prazo de entrega não pode estar no passado.'
-
         elif horas is None or horas <= 0:
             erro = 'Informe uma carga horária maior que zero.'
-
         elif status not in (
             'Pendente',
             'Em andamento',
@@ -1801,10 +1810,8 @@ def atividadesp(request):
             erro = 'Selecione um status válido.'
 
         if erro is None:
-
             atividade = editando or Atividade()
-
-            atividade.id_mentoria = mentoria
+            atividade.id_mentoria = mentoria  # Pode ser None se for avulsa
             atividade.titulo = titulo
             atividade.descricao = descricao
             atividade.data_entrega = data_entrega
@@ -1829,9 +1836,8 @@ def atividadesp(request):
         messages.error(request, erro)
 
     elif editando:
-
         form = {
-            'mentoria': str(editando.id_mentoria_id),
+            'mentoria': str(editando.id_mentoria_id) if editando.id_mentoria_id else '',
             'titulo': editando.titulo,
             'descricao': editando.descricao,
             'data_entrega': (
@@ -1846,24 +1852,14 @@ def atividadesp(request):
         'id_mentoria'
     ).order_by('-id_atividade')
 
-    total_atividades = minhas.count()
-
-    atividades_concluidas = minhas.filter(
-        status__iexact='Concluída'
-    ).count()
-
-    atividades_pendentes = minhas.filter(
-        status__iexact='Pendente'
-    ).count()
-
     contexto = {
         'usuario': request.user,
         'nome_usuario': nome_do_usuario(request),
         'mentorias': mentorias,
         'atividades': atividades,
-        'total_atividades': total_atividades,
-        'atividades_pendentes': atividades_pendentes,
-        'atividades_concluidas': atividades_concluidas,
+        'total_atividades': minhas.count(),
+        'atividades_pendentes': minhas.filter(status__iexact='Pendente').count(),
+        'atividades_concluidas': minhas.filter(status__iexact='Concluída').count(),
         'form': form,
         'editando': editando,
     }
@@ -1874,7 +1870,6 @@ def atividadesp(request):
         contexto
     )
 
-
 # ---------------------------------------------------------------------
 # EMPRESA
 # ---------------------------------------------------------------------
@@ -1882,15 +1877,14 @@ MODALIDADES_MENTORIA = ('Online', 'Presencial', 'Híbrida')
 PRIORIDADES_TAREFA = ('Baixa', 'Média', 'Alta')
 TIPOS_VAGA = ('Estágio', 'Emprego', 'Jovem Aprendiz')
 MODALIDADES_VAGA = ('Presencial', 'Remoto', 'Híbrido')
+
 def ler_data(texto):
-    """Converte 'AAAA-MM-DD' em data; devolve None se for inválida."""
     try:
         return datetime.date.fromisoformat(texto)
     except ValueError:
         return None
+
 def ler_horas(texto):
-    """Lê horas como '2', '1,5', '1.5', '1h30', '2h' ou '1h30m'.
-    Devolve Decimal (ex.: 1h30 -> 1.5) ou None se for inválido."""
     texto = texto.strip().lower().replace(' ', '')
     achou = re.fullmatch(r'(\d{1,3})h(?:(\d{1,2})m?)?', texto)
     if achou:
@@ -1905,8 +1899,8 @@ def ler_horas(texto):
     if not valor.is_finite() or valor < 0 or valor > 999:
         return None
     return valor.quantize(Decimal('0.01'))
+
 def formatar_horas(valor):
-    """1.5 -> '1h30', 2 -> '2h', 0.5 -> '30min'."""
     minutos = int((Decimal(valor) * 60).quantize(Decimal('1')))
     horas, resto = divmod(minutos, 60)
     if horas and resto:
@@ -1914,17 +1908,51 @@ def formatar_horas(valor):
     if horas:
         return f'{horas}h'
     return f'{resto}min'
+
 def ler_horario(texto):
-    """Converte 'HH:MM' em horário; devolve None se for inválido."""
     try:
         return datetime.time.fromisoformat(texto)
     except ValueError:
         return None
+
 def id_para_editar(request):
-    """Lê o ?editar=ID da URL (ou o campo escondido 'id' do formulário)."""
     valor = request.POST.get('id', '') if request.method == 'POST' else request.GET.get('editar', '')
     valor = valor.strip()
     return int(valor) if valor.isdecimal() else None
+
+def obter_empresa(request):
+    return get_object_or_404(
+        Empresa,
+        perfil__user=request.user
+    )
+
+@tipo_permitido('empresa')
+def empresa(request):
+    empresa_logada = obter_empresa(request)
+    hoje = timezone.localdate()
+    mentorias = Mentoria.objects.filter(empresa=empresa_logada)
+    atividades = Atividade.objects.filter(id_mentoria__empresa=empresa_logada)
+    vagas = Vaga.objects.filter(id_empresa=empresa_logada)
+    vagas_publicadas = list(vagas.order_by('-id_vaga')[:5])
+    for vaga in vagas_publicadas:
+        vaga.aberta = vaga.data_limite >= hoje
+    tarefas_recentes = list(
+        atividades.select_related('id_mentoria').order_by('-id_atividade')[:4]
+    )
+    for tarefa in tarefas_recentes:
+        tarefa.concluida = atividade_concluida(tarefa)
+    contexto = {
+        'usuario': request.user,
+        'nome_usuario': nome_do_usuario(request),
+        'total_mentorias_ativas': mentorias.filter(data__gte=hoje).count(),
+        'total_tarefas': atividades.count(),
+        'total_vagas_abertas': vagas.filter(data_limite__gte=hoje).count(),
+        'vagas_publicadas': vagas_publicadas,
+        'mentorias_recentes': mentorias.order_by('-id_mentoria')[:3],
+        'tarefas_recentes': tarefas_recentes,
+    }
+    return render(request, 'Empresa.html', contexto)
+
 @tipo_permitido('empresa')
 def cadastrarmentoriase(request):
     empresa_logada = obter_empresa(request)
@@ -1933,7 +1961,6 @@ def cadastrarmentoriase(request):
     editando = None
     editar_id = id_para_editar(request)
     if editar_id is not None:
-        # Só dá para editar mentoria da própria empresa.
         editando = minhas.filter(pk=editar_id).first()
         if editando is None:
             messages.error(request, 'Mentoria não encontrada.')
@@ -2006,6 +2033,7 @@ def cadastrarmentoriase(request):
         'form': form,
         'editando': editando,
     })
+
 @tipo_permitido('empresa')
 def criartarefase(request):
     empresa_logada = obter_empresa(request)
@@ -2030,7 +2058,6 @@ def criartarefase(request):
         prioridade = form.get('prioridade', '').strip()
         horas = ler_horas(form.get('horas', '') or '0')
         descricao = form.get('descricao', '').strip()
-        # Só vale uma mentoria que pertença à empresa logada.
         mentoria = None
         if mentoria_id.isdecimal():
             mentoria = mentorias.filter(pk=int(mentoria_id)).first()
@@ -2089,6 +2116,7 @@ def criartarefase(request):
         'form': form,
         'editando': editando,
     })
+
 @tipo_permitido('empresa')
 def oportunidadese(request):
     empresa_logada = obter_empresa(request)
@@ -2170,8 +2198,6 @@ def oportunidadese(request):
         'editando': editando,
     })
 
-
-
 @tipos_permitidos(
     'professor',
     'empresa',
@@ -2179,7 +2205,6 @@ def oportunidadese(request):
     'supervisor'
 )
 def meuperfil(request):
-
     perfil = request.user.perfil
 
     cargos = {
@@ -2197,11 +2222,9 @@ def meuperfil(request):
     }
 
     if request.method == 'POST':
-
         acao = request.POST.get('acao')
 
         if acao == 'enviar_foto':
-
             arquivo = request.FILES.get('foto')
             erro = validar_foto(arquivo)
 
@@ -2221,7 +2244,6 @@ def meuperfil(request):
                 )
 
         elif acao == 'remover_foto':
-
             if perfil.foto:
                 perfil.foto.delete(save=True)
 

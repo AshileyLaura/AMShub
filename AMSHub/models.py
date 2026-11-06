@@ -147,10 +147,13 @@ class Empresa(models.Model):
 class Atividade(models.Model):
     id_atividade = models.AutoField(primary_key=True)
 
+    # Permite criar a atividade sem mentoria obrigatoriamente vinculada (Atividades Avulsas)
     id_mentoria = models.ForeignKey(
         Mentoria,
         on_delete=models.CASCADE,
-        related_name='atividades'
+        related_name='atividades',
+        null=True,
+        blank=True
     )
 
     titulo = models.CharField(max_length=200)
@@ -240,6 +243,19 @@ class Certificado(models.Model):
     instituicao = models.CharField(max_length=200)
     carga_horaria = models.IntegerField()
     status = models.CharField(max_length=200)
+
+    # Campos adicionados para anexar ficheiro ou link do certificado
+    arquivo = models.FileField(
+        upload_to='certificados/documentos/',
+        blank=True,
+        null=True
+    )
+
+    link = models.URLField(
+        max_length=1000,
+        blank=True,
+        default=''
+    )
 
     def __str__(self):
         return str(self.id_certificado)
@@ -405,3 +421,47 @@ class EntregaPortfolio(models.Model):
 
     def __str__(self):
         return f'{self.titulo} - {self.id_aluno_id}'
+
+
+# --- NOVO MODELO: ENTREGA DE ATIVIDADES ---
+class EntregaAtividade(models.Model):
+    id_entrega = models.AutoField(primary_key=True)
+
+    id_aluno = models.ForeignKey(
+        Aluno,
+        on_delete=models.CASCADE,
+        related_name='entregas_atividade'
+    )
+
+    id_atividade = models.ForeignKey(
+        Atividade,
+        on_delete=models.CASCADE,
+        related_name='entregas'
+    )
+
+    texto_resposta = models.TextField(
+        blank=True,
+        default=''
+    )
+
+    link = models.URLField(
+        max_length=1000,
+        blank=True,
+        default=''
+    )
+
+    arquivo = models.FileField(
+        upload_to='atividades/entregas/',
+        blank=True,
+        null=True
+    )
+
+    data_envio = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['-data_envio']
+
+    def __str__(self):
+        return f'Entrega {self.id_atividade.titulo} - {self.id_aluno.perfil.user.username}'

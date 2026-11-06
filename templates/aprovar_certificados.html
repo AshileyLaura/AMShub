@@ -4,6 +4,7 @@
 {% block title %}AMS Hub - Aprovar Certificados{% endblock %}
 
 {% block css_gestao %}
+<link rel="stylesheet" href="{% static 'gestao.css' %}">
 <link rel="stylesheet" href="{% static 'gestaopaginas.css' %}">
 {% endblock %}
 
@@ -27,9 +28,9 @@
 
     {% if messages %}
         {% for message in messages %}
-        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="aviso">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>{{ message }}</span>
         </div>
         {% endfor %}
     {% endif %}
@@ -42,7 +43,7 @@
     </div>
 
     <!-- LISTA PENDENTES -->
-    <div class="lista-gestao mb-5">
+    <div class="lista-gestao">
         {% for cert in certificados_pendentes %}
         <div class="item-card">
             <div class="item-card-topo">
@@ -60,23 +61,100 @@
             </div>
 
             <div class="item-card-acoes">
-                <form method="POST" action="{% url 'aprovar_certificados' %}" style="display:inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="id_certificado" value="{{ cert.pk }}">
-                    <input type="hidden" name="acao" value="aprovar">
-                    <button type="submit" class="btn-principal" style="background-color: #28a745; border-color: #28a745;">
-                        <i class="fa-solid fa-check me-1"></i> Aprovar
-                    </button>
-                </form>
+                <button type="button" class="btn-principal" data-bs-toggle="modal" data-bs-target="#modalDetalhes{{ cert.pk }}">
+                    <i class="fa-solid fa-eye"></i> Ver Detalhes
+                </button>
+            </div>
+        </div>
 
-                <form method="POST" action="{% url 'aprovar_certificados' %}" style="display:inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="id_certificado" value="{{ cert.pk }}">
-                    <input type="hidden" name="acao" value="rejeitar">
-                    <button type="submit" class="btn-secundario" style="color: #dc3545; border-color: #dc3545;">
-                        <i class="fa-solid fa-xmark me-1"></i> Recusar
-                    </button>
-                </form>
+        <!-- MODAL DE DETALHES -->
+        <div class="modal fade" id="modalDetalhes{{ cert.pk }}" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content style-card">
+
+                    <div class="modal-header">
+                        <div>
+                            <h2>Detalhes do Certificado</h2>
+                            <p>Análise de comprovante de {{ cert.id_aluno.perfil.user.get_full_name|default:cert.id_aluno.perfil.user.username }}</p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        
+                        <div class="campo mb-3">
+                            <label class="form-label">Dados do Aluno</label>
+                            <div class="informacoes border p-3 rounded bg-light">
+                                <span class="d-block mb-1"><i class="fa-solid fa-user me-2"></i> <strong>Nome:</strong> {{ cert.id_aluno.perfil.user.get_full_name|default:cert.id_aluno.perfil.user.username }}</span>
+                                <span class="d-block mb-1"><i class="fa-solid fa-envelope me-2"></i> <strong>E-mail:</strong> {{ cert.id_aluno.perfil.user.email }}</span>
+                                <span class="d-block mb-1"><i class="fa-solid fa-graduation-cap me-2"></i> <strong>Curso:</strong> {{ cert.id_aluno.curso }}</span>
+                                <span class="d-block"><i class="fa-solid fa-users-rectangle me-2"></i> <strong>Turma:</strong> {{ cert.id_aluno.turma }}</span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6 campo">
+                                <label class="form-label">Curso / Certificado</label>
+                                <div class="form-control bg-light">{{ cert.curso }}</div>
+                            </div>
+                            <div class="col-md-6 campo">
+                                <label class="form-label">Instituição</label>
+                                <div class="form-control bg-light">{{ cert.instituicao }}</div>
+                            </div>
+                        </div>
+
+                        <div class="campo mb-3">
+                            <label class="form-label">Carga Horária</label>
+                            <div class="form-control bg-light">{{ cert.carga_horaria }} horas</div>
+                        </div>
+
+                        <div class="campo mb-4">
+                            <label class="form-label">Comprovante Anexado</label>
+                            {% if cert.arquivo %}
+                                <div class="informacoes d-flex justify-content-between align-items-center p-3 border rounded bg-light">
+                                    <span><i class="fa-solid fa-file-pdf me-2"></i> Arquivo enviado pelo aluno</span>
+                                    <a href="{{ cert.arquivo.url }}" target="_blank" class="btn-secundario text-decoration-none">
+                                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Visualizar Arquivo
+                                    </a>
+                                </div>
+                            {% elif cert.link %}
+                                <div class="informacoes d-flex justify-content-between align-items-center p-3 border rounded bg-light">
+                                    <span><i class="fa-solid fa-link me-2"></i> Link externo fornecido</span>
+                                    <a href="{{ cert.link }}" target="_blank" class="btn-secundario text-decoration-none">
+                                        <i class="fa-solid fa-external-link me-1"></i> Abrir Link
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="aviso">
+                                    <i class="fa-solid fa-circle-exclamation me-2"></i>
+                                    <span>Nenhum arquivo ou link foi informado para este certificado.</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="modal-botoes d-flex justify-content-end gap-2 pt-3 border-top">
+                            <form method="POST" action="{% url 'aprovar_certificados' %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="id_certificado" value="{{ cert.pk }}">
+                                <input type="hidden" name="acao" value="rejeitar">
+                                <button type="submit" class="btn-secundario">
+                                    <i class="fa-solid fa-xmark me-1"></i> Recusar
+                                </button>
+                            </form>
+
+                            <form method="POST" action="{% url 'aprovar_certificados' %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="id_certificado" value="{{ cert.pk }}">
+                                <input type="hidden" name="acao" value="aprovar">
+                                <button type="submit" class="btn-principal">
+                                    <i class="fa-solid fa-check me-1"></i> Aprovar Certificado
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
         </div>
         {% empty %}
@@ -88,7 +166,7 @@
         {% endfor %}
     </div>
 
-    <div class="pagina-topo">
+    <div class="pagina-topo mt-5">
         <div>
             <h2>Histórico de Certificados Avaliados</h2>
             <p>Certificados que já foram aprovados ou recusados.</p>
@@ -112,6 +190,11 @@
                 <div class="informacoes">
                     <span><i class="fa-solid fa-building"></i> {{ cert.instituicao }}</span>
                     <span><i class="fa-solid fa-clock"></i> {{ cert.carga_horaria }} horas</span>
+                    {% if cert.arquivo %}
+                        <span><i class="fa-solid fa-paperclip"></i> <a href="{{ cert.arquivo.url }}" target="_blank">Documento</a></span>
+                    {% elif cert.link %}
+                        <span><i class="fa-solid fa-link"></i> <a href="{{ cert.link }}" target="_blank">Link</a></span>
+                    {% endif %}
                 </div>
             </div>
         </div>

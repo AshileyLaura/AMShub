@@ -9,46 +9,38 @@ AMS Hub - Detalhes da Atividade
 <link rel="stylesheet" href="{% static 'aluno/detalhesdaatividadea.css' %}">
 {% endblock %}
 
-
 {% block menu %}
-
 <ul>
-
     <li>
         <a href="{% url 'aluno' %}">
             <i class="fa-solid fa-house"></i>
             <span>Início</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'minhasmentoriasa' %}">
             <i class="fa-solid fa-users"></i>
             <span>Mentorias</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'meusportifoliosa' %}">
             <i class="fa-solid fa-folder-open"></i>
             <span>Portfólios</span>
         </a>
     </li>
-
     <li class="active">
         <a href="{% url 'atividadesa' %}">
             <i class="fa-solid fa-list-check"></i>
             <span>Atividades</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'certificadoa' %}">
             <i class="fa-solid fa-award"></i>
             <span>Certificados</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'pendenciasa' %}">
             <i class="fa-solid fa-circle-exclamation"></i>
@@ -61,129 +53,99 @@ AMS Hub - Detalhes da Atividade
             <span>Sair</span>
         </a>
     </li>
-
 </ul>
-
 {% endblock %}
-
 
 {% block saudacao %}
 <h1>Detalhes da Atividade</h1>
 {% endblock %}
 
 {% block descricao %}
-Visualize as informações da atividade.
+Visualize as informações da atividade e realize seu envio.
 {% endblock %}
 
-
 {% block content %}
-
 <div class="detalhes-atividade-container">
 
-    <!-- BOTÃO VOLTAR -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="aviso">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+    {% endif %}
 
+    <!-- BOTÃO VOLTAR -->
     <a href="{% url 'atividadesa' %}" class="voltar">
         <i class="fa-solid fa-arrow-left"></i>
         Voltar para atividades
     </a>
 
-
     <!-- CABEÇALHO DA ATIVIDADE -->
-
     <section class="atividade-header">
-
         <div class="atividade-titulo">
-
             <div class="atividade-icon">
                 <i class="fa-solid fa-list-check"></i>
             </div>
-
             <div>
-
-                <span class="categoria">
-                    Atividade
-                </span>
-
-                <h2>
-                    {{ atividade.titulo }}
-                </h2>
-
+                <span class="categoria">Atividade</span>
+                <h2>{{ atividade.titulo }}</h2>
                 <p>
-                    Atividade referente à mentoria {{ mentoria.tema }}.
+                    {% if mentoria %}
+                        Atividade referente à mentoria {{ mentoria.tema }}.
+                    {% else %}
+                        Atividade Avulsa.
+                    {% endif %}
                 </p>
-
             </div>
-
         </div>
-
 
         <span class="status {{ situacao }}">
             {{ situacao_texto }}
         </span>
-
     </section>
 
-
     <!-- INFORMAÇÕES -->
-
     <section class="informacoes-atividade">
-
         {% if mentoria.id_professor %}
         <div class="info-item">
-
             <i class="fa-solid fa-user"></i>
-
             <div>
                 <span>Professor</span>
                 <strong>{{ mentoria.id_professor.perfil.user.get_full_name|default:mentoria.id_professor.perfil.user.username }}</strong>
             </div>
-
         </div>
         {% endif %}
 
-
         {% if mentoria.id_supervisor %}
         <div class="info-item">
-
             <i class="fa-solid fa-user-tie"></i>
-
             <div>
                 <span>Supervisor</span>
                 <strong>{{ mentoria.id_supervisor.perfil.user.get_full_name|default:mentoria.id_supervisor.perfil.user.username }}</strong>
             </div>
-
         </div>
         {% endif %}
 
-
         <div class="info-item">
-
             <i class="fa-solid fa-users"></i>
-
             <div>
                 <span>Mentoria</span>
-                <strong>{{ mentoria.tema }}</strong>
+                <strong>{% if mentoria %}{{ mentoria.tema }}{% else %}Avulsa{% endif %}</strong>
             </div>
-
         </div>
 
-
         <div class="info-item">
-
             <i class="fa-solid fa-hourglass-half"></i>
-
             <div>
                 <span>Horas da atividade</span>
                 <strong>{{ atividade.horas|floatformat:"-2" }}h</strong>
             </div>
-
         </div>
 
-
         <div class="info-item prazo">
-
             <i class="fa-solid fa-calendar-xmark"></i>
-
             <div>
                 <span>Prazo de entrega</span>
                 <strong>
@@ -194,28 +156,81 @@ Visualize as informações da atividade.
                     {% endif %}
                 </strong>
             </div>
-
         </div>
-
     </section>
 
-
     <!-- DESCRIÇÃO -->
-
     <section class="conteudo-card">
-
-        <h2>
-            Descrição da atividade
-        </h2>
-
+        <h2>Descrição da atividade</h2>
         {% if atividade.descricao %}
             {{ atividade.descricao|linebreaks }}
         {% else %}
             <p>Esta atividade não possui descrição.</p>
         {% endif %}
-
     </section>
+
+    <!-- FORMULÁRIO DE ENTREGA DA ATIVIDADE -->
+    <section class="conteudo-card">
+        <h2>Enviar Resposta</h2>
+
+        <form method="POST" enctype="multipart/form-data" class="form-entrega">
+            {% csrf_token %}
+
+            <div class="campo">
+                <label for="tipoEnvio">Tipo de Envio</label>
+                <select name="tipo_envio" id="tipoEnvio" onchange="alternarTipoEnvio()" required>
+                    <option value="texto">Texto (Digitado)</option>
+                    <option value="link">Link Externo</option>
+                    <option value="arquivo">Anexo de Arquivo</option>
+                </select>
+            </div>
+
+            <div class="campo" id="campoTexto">
+                <label for="texto_resposta">Sua Resposta</label>
+                <textarea name="texto_resposta" id="texto_resposta" rows="4" placeholder="Digite a resposta ou explicação da atividade..."></textarea>
+            </div>
+
+            <div class="campo" id="campoLink" style="display: none;">
+                <label for="link">Link da Atividade</label>
+                <input type="url" name="link" id="link" placeholder="https://...">
+            </div>
+
+            <div class="campo" id="campoArquivo" style="display: none;">
+                <label for="arquivo">Anexar Ficheiro</label>
+                <input type="file" name="arquivo" id="arquivo">
+            </div>
+
+            <button type="submit" class="btn-adicionar">
+                <i class="fa-solid fa-paper-plane"></i>
+                Entregar atividade
+            </button>
+        </form>
+    </section>
+
+    {% if entregas %}
+    <section class="conteudo-card">
+        <h2>Entregas Realizadas</h2>
+        <div class="lista-entregas">
+            {% for entrega in entregas %}
+            <div class="item-entrega">
+                <span class="data-envio"><i class="fa-solid fa-clock"></i> Enviado em {{ entrega.data_envio|date:"d/m/Y H:i" }}</span>
+                {% if entrega.texto_resposta %}<p><strong>Resposta:</strong> {{ entrega.texto_resposta|linebreaks }}</p>{% endif %}
+                {% if entrega.link %}<p><strong>Link:</strong> <a href="{{ entrega.link }}" target="_blank">{{ entrega.link }}</a></p>{% endif %}
+                {% if entrega.arquivo %}<p><strong>Arquivo:</strong> <a href="{{ entrega.arquivo.url }}" target="_blank" class="link-download"><i class="fa-solid fa-download"></i> Baixar documento</a></p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
 
 </div>
 
+<script>
+function alternarTipoEnvio() {
+    const tipo = document.getElementById('tipoEnvio').value;
+    document.getElementById('campoTexto').style.display = tipo === 'texto' ? 'block' : 'none';
+    document.getElementById('campoLink').style.display = tipo === 'link' ? 'block' : 'none';
+    document.getElementById('campoArquivo').style.display = tipo === 'arquivo' ? 'block' : 'none';
+}
+</script>
 {% endblock %}

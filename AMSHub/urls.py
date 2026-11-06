@@ -42,17 +42,16 @@ urlpatterns = [
     path('', index, name='index'),
 
     # TELAS PRINCIPAIS
-
     path('aluno/', aluno, name='aluno'),
     path('professor/', professor, name='professor'),
     path('professor/mentorias/<int:id_mentoria>/presenca/', registrar_presenca_p, name='registrar_presenca_p'),
     path('coordenador/', coordenador, name='coordenador'),
     path('supervisor/', supervisor, name='supervisor'),
     path('empresa/', empresa, name='empresa'),
-    path('gestao/empresa/',empresagestao,name='empresagestao'),
-    path('gestao/mentorias/',mentoriasgestao,name='mentoriasgestao'),
-    path('gestao/relatorios/',relatoriosgestao,name='relatoriosgestao'),
-    path('coordenador/gerenciar-alunos/',gerenciaalunosc,name='gerenciaalunosc'),
+    path('gestao/empresa/', empresagestao, name='empresagestao'),
+    path('gestao/mentorias/', mentoriasgestao, name='mentoriasgestao'),
+    path('gestao/relatorios/', relatoriosgestao, name='relatoriosgestao'),
+    path('coordenador/gerenciar-alunos/', gerenciaalunosc, name='gerenciaalunosc'),
     path('coordenador/certificados/', aprovar_certificados, name='aprovar_certificados'),
     path('empresa/cadastrar-mentorias/', cadastrarmentoriase, name='cadastrarmentoriase'),
     path('empresa/criar-tarefas/', criartarefase, name='criartarefase'),
@@ -61,115 +60,31 @@ urlpatterns = [
     path('professor/avaliacoes/', avaliacoesp, name='avaliacoesp'),
     path('professor/mentorias/', mentoriasp, name='mentoriasp'),
     path('professor/agenda/', agendap, name='agendap'),
-    path('professor/atividades/',atividadesp,name='atividadesp'),
-    path('meu-perfil/',meuperfil,name='meuperfil'),
+    path('professor/atividades/', atividadesp, name='atividadesp'),
+    path('meu-perfil/', meuperfil, name='meuperfil'),
+
     # ALUNO
-
-    path(
-        'aluno/mentorias/',
-        minhasmentoriasa,
-        name='minhasmentoriasa'
-    ),
-
-    path(
-        'aluno/mentorias/detalhes/<int:id_mentoria>/',
-        detalhesdamentoriaa,
-        name='detalhesdamentoriaa'
-    ),
-
-    path(
-        'aluno/mentorias/inscrever/<int:id_mentoria>/',
-        inscreveremmentoriaa,
-        name='inscreveremmentoriaa'
-    ),
-
-    path(
-        'aluno/portifolios/',
-        meusportifoliosa,
-        name='meusportifoliosa'
-    ),
-
-    path(
-        'aluno/atividadesa/',
-        atividadesa,
-        name='atividadesa'
-    ),
-
-    path(
-        'aluno/pendenciasa/',
-        pendenciasa,
-        name='pendenciasa'
-    ),
-
-    path(
-        'aluno/certificadoa/',
-        certificadoa,
-        name='certificadoa'
-    ),
-
-    path(
-        'aluno/atividade/detalhes/<int:id_atividade>/',
-        detalhesdaatividadea,
-        name='detalhesdaatividadea'
-    ),
-
-    path(
-        'aluno/perfil/',
-        meuperfila,
-        name='meuperfila'
-    ),
+    path('aluno/mentorias/', minhasmentoriasa, name='minhasmentoriasa'),
+    path('aluno/mentorias/detalhes/<int:id_mentoria>/', detalhesdamentoriaa, name='detalhesdamentoriaa'),
+    path('aluno/mentorias/inscrever/<int:id_mentoria>/', inscreveremmentoriaa, name='inscreveremmentoriaa'),
+    path('aluno/portifolios/', meusportifoliosa, name='meusportifoliosa'),
+    path('aluno/atividadesa/', atividadesa, name='atividadesa'),
+    path('aluno/pendenciasa/', pendenciasa, name='pendenciasa'),
+    path('aluno/certificadoa/', certificadoa, name='certificadoa'),
+    path('aluno/atividade/detalhes/<int:id_atividade>/', detalhesdaatividadea, name='detalhesdaatividadea'),
+    path('aluno/perfil/', meuperfila, name='meuperfila'),
 
     # LOGIN
-
-    path(
-        'login/',
-        login_view,
-        name='login'
-    ),
-
-    path(
-        'login/aluno/',
-        login_view,
-        name='login_aluno'
-    ),
-
-    path(
-        'login/professor/',
-        login_view,
-        name='login_professor'
-    ),
-
-    path(
-        'login/coordenador/',
-        login_view,
-        name='login_coordenador'
-    ),
-
-    path(
-        'login/supervisor/',
-        login_view,
-        name='login_supervisor'
-    ),
-
-    path(
-        'login/empresa/',
-        login_view,
-        name='login_empresa'
-    ),
+    path('login/', login_view, name='login'),
+    path('login/aluno/', login_view, name='login_aluno'),
+    path('login/professor/', login_view, name='login_professor'),
+    path('login/coordenador/', login_view, name='login_coordenador'),
+    path('login/supervisor/', login_view, name='login_supervisor'),
+    path('login/empresa/', login_view, name='login_empresa'),
 
     # LOGOUT
-
-    path(
-        'logout/',
-        logout_view,
-        name='logout'
-    ),
+    path('logout/', logout_view, name='logout'),
 
     # CADASTRO
-
-    path(
-        'cadastro/',
-        cadastro,
-        name='cadastro'
-    ),
+    path('cadastro/', cadastro, name='cadastro'),
 ]

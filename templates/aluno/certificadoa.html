@@ -188,6 +188,16 @@ Visualize seus certificados e envie novos documentos para aprovação.
                         {{ certificado.carga_horaria }} hora{{ certificado.carga_horaria|pluralize }}
                     </span>
 
+                    {% if certificado.arquivo %}
+                        <a href="{{ certificado.arquivo.url }}" target="_blank" style="margin-left: 10px;">
+                            <i class="fa-solid fa-paperclip"></i> Anexo
+                        </a>
+                    {% elif certificado.link %}
+                        <a href="{{ certificado.link }}" target="_blank" style="margin-left: 10px;">
+                            <i class="fa-solid fa-link"></i> Link
+                        </a>
+                    {% endif %}
+
                 </div>
 
             </div>
@@ -233,7 +243,7 @@ Visualize seus certificados e envie novos documentos para aprovação.
 
             <div class="modal-body">
 
-                <form method="POST" action="{% url 'certificadoa' %}">
+                <form method="POST" action="{% url 'certificadoa' %}" enctype="multipart/form-data">
 
                     {% csrf_token %}
 
@@ -294,6 +304,25 @@ Visualize seus certificados e envie novos documentos para aprovação.
 
                     </div>
 
+                    <!-- CAMPOS ADICIONADOS PARA ANEXO / LINK -->
+                    <div class="campo">
+                        <label for="tipoComprovante">Tipo de Comprovante</label>
+                        <select name="tipo_comprovante" id="tipoComprovante" onchange="alternarCertComprovante()" required>
+                            <option value="arquivo">Arquivo (PDF ou Imagem)</option>
+                            <option value="link">Link</option>
+                        </select>
+                    </div>
+
+                    <div class="campo" id="campoCertArquivo">
+                        <label for="arquivo">Documento do Certificado</label>
+                        <input type="file" id="arquivo" name="arquivo" accept="image/*,.pdf">
+                    </div>
+
+                    <div class="campo" id="campoCertLink" style="display: none;">
+                        <label for="link">Link do Certificado</label>
+                        <input type="url" id="link" name="link" placeholder="https://...">
+                    </div>
+
 
                     <div class="aviso">
 
@@ -335,5 +364,13 @@ Visualize seus certificados e envie novos documentos para aprovação.
     </div>
 
 </div>
+
+<script>
+function alternarCertComprovante() {
+    const tipo = document.getElementById('tipoComprovante').value;
+    document.getElementById('campoCertArquivo').style.display = tipo === 'arquivo' ? 'block' : 'none';
+    document.getElementById('campoCertLink').style.display = tipo === 'link' ? 'block' : 'none';
+}
+</script>
 
 {% endblock %}
