@@ -2242,9 +2242,14 @@ def oportunidadese(request):
             'descricao': editando.descricao,
             'requisitos': editando.requisitos,
         }
-    oportunidades = list(minhas.order_by('-id_vaga'))
+    oportunidades = list(
+        minhas.prefetch_related(
+            'candidaturas__id_aluno__perfil__user'
+        ).order_by('-id_vaga')
+    )
     for oportunidade in oportunidades:
         oportunidade.aberta = oportunidade.data_limite >= hoje
+        oportunidade.lista_candidatos = list(oportunidade.candidaturas.all())
     return render(request, 'empresa/oportunidadese.html', {
         'usuario': request.user,
         'nome_usuario': nome_do_usuario(request),

@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block descricao %}
-Divulgue oportunidades de estágio e emprego para os alunos.
+Publique vagas de estágio, emprego e jovem aprendiz e acompanhe os candidatos.
 {% endblock %}
 
 {% block menu %}
@@ -51,7 +51,6 @@ Divulgue oportunidades de estágio e emprego para os alunos.
             <span>Sair</span>
         </a>
     </li>
-
 </ul>
 {% endblock %}
 
@@ -61,7 +60,7 @@ Divulgue oportunidades de estágio e emprego para os alunos.
 
     {% if messages %}
         {% for message in messages %}
-        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
+        <div class="alert {% if 'error' in message.tags %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -70,8 +69,8 @@ Divulgue oportunidades de estágio e emprego para os alunos.
 
     <div class="pagina-cabecalho">
         <div>
-            <h2>Oportunidades de Emprego</h2>
-            <p>Cadastre e acompanhe as vagas disponibilizadas.</p>
+            <h2>Gerenciamento de Oportunidades</h2>
+            <p>Publique vagas para os alunos e visualize os candidatos inscritos.</p>
         </div>
     </div>
 
@@ -79,7 +78,7 @@ Divulgue oportunidades de estágio e emprego para os alunos.
 
         <div class="painel-titulo">
             <i class="fa-solid fa-briefcase"></i>
-            <h3>{% if editando %}Editar Oportunidade{% else %}Publicar Nova Oportunidade{% endif %}</h3>
+            <h3>{% if editando %}Editar Oportunidade{% else %}Nova Oportunidade{% endif %}</h3>
         </div>
 
         <form method="post" action="{% url 'oportunidadese' %}" class="formulario-empresa">
@@ -89,14 +88,14 @@ Divulgue oportunidades de estágio e emprego para os alunos.
             <div class="form-grid">
 
                 <div class="campo-formulario">
-                    <label for="titulo">Título da vaga</label>
+                    <label for="titulo">Cargo / Título da vaga</label>
                     <input
                         type="text"
                         id="titulo"
                         name="titulo"
                         maxlength="200"
                         value="{{ form.titulo }}"
-                        placeholder="Ex.: Estágio em Desenvolvimento"
+                        placeholder="Ex.: Estágio em Desenvolvimento Web"
                         required
                     >
                 </div>
@@ -104,8 +103,7 @@ Divulgue oportunidades de estágio e emprego para os alunos.
                 <div class="campo-formulario">
                     <label for="tipo">Tipo de oportunidade</label>
                     <select id="tipo" name="tipo" required>
-                        <option value="">Selecione</option>
-                        <option value="Estágio" {% if form.tipo == 'Estágio' %}selected{% endif %}>Estágio</option>
+                        <option value="Estágio" {% if form.tipo == 'Estágio' or not form.tipo %}selected{% endif %}>Estágio</option>
                         <option value="Emprego" {% if form.tipo == 'Emprego' %}selected{% endif %}>Emprego</option>
                         <option value="Jovem Aprendiz" {% if form.tipo == 'Jovem Aprendiz' %}selected{% endif %}>Jovem Aprendiz</option>
                     </select>
@@ -113,8 +111,8 @@ Divulgue oportunidades de estágio e emprego para os alunos.
 
                 <div class="campo-formulario">
                     <label for="modalidade">Modalidade</label>
-                    <select id="modalidade" name="modalidade">
-                        <option value="Presencial" {% if form.modalidade == 'Presencial' %}selected{% endif %}>Presencial</option>
+                    <select id="modalidade" name="modalidade" required>
+                        <option value="Presencial" {% if form.modalidade == 'Presencial' or not form.modalidade %}selected{% endif %}>Presencial</option>
                         <option value="Remoto" {% if form.modalidade == 'Remoto' %}selected{% endif %}>Remoto</option>
                         <option value="Híbrido" {% if form.modalidade == 'Híbrido' %}selected{% endif %}>Híbrido</option>
                     </select>
@@ -128,7 +126,7 @@ Divulgue oportunidades de estágio e emprego para os alunos.
                         name="localizacao"
                         maxlength="150"
                         value="{{ form.localizacao }}"
-                        placeholder="Ex.: São Paulo - SP"
+                        placeholder="Ex.: Araras - SP"
                     >
                 </div>
 
@@ -139,7 +137,15 @@ Divulgue oportunidades de estágio e emprego para os alunos.
 
                 <div class="campo-formulario">
                     <label for="vagas">Quantidade de vagas</label>
-                    <input type="number" id="vagas" name="vagas" min="0" max="9999" value="{{ form.vagas }}" placeholder="0 = sem limite">
+                    <input
+                        type="number"
+                        id="vagas"
+                        name="vagas"
+                        min="0"
+                        max="9999"
+                        value="{{ form.vagas }}"
+                        placeholder="0 ou vazio = sem limite"
+                    >
                 </div>
 
                 <div class="campo-formulario campo-completo">
@@ -148,19 +154,19 @@ Divulgue oportunidades de estágio e emprego para os alunos.
                         id="descricao"
                         name="descricao"
                         rows="4"
-                        placeholder="Descreva a vaga e as atividades..."
+                        placeholder="Descreva as atividades, bolsa/benefícios e detalhes da vaga..."
                         required
                     >{{ form.descricao }}</textarea>
                 </div>
 
                 <div class="campo-formulario campo-completo">
-                    <label for="requisitos">Requisitos</label>
+                    <label for="requisitos">Requisitos (opcional)</label>
                     <textarea
                         id="requisitos"
                         name="requisitos"
                         rows="3"
                         maxlength="500"
-                        placeholder="Informe os conhecimentos necessários..."
+                        placeholder="Conhecimentos desejados, curso, disponibilidade..."
                     >{{ form.requisitos }}</textarea>
                 </div>
 
@@ -168,7 +174,7 @@ Divulgue oportunidades de estágio e emprego para os alunos.
 
             <div class="form-acoes">
                 <button type="submit" class="botao-principal">
-                    <i class="fa-solid {% if editando %}fa-floppy-disk{% else %}fa-paper-plane{% endif %}"></i>
+                    <i class="fa-solid {% if editando %}fa-floppy-disk{% else %}fa-plus{% endif %}"></i>
                     {% if editando %}Salvar alterações{% else %}Publicar Oportunidade{% endif %}
                 </button>
                 {% if editando %}<a href="{% url 'oportunidadese' %}" class="btn btn-outline-secondary ms-2">Cancelar edição</a>{% endif %}
@@ -181,81 +187,117 @@ Divulgue oportunidades de estágio e emprego para os alunos.
     <div class="painel-empresa">
 
         <div class="painel-titulo">
-            <i class="fa-solid fa-list"></i>
+            <i class="fa-solid fa-briefcase"></i>
             <h3>Oportunidades Publicadas</h3>
         </div>
 
-        <div class="grade-oportunidades">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Cargo</th>
+                        <th>Tipo</th>
+                        <th>Modalidade</th>
+                        <th>Prazo</th>
+                        <th>Vagas</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for oportunidade in oportunidades %}
+                    <tr>
+                        <td>
+                            <strong>{{ oportunidade.cargo }}</strong>
+                            {% if oportunidade.localizacao %}
+                                <small class="d-block text-muted">{{ oportunidade.localizacao }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ oportunidade.tipo }}</td>
+                        <td>{{ oportunidade.modalidade }}</td>
+                        <td>{{ oportunidade.data_limite|date:"d/m/Y" }}</td>
+                        <td>{% if oportunidade.quantidade %}{{ oportunidade.quantidade }}{% else %}Ilimitado{% endif %}</td>
+                        <td>
+                            {% if oportunidade.aberta %}
+                                <span class="badge bg-success">Aberta</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Encerrada</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalCandidatos{{ oportunidade.pk }}"
+                                >
+                                    <i class="fa-solid fa-users"></i>
+                                    Candidatos ({{ oportunidade.lista_candidatos|length }})
+                                </button>
 
-            {% for oportunidade in oportunidades %}
-
-            <article class="card-oportunidade">
-
-                <div class="oportunidade-icone">
-                    <i class="fa-solid fa-briefcase"></i>
-                </div>
-
-                <h3>{{ oportunidade.cargo }}</h3>
-
-                <p>{{ oportunidade.descricao|truncatewords:25 }}</p>
-
-                <div class="oportunidade-detalhes">
-                    {% if oportunidade.localizacao %}
-                    <span>
-                        <i class="fa-solid fa-location-dot"></i>
-                        {{ oportunidade.localizacao }}
-                    </span>
-                    {% endif %}
-
-                    {% if oportunidade.modalidade %}
-                    <span>
-                        <i class="fa-solid fa-laptop"></i>
-                        {{ oportunidade.modalidade }}
-                    </span>
-                    {% endif %}
-
-                    <span>
-                        <i class="fa-solid fa-calendar"></i>
-                        Até {{ oportunidade.data_limite|date:"d/m/Y" }}
-                    </span>
-
-                    {% if oportunidade.quantidade %}
-                    <span>
-                        <i class="fa-solid fa-users"></i>
-                        {{ oportunidade.quantidade }} vaga{{ oportunidade.quantidade|pluralize }}
-                    </span>
-                    {% endif %}
-                </div>
-
-                {% if oportunidade.tipo %}
-                <span class="etiqueta-oportunidade">
-                    {{ oportunidade.tipo }}
-                </span>
-                {% endif %}
-
-                <span class="etiqueta-oportunidade">
-                    {% if oportunidade.aberta %}Aberta{% else %}Encerrada{% endif %}
-                </span>
-
-                <a href="{% url 'oportunidadese' %}?editar={{ oportunidade.pk }}" class="btn btn-sm btn-outline-primary mt-2">
-                    <i class="fa-solid fa-pen"></i> Editar
-                </a>
-
-            </article>
-
-            {% empty %}
-
-            <div class="estado-vazio">
-                <i class="fa-solid fa-briefcase"></i>
-                <h3>Nenhuma oportunidade cadastrada</h3>
-                <p>As oportunidades publicadas aparecerão aqui.</p>
-            </div>
-
-            {% endfor %}
-
+                                <a href="{% url 'oportunidadese' %}?editar={{ oportunidade.pk }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-solid fa-pen"></i> Editar
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            Nenhuma oportunidade publicada.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
     </div>
+
+    <!-- MODAIS DE CANDIDATOS DAS VAGAS -->
+    {% for oportunidade in oportunidades %}
+    <div class="modal fade" id="modalCandidatos{{ oportunidade.pk }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title mb-1">Candidatos: {{ oportunidade.cargo }}</h5>
+                        <small class="text-muted">Alunos inscritos nesta oportunidade</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+
+                <div class="modal-body">
+                    {% for candidatura in oportunidade.lista_candidatos %}
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong>
+                                <i class="fa-solid fa-user-graduate me-1"></i>
+                                {{ candidatura.id_aluno.perfil.user.get_full_name|default:candidatura.id_aluno.perfil.user.username }}
+                            </strong>
+                            <small class="text-muted">
+                                <i class="fa-solid fa-clock me-1"></i>
+                                {{ candidatura.data_candidatura|date:"d/m/Y H:i" }}
+                            </small>
+                        </div>
+                        <div class="small text-muted">
+                            <strong>Curso:</strong> {{ candidatura.id_aluno.curso }} &bull;
+                            <strong>Turma:</strong> {{ candidatura.id_aluno.turma }} &bull;
+                            <strong>E-mail:</strong> {{ candidatura.id_aluno.perfil.user.email }}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fa-solid fa-users fa-2x mb-2"></i>
+                        <p class="mb-0">Nenhum aluno se candidatou a esta vaga ainda.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 
 </section>
 
