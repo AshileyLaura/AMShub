@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMS Hub — Plataforma de Gestão</title>
+    <title>AMS Hub — Plataforma de Gestão Acadêmica e Corporativa</title>
 
     <link rel="icon" type="image/png" href="{% static 'imagens/logoaluno.png' %}">
 
@@ -14,114 +14,342 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'AMSHub.css' %}">
+    <link rel="stylesheet" href="{% static 'AMSHub.css' %}?v=6">
 </head>
 
 <body>
 
-<div class="background">
+<!-- ================= NAVBAR MINIMALISTA ================= -->
+<header class="navbar-hub">
+    <div class="nav-container">
+        <a href="#acesso" class="brand-logo">
+            <img src="{% static 'imagens/logoaluno.png' %}" alt="Logo AMS Hub">
+            <span>AMS <strong>HUB</strong></span>
+        </a>
 
-    <main class="hub-card">
+        <nav class="nav-links">
+            <a href="#acesso">Acesso</a>
+            <a href="#objetivo">O Projeto</a>
+            <a href="#criadoras">Criadoras</a>
+            <a href="#contato" class="nav-cta">Contato</a>
+        </nav>
+    </div>
+</header>
 
-        <div class="hub-header">
-            <div class="brand-pill">
-                <div class="logo-frame">
-                    <img src="{% static 'imagens/logoprofessor.png' %}" alt="Logo AMS Hub">
+<main class="landing-main">
+
+    <!-- ================= 1. ACESSO AO SISTEMA ================= -->
+    <section id="acesso" class="secao-acesso">
+        <div class="hub-card">
+            <div class="hub-header">
+                <span class="section-badge">
+                    <i class="fa-solid fa-code"></i>
+                    <span>PLATAFORMA INTEGRADA AMS</span>
+                </span>
+                <h1>Bem-vindo ao <span>AMS Hub</span></h1>
+                <p class="subtitle">Selecione o seu perfil de acesso para entrar no ambiente acadêmico e corporativo.</p>
+            </div>
+
+            {% if messages %}
+            <div class="mensagens-box">
+                {% for message in messages %}
+                    <div class="mensagem-alerta">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="perfis-grid">
+                <a href="/login/aluno/" class="perfil-card">
+                    <div class="perfil-icon">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div class="perfil-texto">
+                        <strong>Aluno</strong>
+                        <small>Mentorias, entregas e portfólio</small>
+                    </div>
+                    <i class="fa-solid fa-arrow-right perfil-seta"></i>
+                </a>
+
+                <a href="/login/professor/" class="perfil-card">
+                    <div class="perfil-icon">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div class="perfil-texto">
+                        <strong>Professor</strong>
+                        <small>Avaliações, agenda e turmas</small>
+                    </div>
+                    <i class="fa-solid fa-arrow-right perfil-seta"></i>
+                </a>
+
+                <a href="/login/coordenador/" class="perfil-card">
+                    <div class="perfil-icon">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="perfil-texto">
+                        <strong>Coordenador</strong>
+                        <small>Gestão de alunos e certificados</small>
+                    </div>
+                    <i class="fa-solid fa-arrow-right perfil-seta"></i>
+                </a>
+
+                <a href="/login/supervisor/" class="perfil-card">
+                    <div class="perfil-icon">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="perfil-texto">
+                        <strong>Supervisor</strong>
+                        <small>Acompanhamento e relatórios</small>
+                    </div>
+                    <i class="fa-solid fa-arrow-right perfil-seta"></i>
+                </a>
+
+                <a href="/login/empresa/" class="perfil-card perfil-empresa">
+                    <div class="perfil-icon">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div class="perfil-texto">
+                        <strong>Empresa Parceira</strong>
+                        <small>Oportunidades, vagas e mentorias corporativas</small>
+                    </div>
+                    <i class="fa-solid fa-arrow-right perfil-seta"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 2. POR QUE ESCOLHEMOS E OBJETIVO ================= -->
+    <section id="objetivo" class="secao-container">
+        <div class="secao-cabecalho">
+            <span class="section-badge">
+                <i class="fa-solid fa-code-branch"></i>
+                <span>SOBRE O PROJETO</span>
+            </span>
+            <h2>Por que criamos o <span>AMS Hub</span>?</h2>
+            <p>Uma solução pensada por estudantes de Desenvolvimento de Sistemas para conectar a sala de aula ao mercado de trabalho.</p>
+        </div>
+
+        <div class="sobre-grid">
+            <div class="sobre-card destaque-escuro">
+                <div class="sobre-icone-box">
+                    <i class="fa-solid fa-lightbulb"></i>
                 </div>
-                <div class="brand-info">
-                    <span class="brand-name">AMS <span>HUB</span></span>
-                    <span class="brand-tag">DEV &bull; SYSTEM</span>
+                <span class="card-tag">MOTIVAÇÃO</span>
+                <h3>Por que escolhemos esse tema?</h3>
+                <p>
+                    Vivenciando a rotina do programa <strong>AMS (Articulação da Formação Profissional Média e Superior)</strong>,
+                    percebemos que a comunicação entre alunos, professores, coordenação e empresas parceiras ficava espalhada
+                    em várias ferramentas e planilhas. Escolhemos desenvolver o AMS Hub para resolver um problema real do nosso próprio curso.
+                </p>
+            </div>
+
+            <div class="sobre-card">
+                <div class="sobre-icone-box claro">
+                    <i class="fa-solid fa-bullseye"></i>
+                </div>
+                <span class="card-tag roxo">PROPÓSITO</span>
+                <h3>Qual o objetivo do sistema?</h3>
+                <p>
+                    Centralizar em uma única plataforma web todo o ciclo de aprendizagem prática: agendamento de mentorias
+                    corporativas, envio e avaliação de atividades, registro de presença, divulgação de oportunidades,
+                    construção de portfólio técnico e validação digital de certificados.
+                </p>
+            </div>
+        </div>
+
+        <div class="pilares-grid">
+            <div class="pilar-item">
+                <i class="fa-solid fa-handshake"></i>
+                <div>
+                    <strong>Conexão Escola &amp; Empresa</strong>
+                    <small>Aproxima estudantes das empresas parceiras com fluxos organizados.</small>
+                </div>
+            </div>
+            <div class="pilar-item">
+                <i class="fa-solid fa-folder-open"></i>
+                <div>
+                    <strong>Portfólio &amp; Entregas</strong>
+                    <small>Histórico centralizado de projetos, tarefas e feedbacks técnicos.</small>
+                </div>
+            </div>
+            <div class="pilar-item">
+                <i class="fa-solid fa-award"></i>
+                <div>
+                    <strong>Gestão &amp; Certificação</strong>
+                    <small>Controle de horas, presenças e aprovação de certificados sem papelada.</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 3. AS CRIADORAS (EQUIPE) ================= -->
+    <section id="criadoras" class="secao-container">
+        <div class="secao-cabecalho">
+            <span class="section-badge">
+                <i class="fa-solid fa-users"></i>
+                <span>EQUIPE DESENVOLVEDORA</span>
+            </span>
+            <h2>As <span>Criadoras</span> do AMS Hub</h2>
+            <p>Conheça as integrantes responsáveis pela idealização, design e desenvolvimento do sistema.</p>
+        </div>
+
+        <div class="equipe-grid">
+
+            <!-- MANUELA SQUISSATO -->
+            <div class="membro-card">
+                <div class="foto-ring">
+                    <img src="{% static 'imagens/manu.jpg' %}"
+                         style="object-position: center 20%;"
+                         onerror="this.src='{% static 'imagens/aluno.png' %}'"
+                         alt="Manuela Squissato">
+                </div>
+                <span class="membro-cargo">FULL-STACK &amp; UI/UX</span>
+                <h3>Manuela Squissato</h3>
+                <p>Desenvolvimento back-end em Django, arquitetura do sistema e interface visual.</p>
+                <div class="membro-links">
+                    <a href="https://github.com/manusquissato" target="_blank" aria-label="GitHub" title="GitHub">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                    <a href="mailto:manuela.squissato@gmail.com" aria-label="E-mail" title="manuela.squissato@gmail.com">
+                        <i class="fa-solid fa-envelope"></i>
+                    </a>
+                    <a href="tel:+5519995546884" aria-label="Telefone" title="(19) 99554-6884">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
                 </div>
             </div>
 
-            <h1>Bem-vindo ao <span>AMS Hub</span></h1>
-            <p class="subtitle">Selecione o seu perfil de acesso para entrar no ambiente acadêmico e corporativo.</p>
-        </div>
-
-        {% if messages %}
-        <div class="mensagens-box">
-            {% for message in messages %}
-                <div class="mensagem-alerta">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span>{{ message }}</span>
+            <!-- MARIA EDUARDA MENDES DE JESUS -->
+            <div class="membro-card">
+                <div class="foto-ring">
+                    <img src="{% static 'imagens/duda.jpg' %}"
+                         style="object-position: center 20%;"
+                         onerror="this.src='{% static 'imagens/aluno.png' %}'"
+                         alt="Maria Eduarda Mendes de Jesus">
                 </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <div class="perfis-grid">
-
-            <a href="/login/aluno/" class="perfil-card">
-                <div class="perfil-icon">
-                    <i class="fa-solid fa-user-graduate"></i>
+                <span class="membro-cargo">FRONT-END &amp; DESIGN</span>
+                <h3>Maria Eduarda Mendes de Jesus</h3>
+                <p>Estruturação das telas, responsividade e experiência dos usuários na plataforma.</p>
+                <div class="membro-links">
+                    <a href="https://github.com/duda-mendes07" target="_blank" aria-label="GitHub" title="GitHub">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                    <a href="mailto:mariahed.mendes@gmail.com" aria-label="E-mail" title="mariahed.mendes@gmail.com">
+                        <i class="fa-solid fa-envelope"></i>
+                    </a>
+                    <a href="tel:+5519984329777" aria-label="Telefone" title="(19) 98432-9777">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
                 </div>
-                <div class="perfil-texto">
-                    <strong>Aluno</strong>
-                    <small>Mentorias, entregas e portfólio</small>
-                </div>
-                <i class="fa-solid fa-arrow-right perfil-seta"></i>
-            </a>
-
-            <a href="/login/professor/" class="perfil-card">
-                <div class="perfil-icon">
-                    <i class="fa-solid fa-chalkboard-user"></i>
-                </div>
-                <div class="perfil-texto">
-                    <strong>Professor</strong>
-                    <small>Avaliações, agenda e turmas</small>
-                </div>
-                <i class="fa-solid fa-arrow-right perfil-seta"></i>
-            </a>
-
-            <a href="/login/coordenador/" class="perfil-card">
-                <div class="perfil-icon">
-                    <i class="fa-solid fa-user-tie"></i>
-                </div>
-                <div class="perfil-texto">
-                    <strong>Coordenador</strong>
-                    <small>Gestão de alunos e certificados</small>
-                </div>
-                <i class="fa-solid fa-arrow-right perfil-seta"></i>
-            </a>
-
-            <a href="/login/supervisor/" class="perfil-card">
-                <div class="perfil-icon">
-                    <i class="fa-solid fa-user-shield"></i>
-                </div>
-                <div class="perfil-texto">
-                    <strong>Supervisor</strong>
-                    <small>Acompanhamento e relatórios</small>
-                </div>
-                <i class="fa-solid fa-arrow-right perfil-seta"></i>
-            </a>
-
-            <a href="/login/empresa/" class="perfil-card perfil-empresa">
-                <div class="perfil-icon">
-                    <i class="fa-solid fa-building"></i>
-                </div>
-                <div class="perfil-texto">
-                    <strong>Empresa Parceira</strong>
-                    <small>Oportunidades, vagas e mentorias corporativas</small>
-                </div>
-                <i class="fa-solid fa-arrow-right perfil-seta"></i>
-            </a>
-
-        </div>
-
-        <footer class="hub-footer">
-            <div class="footer-status">
-                <span class="pulse-dot"></span>
-                <span>AMS Hub &copy; 2026 &bull; Sistema de Gestão Escolar</span>
             </div>
-            <div class="circuit-accent">
-                <span class="circuit-line"></span>
-                <span class="circuit-dot"></span>
+
+            <!-- LAURA ASHILEY DA SILVA QUEIROZ -->
+            <div class="membro-card">
+                <div class="foto-ring">
+                    <img src="{% static 'imagens/laura.jpg' %}"
+                         style="object-position: center 45%;"
+                         onerror="this.src='{% static 'imagens/aluno.png' %}'"
+                         alt="Laura Ashiley da Silva Queiroz">
+                </div>
+                <span class="membro-cargo">BACK-END &amp; DOCUMENTAÇÃO</span>
+                <h3>Laura Ashiley da Silva Queiroz</h3>
+                <p>Modelagem de dados, testes funcionais e documentação técnica do projeto.</p>
+                <div class="membro-links">
+                    <a href="https://github.com/AshileyLaura" target="_blank" aria-label="GitHub" title="GitHub">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                    <a href="mailto:laura.ashileyqueiroz@gmail.com" aria-label="E-mail" title="laura.ashileyqueiroz@gmail.com">
+                        <i class="fa-solid fa-envelope"></i>
+                    </a>
+                    <a href="tel:+5519997014659" aria-label="Telefone" title="(19) 99701-4659">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                </div>
             </div>
-        </footer>
 
-    </main>
+        </div>
+    </section>
 
-</div>
+    <!-- ================= 4. CONTATO ================= -->
+    <section id="contato" class="secao-container">
+        <div class="contato-box">
+            <div class="contato-info">
+                <span class="section-badge claro">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>FALE COM A EQUIPE</span>
+                </span>
+                <h2>Dúvidas, sugestões ou parcerias?</h2>
+                <p>Entre em contato diretamente com as desenvolvedoras do AMS Hub para saber mais sobre o projeto ou integrar sua empresa ao programa.</p>
+                <div class="curso-tag-contato">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Desenvolvimento de Sistemas &bull; Programa AMS</span>
+                </div>
+            </div>
+
+            <div class="contato-cards">
+                <div class="contato-item">
+                    <div class="contato-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="contato-detalhes">
+                        <small>MANUELA SQUISSATO</small>
+                        <a href="mailto:manuela.squissato@gmail.com">manuela.squissato@gmail.com</a>
+                        <a href="tel:+5519995546884" class="contato-tel"><i class="fa-solid fa-phone"></i> (19) 99554-6884</a>
+                    </div>
+                </div>
+
+                <div class="contato-item">
+                    <div class="contato-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="contato-detalhes">
+                        <small>MARIA EDUARDA MENDES DE JESUS</small>
+                        <a href="mailto:mariahed.mendes@gmail.com">mariahed.mendes@gmail.com</a>
+                        <a href="tel:+5519984329777" class="contato-tel"><i class="fa-solid fa-phone"></i> (19) 98432-9777</a>
+                    </div>
+                </div>
+
+                <div class="contato-item">
+                    <div class="contato-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="contato-detalhes">
+                        <small>LAURA ASHILEY DA SILVA QUEIROZ</small>
+                        <a href="mailto:laura.ashileyqueiroz@gmail.com">laura.ashileyqueiroz@gmail.com</a>
+                        <a href="tel:+5519997014659" class="contato-tel"><i class="fa-solid fa-phone"></i> (19) 99701-4659</a>
+                    </div>
+                </div>
+
+                <a href="https://github.com/AshileyLaura/AMShub.git" target="_blank" class="contato-item">
+                    <div class="contato-icon">
+                        <i class="fa-brands fa-github"></i>
+                    </div>
+                    <div class="contato-detalhes">
+                        <small>REPOSITÓRIO DO PROJETO</small>
+                        <strong>github.com/AMShub</strong>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ================= RODAPÉ ================= -->
+<footer class="hub-footer-global">
+    <div class="footer-inner">
+        <div class="footer-status">
+            <span class="pulse-dot"></span>
+            <span>AMS Hub &copy; 2026 &bull; Desenvolvido por Manuela, Maria Eduarda e Laura</span>
+        </div>
+        <div class="circuit-accent">
+            <span class="circuit-line"></span>
+            <span class="circuit-dot"></span>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>
