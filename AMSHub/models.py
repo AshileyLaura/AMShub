@@ -307,6 +307,20 @@ class Vaga(models.Model):
     def __str__(self):
         return str(self.id_vaga)
 
+class Candidatura(models.Model):
+    id_candidatura = models.AutoField(primary_key=True)
+    id_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='candidaturas')
+    id_vaga = models.ForeignKey(Vaga, on_delete=models.CASCADE, related_name='candidaturas')
+    data_candidatura = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=50, default='Enviada')
+
+    class Meta:
+        unique_together = ('id_aluno', 'id_vaga')
+        ordering = ['-data_candidatura']
+
+    def __str__(self):
+        return f'{self.id_aluno} -> {self.id_vaga.cargo}'
+
 
 class Horas(models.Model):
     id_horas = models.AutoField(primary_key=True)

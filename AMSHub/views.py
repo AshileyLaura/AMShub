@@ -29,6 +29,7 @@ from .models import (
     Certificado,
     Viagem,
     Vaga,
+    Candidatura,
     Horas,
     Notificacao,
     Atividade,
@@ -1422,6 +1423,52 @@ def certificadoa(request):
         }
     )
 
+@tipo_permitido('aluno')
+def vagasa(request):
+    aluno = obter_aluno(request)
+    hoje = timezone.localdate()
+
+    vagas = list(
+        Vaga.objects.filter(data_limite__gte=hoje)
+        .select_related('id_empresa')
+        .order_by('data_limite', '-id_vaga')
+    )
+    candidaturas_ids = set(
+        Candidatura.objects.filter(id_aluno=aluno).values_list('id_vaga_id', flat=True)
+    )
+
+    for vaga in vagas:
+        vaga.ja_candidatado = vaga.id_vaga in candidaturas_ids
+
+    return render(
+        request,
+        'aluno/vagasa.html',
+        {
+            'aluno': aluno,
+            'vagas': vagas,
+            'nome_usuario': nome_do_usuario(request),
+        }
+    )
+
+@tipo_permitido('aluno')
+def candidatar_vagaa(request, id_vaga):
+    if request.method != 'POST':
+        return redirect('vagasa')
+
+    aluno = obter_aluno(request)
+    hoje = timezone.localdate()
+    vaga = get_object_or_404(Vaga, id_vaga=id_vaga)
+
+    if vaga.data_limite < hoje:
+        messages.error(request, 'O prazo para inscrição nesta vaga já encerrou.')
+    elif Candidatura.objects.filter(id_aluno=aluno, id_vaga=vaga).exists():
+        messages.error(request, 'Você já se candidatou para esta vaga.')
+    else:
+        Candidatura.objects.create(id_aluno=aluno, id_vaga=vaga)
+        messages.success(request, f'Candidatura enviada para "{vaga.cargo}" na empresa {vaga.id_empresa.nome}!')
+
+    return redirect('vagasa')
+
 # ---------------------------------------------------------------------
 # CADASTRO DE USUÁRIOS
 # ---------------------------------------------------------------------
@@ -1850,7 +1897,12 @@ def atividadesp(request):
 
     atividades = minhas.select_related(
         'id_mentoria'
+    ).prefetch_related(
+        'entregaatividade_set__id_aluno__perfil__user'
     ).order_by('-id_atividade')
+
+    for atividade in atividades:
+        atividade.lista_entregas = list(atividade.entregaatividade_set.all())
 
     contexto = {
         'usuario': request.user,
@@ -2101,13 +2153,16 @@ def criartarefase(request):
             'descricao': editando.descricao,
         }
     tarefas = list(
-        minhas.select_related('id_mentoria').order_by('-id_atividade')
+        minhas.select_related('id_mentoria').prefetch_related(
+            'entregaatividade_set__id_aluno__perfil__user'
+        ).order_by('-id_atividade')
     )
     for tarefa in tarefas:
         tarefa.situacao, tarefa.situacao_texto = situacao_atividade(
             tarefa,
             hoje
         )
+        tarefa.lista_entregas = list(tarefa.entregaatividade_set.all())
     return render(request, 'empresa/criartarefase.html', {
         'usuario': request.user,
         'nome_usuario': nome_do_usuario(request),

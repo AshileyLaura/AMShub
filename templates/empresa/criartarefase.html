@@ -198,9 +198,21 @@ Organize atividades e acompanhe o desenvolvimento dos alunos.
                         <td>{{ tarefa.prioridade }}</td>
                         <td>{{ tarefa.situacao_texto }}</td>
                         <td>
-                            <a href="{% url 'criartarefase' %}?editar={{ tarefa.pk }}" class="btn btn-sm btn-outline-primary">
-                                <i class="fa-solid fa-pen"></i> Editar
-                            </a>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEntregasTarefa{{ tarefa.pk }}"
+                                >
+                                    <i class="fa-solid fa-inbox"></i>
+                                    Entregas ({{ tarefa.lista_entregas|length }})
+                                </button>
+
+                                <a href="{% url 'criartarefase' %}?editar={{ tarefa.pk }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-solid fa-pen"></i> Editar
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
@@ -216,6 +228,61 @@ Organize atividades e acompanhe o desenvolvimento dos alunos.
 
     </div>
 
+    <!-- MODAIS DE ENTREGAS DOS ALUNOS -->
+    {% for tarefa in tarefas %}
+    <div class="modal fade" id="modalEntregasTarefa{{ tarefa.pk }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title mb-1">Entregas: {{ tarefa.titulo }}</h5>
+                        <small class="text-muted">Respostas enviadas pelos alunos</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+
+                <div class="modal-body">
+                    {% for entrega in tarefa.lista_entregas %}
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong>
+                                <i class="fa-solid fa-user-graduate me-1"></i>
+                                {{ entrega.id_aluno.perfil.user.get_full_name|default:entrega.id_aluno.perfil.user.username }}
+                            </strong>
+                            <small class="text-muted">
+                                <i class="fa-solid fa-clock me-1"></i>
+                                {{ entrega.data_envio|date:"d/m/Y H:i" }}
+                            </small>
+                        </div>
+
+                        {% if entrega.texto_resposta %}
+                        <p class="mb-2">{{ entrega.texto_resposta|linebreaksbr }}</p>
+                        {% endif %}
+
+                        {% if entrega.link %}
+                        <a href="{{ entrega.link }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Abrir Link Enviado
+                        </a>
+                        {% endif %}
+
+                        {% if entrega.arquivo %}
+                        <a href="{{ entrega.arquivo.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="fa-solid fa-download me-1"></i> Baixar Arquivo Anexo
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fa-solid fa-inbox fa-2x mb-2"></i>
+                        <p class="mb-0">Nenhum aluno entregou esta tarefa ainda.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
 </section>
 
-{% endblock %}
+{% endblock %}  

@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+AMS Hub - Vagas e Oportunidades
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'Aluno.css' %}">
+<link rel="stylesheet" href="{% static 'alunopaginas.css' %}">
+{% endblock %}
+
+{% block saudacao %}
+<h1>Vagas e Oportunidades</h1>
+{% endblock %}
+
+{% block descricao %}
+Explore vagas de estágio, emprego e jovem aprendiz das empresas parceiras.
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="{% url 'aluno' %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'minhasmentoriasa' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Minhas Mentorias</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'atividadesa' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'meusportifoliosa' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Meus Portfólios</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'certificadoa' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Certificados</span>
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{% url 'vagasa' %}">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Vagas</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'pendenciasa' %}">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Pendências</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'logout' %}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<section class="aluno-pagina vagas-aluno">
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if 'error' in message.tags %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show"
+             role="alert">
+            {{ message }}
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Fechar">
+            </button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="pagina-cabecalho">
+        <div>
+            <h2>Oportunidades Disponíveis</h2>
+            <p>
+                Candidate-se às vagas abertas pelas empresas parceiras do programa AMS.
+            </p>
+        </div>
+
+        <span class="contador">
+            <i class="fa-solid fa-briefcase me-1"></i>
+            {{ vagas|length }} vaga{{ vagas|length|pluralize }}
+        </span>
+    </div>
+
+    <div class="filtros-pagina mb-4">
+        <div class="campo-pesquisa">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+                type="search"
+                id="pesquisarVagas"
+                placeholder="Pesquisar por cargo, empresa ou modalidade..."
+                aria-label="Pesquisar vagas"
+            >
+        </div>
+    </div>
+
+    <div class="row g-4" id="listaVagas">
+        {% for vaga in vagas %}
+        <div class="col-md-6 col-lg-4 vaga-card">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-danger">
+                                {{ vaga.tipo|default:"Estágio" }}
+                            </span>
+                            <span class="badge bg-light text-dark border">
+                                {{ vaga.modalidade|default:"Presencial" }}
+                            </span>
+                        </div>
+
+                        <h5 class="card-title mb-1">{{ vaga.cargo }}</h5>
+                        <p class="text-muted small mb-3">
+                            <i class="fa-solid fa-building me-1"></i>
+                            {{ vaga.id_empresa.nome }}
+                            {% if vaga.localizacao %}
+                                &bull; {{ vaga.localizacao }}
+                            {% endif %}
+                        </p>
+
+                        <p class="card-text small">
+                            {{ vaga.descricao }}
+                        </p>
+
+                        {% if vaga.requisitos %}
+                        <div class="border rounded p-2 bg-light small mb-3">
+                            <strong>Requisitos:</strong> {{ vaga.requisitos }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="border-top pt-3 mt-2 d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fa-solid fa-calendar-days me-1"></i>
+                            Até {{ vaga.data_limite|date:"d/m/Y" }}
+                            {% if vaga.quantidade %}
+                                <span class="d-block">{{ vaga.quantidade }} vaga{{ vaga.quantidade|pluralize }}</span>
+                            {% endif %}
+                        </small>
+
+                        {% if vaga.ja_candidatado %}
+                            <span class="btn btn-sm btn-success disabled">
+                                <i class="fa-solid fa-check me-1"></i> Candidatado
+                            </span>
+                        {% else %}
+                            <form method="post" action="{% url 'candidatar_vagaa' vaga.id_vaga %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-paper-plane me-1"></i> Candidatar-se
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="estado-vazio text-center py-5">
+                <i class="fa-solid fa-briefcase fa-2x mb-2"></i>
+                <h3>Nenhuma vaga aberta no momento</h3>
+                <p class="text-muted">Novas oportunidades das empresas parceiras aparecerão aqui.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <p id="nenhumResultadoVagas" class="text-center text-muted py-4 d-none">
+        Nenhuma vaga corresponde à pesquisa.
+    </p>
+
+</section>
+
+{% endblock %}
+
+{% block js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const pesquisa = document.getElementById("pesquisarVagas");
+    const cards = document.querySelectorAll("#listaVagas .vaga-card");
+    const mensagem = document.getElementById("nenhumResultadoVagas");
+
+    if (!pesquisa) return;
+
+    pesquisa.addEventListener("input", function () {
+        const termo = pesquisa.value.toLowerCase().trim();
+        let encontrados = 0;
+
+        cards.forEach(function (card) {
+            const corresponde = card.textContent.toLowerCase().includes(termo);
+            card.classList.toggle("d-none", !corresponde);
+            if (corresponde) encontrados++;
+        });
+
+        mensagem.classList.toggle("d-none", encontrados > 0 || cards.length === 0);
+    });
+});
+</script>
+{% endblock %}
