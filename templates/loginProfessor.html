@@ -4,41 +4,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Professor</title>
-<link rel="stylesheet" href="{% static 'loginProfessor.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <title>Login - Professor | AMS Hub</title>
+    <link rel="icon" type="image/png" href="{% static 'imagens/logoprofessor.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'loginProfessor.css' %}">
 </head>
 <body>
 
-<div class="container">
+<div class="login-wrapper">
     <div class="lado-esquerdo">
-        <img src="/static/imagens/logoprofessor.png" class="logo" alt="Logo">
-        <img src="/static/imagens/professor.png.png" class="astronauta" alt="Astronauta">
-    </div>
-    <div class="lado-direito">
-        <div class="card-login">
-            <h1>Professores</h1>
-            <div class="icone">
-                <i class="fa-solid fa-user"></i>
+        <div class="showcase-top">
+            <div class="brand-box">
+                <div class="logo-frame">
+                    <img src="{% static 'imagens/logoprofessor.png' %}" alt="Logo AMS Hub">
+                </div>
+                <div class="brand-text">
+                    <strong>AMS <span>HUB</span></strong>
+                    <span class="brand-badge">DEV &bull; SYSTEM</span>
+                </div>
             </div>
+            <a href="/" class="btn-voltar-topo">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Início</span>
+            </a>
+        </div>
+
+        <div class="showcase-center">
+            <div class="ilustracao-glow">
+                <img src="{% static 'imagens/professor.png.png' %}" class="ilustracao-img" alt="Professor AMS">
+            </div>
+            <div class="showcase-caption">
+                <h2>Portal do Professor</h2>
+                <p>Gerencie atividades, acompanhe mentorias e avalie o desempenho dos alunos.</p>
+            </div>
+        </div>
+
+        <div class="showcase-bottom">
+            <span>PERFIL &bull; DOCENTE</span>
+            <div class="circuit-accent">
+                <span class="circuit-line"></span>
+                <span class="circuit-dot"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="lado-direito">
+        <div class="mobile-back">
+            <a href="/"><i class="fa-solid fa-arrow-left"></i> Voltar para seleção de perfil</a>
+        </div>
+
+        <div class="card-login">
+            <div class="login-top-badge">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <span>ACESSO &bull; PROFESSOR</span>
+            </div>
+
+            <h1>Entrar na conta</h1>
+            <p class="login-sub">Insira seu e-mail institucional e senha para continuar.</p>
+
             <form method="POST">
                 {% csrf_token %}
-        
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" placeholder="seu@email.com" value="{{ email }}" required>
-                <input type="password" name="senha" placeholder="Senha" required>
-        
-                <button type="submit">Entrar</button>
-            </form>
-            {% if erro %}
-                <div class="erro-mensagem" style="margin-top: 15px; padding: 10px 15px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 6px; font-size: 0.9rem; text-align: center;">
-                    <i class="fa-solid fa-circle-exclamation me-1"></i>
-                    {{ erro }}
+
+                <div class="campo-grupo">
+                    <label for="email">E-mail</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" value="{{ email }}" required>
+                    </div>
                 </div>
-            {% endif %} 
+
+                <div class="campo-grupo">
+                    <label for="senha">Senha</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="senha" name="senha" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-entrar">
+                    <span>Entrar</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            {% if erro %}
+                <div class="erro-mensagem">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>{{ erro }}</span>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
+
 </body>
 </html>

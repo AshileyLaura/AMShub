@@ -1,159 +1,427 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+:root {
+    --roxo: #6d28d9;
+    --roxo-vibrante: #7c3aed;
+    --roxo-hover: #5b21b6;
+    --roxo-neon: #a78bfa;
+    --roxo-borda: rgba(109, 40, 217, 0.18);
+    --preto: #0f0a19;
+    --preto-roxo: #1a0f2e;
+    --roxo-profundo: #2b1454;
+    --branco: #ffffff;
+    --fundo: #f4f2fb;
+    --texto-secundario: #524b66;
 }
 
-body{
-    width:100%;
-    height:100vh;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.container{
-    display:flex;
-    width:100%;
-    height:100vh;
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    background-color: var(--fundo);
+    color: var(--preto);
+    -webkit-font-smoothing: antialiased;
 }
 
-
-.lado-esquerdo{
-    width:55%;
-    background:#ececec;
-    position:relative;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
+.login-wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
 }
 
-.logo{
-    position:absolute;
-    top:20px;
-    left:20px;
-    width:120px;
+/* ================= LADO ESQUERDO (SHOWCASE ROXO + PRETO) ================= */
+.lado-esquerdo {
+    width: 50%;
+    background:
+        radial-gradient(circle at 20% 15%, rgba(139, 92, 246, 0.38) 0%, transparent 48%),
+        radial-gradient(circle at 80% 85%, rgba(124, 58, 237, 0.25) 0%, transparent 50%),
+        linear-gradient(165deg, var(--roxo-profundo) 0%, var(--preto-roxo) 55%, var(--preto) 100%);
+    color: var(--branco);
+    padding: 36px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
 }
 
-.astronauta{
-    width:130%;
-    max-width:1050px;
+.lado-esquerdo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(167, 139, 250, 0.16) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
 }
 
-
-.lado-direito{
-    width:45%;
-
-    background:linear-gradient(
-        180deg,
-        #d3b4ff 0%,
-        #8f46ff 55%,
-        #5d00d9 100%
-    );
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
+.showcase-top {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
-.card-login{
-    width:420px;
-    background:#f5f5f5;
+.brand-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-    padding:40px;
-
-    border-radius:20px;
-
-    text-align:center;
-
+.logo-frame {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    background: var(--branco);
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-shadow:
-    0 0 20px rgba(255,255,255,.6);
+        0 0 0 2px rgba(167, 139, 250, 0.35),
+        0 8px 18px rgba(0, 0, 0, 0.28);
 }
 
-.card-login h1{
-    color:#6b21d8;
-    margin-bottom:20px;
-    font-size:34px;
+.logo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-.icone{
-    width:90px;
-    height:90px;
-
-    border-radius:50%;
-
-    background:#6b21d8;
-
-    color:white;
-
-    margin:0 auto 25px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    font-size:40px;
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
-.card-login input{
-    width:100%;
+.brand-text strong {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--branco);
+    line-height: 1;
+}
 
-    border:none;
+.brand-text strong span {
+    color: var(--roxo-neon);
+}
 
-    padding:15px;
+.brand-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #d8ccff;
+    background: rgba(124, 58, 237, 0.3);
+    border: 1px solid rgba(167, 139, 250, 0.28);
+    padding: 2px 7px;
+    border-radius: 5px;
+    width: fit-content;
+}
 
-    margin-bottom:15px;
+.btn-voltar-topo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(237, 233, 254, 0.88);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
 
-    border-radius:25px;
+.btn-voltar-topo:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--branco);
+}
 
-    text-align:center;
+.showcase-center {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: auto 0;
+}
 
+.ilustracao-glow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 390px;
+}
+
+.ilustracao-glow::before {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.45) 0%, transparent 70%);
+    filter: blur(18px);
+}
+
+.ilustracao-img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-height: 360px;
+    object-fit: contain;
+    filter: drop-shadow(0 22px 32px rgba(0, 0, 0, 0.45));
+}
+
+.showcase-caption {
+    margin-top: 18px;
+    max-width: 380px;
+}
+
+.showcase-caption h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--branco);
+    margin-bottom: 6px;
+}
+
+.showcase-caption p {
+    font-size: 0.86rem;
+    color: rgba(237, 233, 254, 0.72);
+    line-height: 1.5;
+}
+
+.showcase-bottom {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(237, 233, 254, 0.65);
+}
+
+.circuit-accent {
+    display: flex;
+    align-items: center;
+}
+
+.circuit-line {
+    width: 34px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--roxo-neon));
+}
+
+.circuit-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 2px solid var(--roxo-neon);
+    background-color: var(--preto);
+}
+
+/* ================= LADO DIREITO (FORMULÁRIO) ================= */
+.lado-direito {
+    width: 50%;
+    background-color: var(--fundo);
+    background-image:
+        radial-gradient(at 85% 10%, rgba(124, 58, 237, 0.09) 0px, transparent 45%),
+        radial-gradient(rgba(109, 40, 217, 0.14) 1px, transparent 1px);
+    background-size: 100% 100%, 22px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 32px 24px;
+}
+
+.mobile-back {
+    display: none;
+    width: 100%;
+    max-width: 430px;
+    margin-bottom: 14px;
+}
+
+.mobile-back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--texto-secundario);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.card-login {
+    width: 100%;
+    max-width: 430px;
+    background: var(--branco);
+    border: 1px solid var(--roxo-borda);
+    border-radius: 24px;
+    padding: 40px 36px;
     box-shadow:
-    0 4px 10px rgba(0,0,0,.15);
-
-    outline:none;
+        0 20px 50px -12px rgba(26, 15, 46, 0.12),
+        0 4px 12px -2px rgba(15, 10, 25, 0.04);
 }
 
-.card-login button{
-    border:none;
+.login-top-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--roxo);
+    background: rgba(124, 58, 237, 0.10);
+    border: 1px solid rgba(124, 58, 237, 0.22);
+    padding: 5px 11px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+}
 
-    padding:14px 50px;
+.card-login h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--preto);
+    margin-bottom: 6px;
+}
 
-    border-radius:25px;
+.login-sub {
+    font-size: 0.88rem;
+    color: var(--texto-secundario);
+    margin-bottom: 26px;
+}
 
-    cursor:pointer;
+.campo-grupo {
+    margin-bottom: 18px;
+}
 
-    background:white;
+.campo-grupo label {
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--preto);
+    margin-bottom: 7px;
+}
 
-    color:#6b21d8;
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
-    font-weight:bold;
+.input-wrapper i.input-icon {
+    position: absolute;
+    left: 14px;
+    color: #8b82a3;
+    font-size: 0.92rem;
+    pointer-events: none;
+    transition: color 0.18s ease;
+}
 
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    border: 1px solid var(--roxo-borda);
+    border-radius: 12px;
+    background-color: #faf9fe;
+    color: var(--preto);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    outline: none;
+    transition: all 0.18s ease;
+}
+
+.input-wrapper input:focus {
+    background-color: var(--branco);
+    border-color: var(--roxo-vibrante);
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14);
+}
+
+.input-wrapper:focus-within i.input-icon {
+    color: var(--roxo-vibrante);
+}
+
+.btn-entrar {
+    width: 100%;
+    margin-top: 8px;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--roxo-vibrante) 0%, var(--roxo) 100%);
+    color: var(--branco);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.96rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     box-shadow:
-    0 4px 10px rgba(0,0,0,.15);
-
-    transition:.3s;
+        0 8px 20px -4px rgba(109, 40, 217, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    transition: all 0.2s ease;
 }
 
-.card-login button:hover{
-    transform:scale(1.05);
+.btn-entrar:hover {
+    background: linear-gradient(135deg, var(--roxo) 0%, var(--roxo-hover) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px -4px rgba(109, 40, 217, 0.55);
 }
 
+.erro-mensagem {
+    margin-top: 16px;
+    padding: 11px 14px;
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    font-size: 0.86rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
 
-@media(max-width:900px){
-
-    .container{
-        flex-direction:column;
+@media (max-width: 960px) {
+    .lado-esquerdo {
+        display: none;
     }
 
-    .lado-esquerdo{
-        display:none;
+    .lado-direito {
+        width: 100%;
     }
 
-    .lado-direito{
-        width:100%;
+    .mobile-back {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-login {
+        padding: 30px 22px;
+        border-radius: 20px;
     }
 
-    .card-login{
-        width:90%;
+    .card-login h1 {
+        font-size: 1.5rem;
     }
 }

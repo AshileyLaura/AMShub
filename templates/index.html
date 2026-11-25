@@ -5,70 +5,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMS Hub</title>
+    <title>AMS Hub — Plataforma de Gestão</title>
 
+    <link rel="icon" type="image/png" href="{% static 'imagens/logoaluno.png' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{% static 'AMSHub.css' %}">
-
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
 <div class="background">
 
-    <div class="card">
+    <main class="hub-card">
 
-        <img src="{% static 'imagens/logoprofessor.png' %}" class="logo">
+        <div class="hub-header">
+            <div class="brand-pill">
+                <div class="logo-frame">
+                    <img src="{% static 'imagens/logoprofessor.png' %}" alt="Logo AMS Hub">
+                </div>
+                <div class="brand-info">
+                    <span class="brand-name">AMS <span>HUB</span></span>
+                    <span class="brand-tag">DEV &bull; SYSTEM</span>
+                </div>
+            </div>
 
-        <h1>Bem-vindo ao AMS Hub</h1>
-
-        <p>Selecione o perfil para acessar o sistema.</p>
+            <h1>Bem-vindo ao <span>AMS Hub</span></h1>
+            <p class="subtitle">Selecione o seu perfil de acesso para entrar no ambiente acadêmico e corporativo.</p>
+        </div>
 
         {% if messages %}
+        <div class="mensagens-box">
             {% for message in messages %}
-                <p>{{ message }}</p>
+                <div class="mensagem-alerta">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>{{ message }}</span>
+                </div>
             {% endfor %}
+        </div>
         {% endif %}
 
-        <div class="botoes">
+        <div class="perfis-grid">
 
-            <a href="/login/aluno/" class="botao">
-                <i class="fa-solid fa-user-graduate"></i>
-                <span>Aluno</span>
+            <a href="/login/aluno/" class="perfil-card">
+                <div class="perfil-icon">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div class="perfil-texto">
+                    <strong>Aluno</strong>
+                    <small>Mentorias, entregas e portfólio</small>
+                </div>
+                <i class="fa-solid fa-arrow-right perfil-seta"></i>
             </a>
 
-            <a href="/login/professor/"  class="botao">
-                <i class="fa-solid fa-chalkboard-user"></i>
-                <span>Professor</span>
+            <a href="/login/professor/" class="perfil-card">
+                <div class="perfil-icon">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div class="perfil-texto">
+                    <strong>Professor</strong>
+                    <small>Avaliações, agenda e turmas</small>
+                </div>
+                <i class="fa-solid fa-arrow-right perfil-seta"></i>
             </a>
 
-            <a href="/login/coordenador/" class="botao">
-                <i class="fa-solid fa-user-tie"></i>
-                <span>Coordenador</span>
+            <a href="/login/coordenador/" class="perfil-card">
+                <div class="perfil-icon">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="perfil-texto">
+                    <strong>Coordenador</strong>
+                    <small>Gestão de alunos e certificados</small>
+                </div>
+                <i class="fa-solid fa-arrow-right perfil-seta"></i>
             </a>
 
-            <a href="/login/supervisor/" class="botao">
-                <i class="fa-solid fa-user-shield"></i>
-                <span>Supervisor</span>
+            <a href="/login/supervisor/" class="perfil-card">
+                <div class="perfil-icon">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div class="perfil-texto">
+                    <strong>Supervisor</strong>
+                    <small>Acompanhamento e relatórios</small>
+                </div>
+                <i class="fa-solid fa-arrow-right perfil-seta"></i>
             </a>
 
-            <a href="/login/empresa/" class="botao empresa">
-                <i class="fa-solid fa-building"></i>
-                <span>Empresa</span>
+            <a href="/login/empresa/" class="perfil-card perfil-empresa">
+                <div class="perfil-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+                <div class="perfil-texto">
+                    <strong>Empresa Parceira</strong>
+                    <small>Oportunidades, vagas e mentorias corporativas</small>
+                </div>
+                <i class="fa-solid fa-arrow-right perfil-seta"></i>
             </a>
 
         </div>
 
-        <footer>
-
-            <p>AMS Hub © 2026</p>
-
-            <small>Sistema de Gestão Escolar</small>
-
+        <footer class="hub-footer">
+            <div class="footer-status">
+                <span class="pulse-dot"></span>
+                <span>AMS Hub &copy; 2026 &bull; Sistema de Gestão Escolar</span>
+            </div>
+            <div class="circuit-accent">
+                <span class="circuit-line"></span>
+                <span class="circuit-dot"></span>
+            </div>
         </footer>
 
-    </div>
+    </main>
 
 </div>
 
