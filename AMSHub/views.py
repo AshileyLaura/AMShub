@@ -292,81 +292,100 @@ def pendenciasa(request):
         }
     )
 
+@tipo_permitido('aluno')
 def aluno(request):
     aluno = obter_aluno(request)
     hoje = timezone.localdate()
+    ano_atual = hoje.year
+    
     atividades = list(atividades_do_aluno(aluno))
     pendentes, concluidas, atrasadas = classificar_atividades(
         atividades,
         hoje
     )
-    horas_mentorias = sum(
-        participacao.horas
-        for participacao in Participacao.objects.filter(
-            id_aluno=aluno,
-            presenca=True
-        )
-    )
-    horas_atividades = sum(
-        atividade.horas
-        for atividade in concluidas
-    )
-    certificados = list(
-        Certificado.objects.filter(id_aluno=aluno)
-    )
-    horas_certificados = sum(
-        certificado.carga_horaria
-        for certificado in certificados
-        if classe_certificado(certificado.status) == 'aprovado'
-    )
-    horas_viagens = sum(
-        viagem.horas
-        for viagem in Viagem.objects.filter(id_aluno=aluno)
-    )
-    horas_complementares = sum(
-        hora.quantidade
-        for hora in Horas.objects.filter(id_aluno=aluno)
-    )
+    
+    certificados = list(Certificado.objects.filter(id_aluno=aluno))
+    
+    # Listas mensais separadas: Aprovadas vs Pendentes/Em Análise
+    aprovadas_por_mes = [0.0] * 12
+    pendentes_por_mes = [0.0] * 12
+
+    # 1. Horas de mentorias
+    participacoes = Participacao.objects.filter(id_aluno=aluno, presenca=True, id_mentoria__data__year=ano_atual)
+    for p in participacoes:
+        if p.id_mentoria and p.id_mentoria.data:
+            mes_idx = p.id_mentoria.data.month - 1
+            aprovadas_por_mes[mes_idx] += float(p.horas or 0)
+
+    # 2. Horas de atividades concluídas (aprovadas) e pendentes/atrasadas
+    for atv in concluidas:
+        if atv.data_entrega and atv.data_entrega.year == ano_atual:
+            mes_idx = atv.data_entrega.month - 1
+            aprovadas_por_mes[mes_idx] += float(atv.horas or 0)
+
+    for atv in pendentes + atrasadas:
+        if atv.data_entrega and atv.data_entrega.year == ano_atual:
+            mes_idx = atv.data_entrega.month - 1
+            pendentes_por_mes[mes_idx] += float(atv.horas or 0)
+
+    # 3. Horas de certificados (Aprovados vs Em Análise/Pendentes)
+    for cert in certificados:
+        status_cls = classe_certificado(cert.status)
+        data_cert = getattr(cert, 'data_criacao', None) or hoje
+        if data_cert.year == ano_atual:
+            mes_idx = data_cert.month - 1
+            if status_cls == 'aprovado':
+                aprovadas_por_mes[mes_idx] += float(cert.carga_horaria or 0)
+            elif status_cls in ('analise', 'pendente'):
+                pendentes_por_mes[mes_idx] += float(cert.carga_horaria or 0)
+
+    # 4. Horas de viagens
+    for viagem in Viagem.objects.filter(id_aluno=aluno, data__year=ano_atual):
+        mes_idx = viagem.data.month - 1
+        aprovadas_por_mes[mes_idx] += float(viagem.horas or 0)
+
+    # 5. Horas complementares avulsas
+    for hora in Horas.objects.filter(id_aluno=aluno):
+        mes_idx = hoje.month - 1
+        aprovadas_por_mes[mes_idx] += float(hora.quantidade or 0)
+
+    aprovadas_por_mes = [round(h, 2) for h in aprovadas_por_mes]
+    pendentes_por_mes = [round(h, 2) for h in pendentes_por_mes]
+
+    # Cálculos dos cards superiores
+    horas_mentorias = sum(p.horas for p in Participacao.objects.filter(id_aluno=aluno, presenca=True))
+    horas_atividades = sum(atividade.horas for atividade in concluidas)
+    horas_certificados_aprovados = sum(c.carga_horaria for c in certificados if classe_certificado(c.status) == 'aprovado')
+    horas_certificados_analise = sum(c.carga_horaria for c in certificados if classe_certificado(c.status) in ('analise', 'pendente'))
+    horas_viagens = sum(viagem.horas for viagem in Viagem.objects.filter(id_aluno=aluno))
+    horas_complementares = sum(hora.quantidade for hora in Horas.objects.filter(id_aluno=aluno))
+    
+    # Total acumulado (já considerando os cursos enviados para mostrar progresso rumo às 200h)
     total_horas = (
         horas_mentorias
         + horas_atividades
-        + horas_certificados
+        + horas_certificados_aprovados
+        + horas_certificados_analise
         + horas_viagens
         + horas_complementares
     )
-    certificados_pendentes = sum(
-        1 for certificado in certificados
-        if classe_certificado(certificado.status) != 'aprovado'
-    )
-    horas_pendentes = sum(
-        atividade.horas
-        for atividade in pendentes + atrasadas
-    )
-    atividades_mes = sum(
-        1 for atividade in atividades
-        if atividade.data_entrega
-        and atividade.data_entrega.year == hoje.year
-        and atividade.data_entrega.month == hoje.month
-    )
-    ultimas_atividades = sorted(
-        concluidas,
-        key=lambda atividade: atividade.id_atividade,
-        reverse=True
-    )[:5]
+    
+    certificados_pendentes = sum(1 for c in certificados if classe_certificado(c.status) != 'aprovado')
+    horas_pendentes = sum(atividade.horas for atividade in pendentes + atrasadas) + horas_certificados_analise
+    atividades_mes = sum(1 for atividade in atividades if atividade.data_entrega and atividade.data_entrega.year == hoje.year and atividade.data_entrega.month == hoje.month)
+    ultimas_atividades = sorted(concluidas, key=lambda a: a.id_atividade, reverse=True)[:5]
+
     contexto = {
         'usuario': request.user,
         'aluno': aluno,
         'nome_usuario': nome_do_usuario(request),
-        'horas_mentorias': horas_mentorias,
-        'horas_atividades': horas_atividades,
-        'horas_certificados': horas_certificados,
-        'horas_viagens': horas_viagens,
-        'horas_complementares': horas_complementares,
         'total_horas': total_horas,
         'certificados_pendentes': certificados_pendentes,
         'horas_pendentes': horas_pendentes,
         'atividades_mes': atividades_mes,
         'ultimas_atividades': ultimas_atividades,
+        'dados_aprovadas_meses': aprovadas_por_mes,
+        'dados_pendentes_meses': pendentes_por_mes,
     }
     return render(request, 'Aluno.html', contexto)
 

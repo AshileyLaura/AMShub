@@ -727,4 +727,20 @@ a.contato-item:hover {
     .contato-box {
         padding: 28px 22px;
     }
+/* Força absoluta para os links e textos de contato no index ficarem brancos e sem sublinhado azul */
+.contato-detalhes a,
+.contato-detalhes span,
+.contato-detalhes strong {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+.contato-detalhes a:hover {
+    color: var(--roxo-neon) !important;
+    text-decoration: underline !important;
+}
+
+.contato-detalhes a.contato-tel {
+    color: rgba(237, 233, 254, 0.85) !important;
+}
 }

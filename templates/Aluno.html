@@ -132,11 +132,8 @@ Aqui você encontra tudo sobre seus portfólios.
 <section class="content row g-4">
 
     <div class="col-xl-7">
-
         <div class="atividades h-100">
-
             <h2>Últimas Realizações</h2>
-
             <ul>
                 {% for atividade in ultimas_atividades %}
                 <li>
@@ -155,22 +152,16 @@ Aqui você encontra tudo sobre seus portfólios.
                 </li>
                 {% endfor %}
             </ul>
-
         </div>
-
     </div>
 
     <div class="col-xl-5">
-
-        <div class="grafico h-100">
-
-            <h2>Horas Complementares</h2>
-
-            <canvas id="graficoHoras"></canvas>
-
-        </div>
-
+    <div class="grafico h-100">
+        <h2>Horas Complementares</h2>
+        <!-- Passando os 12 meses reais injetados pelo Django -->
+        <canvas id="graficoHoras" data-valores="{{ dados_grafico_meses|safe }}"></canvas>
     </div>
+</div>
 
 </section>
 
