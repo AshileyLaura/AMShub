@@ -1917,11 +1917,11 @@ def atividadesp(request):
     atividades = minhas.select_related(
         'id_mentoria'
     ).prefetch_related(
-        'entregaatividade_set__id_aluno__perfil__user'
+        'entregas__id_aluno__perfil__user'
     ).order_by('-id_atividade')
 
     for atividade in atividades:
-        atividade.lista_entregas = list(atividade.entregaatividade_set.all())
+        atividade.lista_entregas = list(atividade.entregas.all())
 
     contexto = {
         'usuario': request.user,
@@ -2173,7 +2173,7 @@ def criartarefase(request):
         }
     tarefas = list(
         minhas.select_related('id_mentoria').prefetch_related(
-            'entregaatividade_set__id_aluno__perfil__user'
+            'entregas__id_aluno__perfil__user'
         ).order_by('-id_atividade')
     )
     for tarefa in tarefas:
@@ -2181,7 +2181,8 @@ def criartarefase(request):
             tarefa,
             hoje
         )
-        tarefa.lista_entregas = list(tarefa.entregaatividade_set.all())
+        tarefa.lista_entregas = list(tarefa.entregas.all())
+    
     return render(request, 'empresa/criartarefase.html', {
         'usuario': request.user,
         'nome_usuario': nome_do_usuario(request),

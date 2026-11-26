@@ -72,7 +72,7 @@ AMS Hub - Certificados
 {% endblock %}
 
 {% block descricao %}
-Visualize seus certificados e envie novos documentos para aprovação.
+Visualize os seus certificados e envie novos documentos para aprovação.
 {% endblock %}
 
 
@@ -208,7 +208,7 @@ Visualize seus certificados e envie novos documentos para aprovação.
 
         </div>
         {% empty %}
-        <p>Você ainda não enviou nenhum certificado.</p>
+        <p>Ainda não enviou nenhum certificado.</p>
         {% endfor %}
 
     </section>
@@ -217,152 +217,78 @@ Visualize seus certificados e envie novos documentos para aprovação.
 
 
 <!-- MODAL ADICIONAR CERTIFICADO -->
-
 <div class="modal fade" id="modalCertificado" tabindex="-1">
-
     <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); padding: 10px;">
 
-        <div class="modal-content">
-
-            <div class="modal-header">
-
+            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 24px 24px 16px 24px;">
                 <div>
-                    <h2>Adicionar certificado</h2>
-                    <p>
-                        Envie um novo certificado para análise do coordenador.
-                    </p>
+                    <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Adicionar certificado</h2>
+                    <p style="font-size: 0.85rem; color: #64748b; margin: 0;">Envie um novo certificado para análise do coordenador.</p>
                 </div>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
-
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-
-            <div class="modal-body">
-
+            <div class="modal-body" style="padding: 24px;">
                 <form method="POST" action="{% url 'certificadoa' %}" enctype="multipart/form-data">
-
                     {% csrf_token %}
 
-                    <div class="campo">
-
-                        <label for="nomeCertificado">
-                            Nome do certificado
-                        </label>
-
-                        <input
-                            type="text"
-                            id="nomeCertificado"
-                            name="curso"
-                            maxlength="200"
-                            placeholder="Ex: Curso de Desenvolvimento Web"
-                            required
-                        >
-
+                    <div class="campo" style="margin-bottom: 18px;">
+                        <label for="nomeCertificado" style="font-size: 0.85rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Nome do certificado</label>
+                        <input type="text" id="nomeCertificado" name="curso" maxlength="200" placeholder="Ex: Curso de Desenvolvimento Web" required style="width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; color: #1e293b; background-color: #f8fafc; box-sizing: border-box; outline: none;">
                     </div>
 
-
-                    <div class="campos-duplos">
-
+                    <div class="campos-duplos" style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 18px;">
                         <div class="campo">
-
-                            <label for="instituicao">
-                                Instituição
-                            </label>
-
-                            <input
-                                type="text"
-                                id="instituicao"
-                                name="instituicao"
-                                maxlength="200"
-                                placeholder="Nome da instituição"
-                                required
-                            >
-
+                            <label for="instituicao" style="font-size: 0.85rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Instituição</label>
+                            <input type="text" id="instituicao" name="instituicao" maxlength="200" placeholder="Nome da instituição" required style="width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; color: #1e293b; background-color: #f8fafc; box-sizing: border-box; outline: none;">
                         </div>
 
-
                         <div class="campo">
-
-                            <label for="cargaHoraria">
-                                Carga horária
-                            </label>
-
-                            <input
-                                type="number"
-                                id="cargaHoraria"
-                                name="carga_horaria"
-                                placeholder="Ex: 40"
-                                min="1"
-                                required
-                            >
-
+                            <label for="cargaHoraria" style="font-size: 0.85rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Carga horária</label>
+                            <input type="number" id="cargaHoraria" name="carga_horaria" placeholder="Ex: 40" min="1" required style="width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; color: #1e293b; background-color: #f8fafc; box-sizing: border-box; outline: none;">
                         </div>
-
                     </div>
 
-                    <!-- CAMPOS ADICIONADOS PARA ANEXO / LINK -->
-                    <div class="campo">
-                        <label for="tipoComprovante">Tipo de Comprovante</label>
-                        <select name="tipo_comprovante" id="tipoComprovante" onchange="alternarCertComprovante()" required>
+                    <div class="campo" style="margin-bottom: 18px;">
+                        <label for="tipoComprovante" style="font-size: 0.85rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Tipo de Comprovante</label>
+                        <select name="tipo_comprovante" id="tipoComprovante" onchange="alternarCertComprovante()" required style="width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; color: #1e293b; background-color: #f8fafc; box-sizing: border-box; outline: none; cursor: pointer;">
                             <option value="arquivo">Arquivo (PDF ou Imagem)</option>
                             <option value="link">Link</option>
                         </select>
                     </div>
 
-                    <div class="campo" id="campoCertArquivo">
-                        <label for="arquivo">Documento do Certificado</label>
-                        <input type="file" id="arquivo" name="arquivo" accept="image/*,.pdf">
+                    <!-- ÁREA DE UPLOAD MODERNA (Substitui o botão cinza antigo mantendo o input original funcional) -->
+                    <div class="campo" id="campoCertArquivo" style="margin-bottom: 18px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Documento do Certificado</label>
+                        <label for="arquivo" style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 18px; text-align: center; cursor: pointer; background: #f8fafc; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s;">
+                            <span style="font-size: 22px;">📁</span>
+                            <span style="font-size: 0.88rem; color: #334155;"><strong style="color: #7c3aed;">Clique para escolher</strong> ou arraste o ficheiro</span>
+                            <small id="nomeFicheiroSelecionado" style="color: #94a3b8; font-size: 0.76rem;">PDF, PNG ou JPG (máx. 10MB)</small>
+                        </label>
+                        <input type="file" id="arquivo" name="arquivo" accept="image/*,.pdf" style="display: none;" onchange="atualizarNomeFicheiro(this)">
                     </div>
 
-                    <div class="campo" id="campoCertLink" style="display: none;">
-                        <label for="link">Link do Certificado</label>
-                        <input type="url" id="link" name="link" placeholder="https://...">
+                    <div class="campo" id="campoCertLink" style="display: none; margin-bottom: 18px;">
+                        <label for="link" style="font-size: 0.85rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Link do Certificado</label>
+                        <input type="url" id="link" name="link" placeholder="https://..." style="width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; color: #1e293b; background-color: #f8fafc; box-sizing: border-box; outline: none;">
                     </div>
 
-
-                    <div class="aviso">
-
+                    <div class="aviso-modal" style="background-color: #f5f3ff; border: 1px solid #ede9fe; color: #6d28d9; padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; margin-top: 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
                         <i class="fa-solid fa-circle-info"></i>
-
-                        <span>
-                            Após o envio, o certificado ficará
-                            <strong>Em análise</strong>
-                            até ser avaliado pelo coordenador.
-                        </span>
-
+                        <span>Após o envio, o certificado ficará <strong>Em análise</strong> até ser avaliado pelo coordenador.</span>
                     </div>
 
-
-                    <div class="modal-botoes">
-
-                        <button
-                            type="button"
-                            class="btn-cancelar"
-                            data-bs-dismiss="modal">
-                            Cancelar
+                    <div class="modal-botoes" style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+                        <button type="button" class="btn-cancelar" data-bs-dismiss="modal" style="background-color: #ffffff; border: 1.5px solid #cbd5e1; color: #475569; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer;">Cancelar</button>
+                        <button type="submit" class="btn-enviar" style="background-color: #7c3aed; border: none; color: #ffffff; padding: 10px 22px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);">
+                            <i class="fa-solid fa-paper-plane"></i> Enviar para aprovação
                         </button>
-
-                        <button
-                            type="submit"
-                            class="btn-enviar">
-                            <i class="fa-solid fa-paper-plane"></i>
-                            Enviar para aprovação
-                        </button>
-
                     </div>
-
                 </form>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
 <script>
@@ -370,6 +296,15 @@ function alternarCertComprovante() {
     const tipo = document.getElementById('tipoComprovante').value;
     document.getElementById('campoCertArquivo').style.display = tipo === 'arquivo' ? 'block' : 'none';
     document.getElementById('campoCertLink').style.display = tipo === 'link' ? 'block' : 'none';
+}
+
+function atualizarNomeFicheiro(input) {
+    const labelSmall = document.getElementById('nomeFicheiroSelecionado');
+    if (input.files && input.files[0]) {
+        labelSmall.textContent = 'Ficheiro selecionado: ' + input.files[0].name;
+        labelSmall.style.color = '#7c3aed';
+        labelSmall.style.fontWeight = '600';
+    }
 }
 </script>
 
