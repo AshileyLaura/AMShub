@@ -1,4 +1,3 @@
-
 {% extends "gestao.html" %}
 {% load static %}
 
@@ -22,7 +21,7 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
 {% block menu %}
 <ul>
     <li>
-        <a href="{% url 'coordenador' %}">
+        <a href="{% if tipo_usuario == 'supervisor' %}{% url 'supervisor' %}{% else %}{% url 'coordenador' %}{% endif %}">
             <i class="fa-solid fa-house"></i>
             <span>Dashboard</span>
         </a>
@@ -160,7 +159,7 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                 type="search"
                 name="q"
                 value="{{ pesquisa }}"
-                placeholder="Pesquisar aluno por nome..."
+                placeholder="Pesquisar aluno por nome, e-mail ou RM..."
             >
         </div>
 
@@ -200,8 +199,9 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
 
                 <thead>
                     <tr>
+                        <th>RM</th>
                         <th>Aluno</th>
-                        <th>Curso</th>
+                        <th>Curso / Turma</th>
                         <th>Empresa</th>
                         <th>Horas</th>
                         <th>Status</th>
@@ -213,6 +213,8 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                     {% for aluno in alunos %}
 
                     <tr>
+                        <td><strong>{{ aluno.rm|default:"-" }}</strong></td>
+
                         <td>
                             <div class="aluno-identificacao">
                                 <div class="aluno-avatar">
@@ -225,7 +227,10 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                             </div>
                         </td>
 
-                        <td>{{ aluno.curso|default:"Não informado" }}</td>
+                        <td>
+                            <div>{{ aluno.curso|default:"Não informado" }}</div>
+                            <small class="text-muted">{{ aluno.serie_display }} - {{ aluno.turma_display }}</small>
+                        </td>
 
                         <td>{{ aluno.empresa|default:"Não vinculada" }}</td>
 
@@ -257,10 +262,12 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                                     title="Visualizar aluno"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalDetalhesAluno"
+                                    data-rm="{{ aluno.rm|default:'Não informado' }}"
                                     data-nome="{{ aluno.nome }}"
                                     data-email="{{ aluno.email }}"
                                     data-curso="{{ aluno.curso }}"
-                                    data-turma="{{ aluno.turma }}"
+                                    data-serie="{{ aluno.serie_display }}"
+                                    data-turma="{{ aluno.turma_display }}"
                                     data-empresa="{{ aluno.empresa|default:'Não vinculada' }}"
                                     data-horas="{{ aluno.horas }}"
                                     data-status="{{ aluno.status }}"
@@ -277,9 +284,11 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalAluno"
                                     data-id="{{ aluno.id }}"
+                                    data-rm="{{ aluno.rm }}"
                                     data-nome="{{ aluno.nome }}"
                                     data-email="{{ aluno.email }}"
                                     data-curso="{{ aluno.curso }}"
+                                    data-serie="{{ aluno.serie }}"
                                     data-turma="{{ aluno.turma }}"
                                     data-empresa="{{ aluno.empresa_id }}"
                                     onclick="editarAluno(this)"
@@ -294,7 +303,7 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                     {% empty %}
 
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             <div class="sem-alunos">
                                 <i class="fa-solid fa-users"></i>
                                 <h3>Nenhum aluno encontrado</h3>
@@ -340,7 +349,7 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
 
                     <div class="row g-3">
 
-                        <div class="col-12">
+                        <div class="col-md-8">
                             <label class="form-label">Nome Completo *</label>
                             <input
                                 type="text"
@@ -348,6 +357,21 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                                 id="nomeAluno"
                                 class="form-control"
                                 maxlength="150"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">RM (5 dígitos) *</label>
+                            <input
+                                type="text"
+                                name="rm"
+                                id="rmAluno"
+                                class="form-control"
+                                maxlength="5"
+                                minlength="5"
+                                pattern="\d{5}"
+                                placeholder="Ex: 12345"
                                 required
                             >
                         </div>
@@ -381,27 +405,43 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Curso *</label>
+                            <label class="form-label">Área / Curso Técnico *</label>
                             <input
                                 type="text"
                                 name="curso"
                                 id="cursoAluno"
                                 class="form-control"
                                 maxlength="200"
+                                placeholder="Ex: Desenvolvimento de Sistemas"
                                 required
                             >
                         </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label">Turma *</label>
-                            <input
-                                type="text"
-                                name="turma"
-                                id="turmaAluno"
-                                class="form-control"
-                                maxlength="200"
+                        <div class="col-md-3">
+                            <label class="form-label">Módulo / Série *</label>
+                            <select
+                                name="serie"
+                                id="serieAluno"
+                                class="form-select"
                                 required
                             >
+                                <option value="1">1º Série</option>
+                                <option value="2">2º Série</option>
+                                <option value="3">3º Série</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Turma *</label>
+                            <select
+                                name="turma"
+                                id="turmaAluno"
+                                class="form-select"
+                                required
+                            >
+                                <option value="A">Turma A</option>
+                                <option value="B">Turma B</option>
+                            </select>
                         </div>
 
                         <div class="col-12">
@@ -476,8 +516,18 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                 <div class="row g-3">
 
                     <div class="col-md-6">
-                        <strong>Curso</strong>
+                        <strong>RM</strong>
+                        <p id="detRmAluno"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <strong>Área / Curso</strong>
                         <p id="detCursoAluno"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <strong>Módulo / Série</strong>
+                        <p id="detSerieAluno"></p>
                     </div>
 
                     <div class="col-md-6">
@@ -527,9 +577,11 @@ function novoAluno() {
     document.getElementById('idAluno').value = '';
 
     document.getElementById('nomeAluno').value = '';
+    document.getElementById('rmAluno').value = '';
     document.getElementById('emailAluno').value = '';
     document.getElementById('cursoAluno').value = '';
-    document.getElementById('turmaAluno').value = '';
+    document.getElementById('serieAluno').value = '1';
+    document.getElementById('turmaAluno').value = 'A';
     document.getElementById('empresaAluno').value = '';
 
     const senha = document.getElementById('senhaAluno');
@@ -553,9 +605,11 @@ function editarAluno(botao) {
     document.getElementById('idAluno').value = dados.id;
 
     document.getElementById('nomeAluno').value = dados.nome;
+    document.getElementById('rmAluno').value = dados.rm || '';
     document.getElementById('emailAluno').value = dados.email;
     document.getElementById('cursoAluno').value = dados.curso;
-    document.getElementById('turmaAluno').value = dados.turma;
+    document.getElementById('serieAluno').value = dados.serie || '1';
+    document.getElementById('turmaAluno').value = dados.turma || 'A';
     document.getElementById('empresaAluno').value = dados.empresa;
 
     const senha = document.getElementById('senhaAluno');
@@ -573,9 +627,11 @@ function visualizarAluno(botao) {
     const dados = botao.dataset;
 
     const campos = {
+        detRmAluno: dados.rm,
         detNomeAluno: dados.nome,
         detEmailAluno: dados.email,
         detCursoAluno: dados.curso,
+        detSerieAluno: dados.serie,
         detTurmaAluno: dados.turma,
         detEmpresaAluno: dados.empresa,
         detHorasAluno: dados.horas + 'h',

@@ -83,7 +83,7 @@ Visualize e atualize suas informações pessoais.
 
         <div class="dados-principais">
             <h2>{{ nome_usuario }}</h2>
-            <p>Aluno • {{ aluno.curso }}</p>
+            <p>Aluno • {{ aluno.curso }} ({{ aluno.get_serie_display }} - {{ aluno.get_turma_display }})</p>
 
             <span class="status-aluno">
                 <i class="fa-solid fa-circle"></i>
@@ -180,13 +180,23 @@ Visualize e atualize suas informações pessoais.
         <div class="informacoes-grid">
 
             <div class="campo">
-                <span>Curso</span>
+                <span>RM</span>
+                <strong>{{ aluno.rm|default:"Não informado" }}</strong>
+            </div>
+
+            <div class="campo">
+                <span>Área / Curso</span>
                 <strong>{{ aluno.curso }}</strong>
             </div>
 
             <div class="campo">
-                <span>Turma / RM</span>
-                <strong>{{ aluno.turma }}</strong>
+                <span>Módulo / Série</span>
+                <strong>{{ aluno.get_serie_display }}</strong>
+            </div>
+
+            <div class="campo">
+                <span>Turma</span>
+                <strong>{{ aluno.get_turma_display }}</strong>
             </div>
 
         </div>
@@ -196,7 +206,6 @@ Visualize e atualize suas informações pessoais.
 </section>
 
 <script>
-    // Mostra o nome do arquivo escolhido ao lado do botão
     const inputFoto = document.getElementById('foto');
     const nomeArquivo = document.getElementById('nome-arquivo');
 

@@ -76,6 +76,17 @@ class Mentoria(models.Model):
 
 
 class Aluno(models.Model):
+    SERIE_CHOICES = [
+        ('1', '1º Série'),
+        ('2', '2º Série'),
+        ('3', '3º Série'),
+    ]
+
+    TURMA_CHOICES = [
+        ('A', 'Turma A'),
+        ('B', 'Turma B'),
+    ]
+
     id_aluno = models.AutoField(primary_key=True)
 
     perfil = models.OneToOneField(
@@ -84,9 +95,32 @@ class Aluno(models.Model):
         related_name='aluno'
     )
 
+    rm = models.CharField(
+        max_length=5,
+        unique=True,
+        null=True,
+        blank=True,
+        verbose_name="RM"
+    )
+
     curso = models.CharField(
         max_length=200,
-        default="Não informado"
+        default="Não informado",
+        verbose_name="Área/Curso"
+    )
+
+    serie = models.CharField(
+        max_length=1,
+        choices=SERIE_CHOICES,
+        default='1',
+        verbose_name="Módulo/Série"
+    )
+
+    turma = models.CharField(
+        max_length=1,
+        choices=TURMA_CHOICES,
+        default='A',
+        verbose_name="Turma"
     )
 
     empresa = models.ForeignKey(
@@ -97,10 +131,8 @@ class Aluno(models.Model):
         related_name='alunos'
     )
 
-    turma = models.CharField(max_length=200)
-
     def __str__(self):
-        return str(self.id_aluno)
+        return f"{self.rm or self.id_aluno} - {self.perfil.user.username}"
 
 
 class Professor(models.Model):
@@ -147,7 +179,6 @@ class Empresa(models.Model):
 class Atividade(models.Model):
     id_atividade = models.AutoField(primary_key=True)
 
-    # Permite criar a atividade sem mentoria obrigatoriamente vinculada (Atividades Avulsas)
     id_mentoria = models.ForeignKey(
         Mentoria,
         on_delete=models.CASCADE,
@@ -157,9 +188,7 @@ class Atividade(models.Model):
     )
 
     titulo = models.CharField(max_length=200)
-
     descricao = models.TextField(default='')
-
     data_entrega = models.DateField(
         null=True,
         blank=True
@@ -244,7 +273,6 @@ class Certificado(models.Model):
     carga_horaria = models.IntegerField()
     status = models.CharField(max_length=200)
 
-    # Campos adicionados para anexar ficheiro ou link do certificado
     arquivo = models.FileField(
         upload_to='certificados/documentos/',
         blank=True,
@@ -401,8 +429,6 @@ class EntregaPortfolio(models.Model):
         auto_now_add=True
     )
 
-    # --- Avaliação feita pelo professor da mentoria ---
-
     status = models.CharField(
         max_length=20,
         default='Pendente'
@@ -437,7 +463,6 @@ class EntregaPortfolio(models.Model):
         return f'{self.titulo} - {self.id_aluno_id}'
 
 
-# --- NOVO MODELO: ENTREGA DE ATIVIDADES ---
 class EntregaAtividade(models.Model):
     id_entrega = models.AutoField(primary_key=True)
 
@@ -479,3 +504,4 @@ class EntregaAtividade(models.Model):
 
     def __str__(self):
         return f'Entrega {self.id_atividade.titulo} - {self.id_aluno.perfil.user.username}'
+

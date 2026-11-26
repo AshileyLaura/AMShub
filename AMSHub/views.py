@@ -260,6 +260,7 @@ def contexto_gestao(request):
         'usuario': request.user,
         'nome_usuario': nome_do_usuario(request),
         'cargo_usuario': CARGOS.get(request.user.perfil.tipo, ''),
+        'tipo_usuario': request.user.perfil.tipo,
         'total_empresas': Empresa.objects.count(),
         'total_mentorias': Mentoria.objects.count(),
         'total_alunos': Aluno.objects.count(),
@@ -306,18 +307,15 @@ def aluno(request):
     
     certificados = list(Certificado.objects.filter(id_aluno=aluno))
     
-    # Listas mensais separadas: Aprovadas vs Pendentes/Em Análise
     aprovadas_por_mes = [0.0] * 12
     pendentes_por_mes = [0.0] * 12
 
-    # 1. Horas de mentorias
     participacoes = Participacao.objects.filter(id_aluno=aluno, presenca=True, id_mentoria__data__year=ano_atual)
     for p in participacoes:
         if p.id_mentoria and p.id_mentoria.data:
             mes_idx = p.id_mentoria.data.month - 1
             aprovadas_por_mes[mes_idx] += float(p.horas or 0)
 
-    # 2. Horas de atividades concluídas (aprovadas) e pendentes/atrasadas
     for atv in concluidas:
         if atv.data_entrega and atv.data_entrega.year == ano_atual:
             mes_idx = atv.data_entrega.month - 1
@@ -328,7 +326,6 @@ def aluno(request):
             mes_idx = atv.data_entrega.month - 1
             pendentes_por_mes[mes_idx] += float(atv.horas or 0)
 
-    # 3. Horas de certificados (Aprovados vs Em Análise/Pendentes)
     for cert in certificados:
         status_cls = classe_certificado(cert.status)
         data_cert = getattr(cert, 'data_criacao', None) or hoje
@@ -339,12 +336,10 @@ def aluno(request):
             elif status_cls in ('analise', 'pendente'):
                 pendentes_por_mes[mes_idx] += float(cert.carga_horaria or 0)
 
-    # 4. Horas de viagens
     for viagem in Viagem.objects.filter(id_aluno=aluno, data__year=ano_atual):
         mes_idx = viagem.data.month - 1
         aprovadas_por_mes[mes_idx] += float(viagem.horas or 0)
 
-    # 5. Horas complementares avulsas
     for hora in Horas.objects.filter(id_aluno=aluno):
         mes_idx = hoje.month - 1
         aprovadas_por_mes[mes_idx] += float(hora.quantidade or 0)
@@ -352,7 +347,6 @@ def aluno(request):
     aprovadas_por_mes = [round(h, 2) for h in aprovadas_por_mes]
     pendentes_por_mes = [round(h, 2) for h in pendentes_por_mes]
 
-    # Cálculos dos cards superiores
     horas_mentorias = sum(p.horas for p in Participacao.objects.filter(id_aluno=aluno, presenca=True))
     horas_atividades = sum(atividade.horas for atividade in concluidas)
     horas_certificados_aprovados = sum(c.carga_horaria for c in certificados if classe_certificado(c.status) == 'aprovado')
@@ -360,7 +354,6 @@ def aluno(request):
     horas_viagens = sum(viagem.horas for viagem in Viagem.objects.filter(id_aluno=aluno))
     horas_complementares = sum(hora.quantidade for hora in Horas.objects.filter(id_aluno=aluno))
     
-    # Total acumulado (já considerando os cursos enviados para mostrar progresso rumo às 200h)
     total_horas = (
         horas_mentorias
         + horas_atividades
@@ -747,20 +740,29 @@ def relatoriosgestao(request):
 
     if tipo == 'horas':
         titulo = 'Horas dos Alunos'
-        colunas = ['Aluno', 'Curso', 'Turma', 'Horas', 'Situação']
+        colunas = ['RM', 'Aluno', 'Curso', 'Série / Turma', 'Horas', 'Situação']
         for a in alunos:
             horas, atraso = resumos[a.pk]
             linhas.append([
-                nome_do_aluno(a), a.curso, a.turma,
+                a.rm or '-',
+                nome_do_aluno(a),
+                a.curso,
+                f'{a.get_serie_display()} - {a.get_turma_display()}',
                 formatar_horas(horas),
                 'Com pendências' if atraso else 'Em dia',
             ])
     elif tipo == 'estagio':
         titulo = 'Alunos em Estágio'
-        colunas = ['Aluno', 'Curso', 'Empresa']
+        colunas = ['RM', 'Aluno', 'Curso', 'Série / Turma', 'Empresa']
         for a in alunos:
             if a.empresa_id:
-                linhas.append([nome_do_aluno(a), a.curso, a.empresa.nome])
+                linhas.append([
+                    a.rm or '-',
+                    nome_do_aluno(a),
+                    a.curso,
+                    f'{a.get_serie_display()} - {a.get_turma_display()}',
+                    a.empresa.nome,
+                ])
     elif tipo == 'empresas':
         titulo = 'Empresas Parceiras'
         colunas = ['Empresa', 'Alunos', 'Mentorias', 'Vagas abertas']
@@ -806,26 +808,40 @@ def relatoriosgestao(request):
     contexto['total_empresas'] = Empresa.objects.count()
     return render(request, 'relatoriosgestao.html', contexto)
 
-@tipos_permitidos('coordenador')
+@tipos_permitidos('coordenador', 'supervisor')
 def gerenciaalunosc(request):
     if request.method == 'POST':
         acao = request.POST.get('acao', '').strip()
         nome = request.POST.get('nome', '').strip()
         email = request.POST.get('email', '').strip().lower()
         senha = request.POST.get('senha', '')
+        rm = request.POST.get('rm', '').strip()
         curso = request.POST.get('curso', '').strip()
-        turma = request.POST.get('turma', '').strip()
+        serie = request.POST.get('serie', '').strip()
+        turma = request.POST.get('turma', '').strip().upper()
         empresa_id = request.POST.get('empresa', '').strip()
 
         if acao not in ('cadastrar', 'editar'):
             messages.error(request, 'Operação inválida.')
             return redirect('gerenciaalunosc')
 
-        if not nome or not email or not curso or not turma:
+        if not nome or not email or not rm or not curso or not serie or not turma:
             messages.error(request, 'Preencha todos os campos obrigatórios.')
             return redirect('gerenciaalunosc')
 
-        if len(nome) > 150 or len(curso) > 200 or len(turma) > 200:
+        if not (rm.isdigit() and len(rm) == 5):
+            messages.error(request, 'O RM deve conter exatamente 5 números.')
+            return redirect('gerenciaalunosc')
+
+        if serie not in ('1', '2', '3'):
+            messages.error(request, 'Selecione uma série/módulo válido (1º, 2º ou 3º).')
+            return redirect('gerenciaalunosc')
+
+        if turma not in ('A', 'B'):
+            messages.error(request, 'Selecione uma turma válida (A ou B).')
+            return redirect('gerenciaalunosc')
+
+        if len(nome) > 150 or len(curso) > 200:
             messages.error(request, 'Um dos campos ultrapassou o limite de caracteres.')
             return redirect('gerenciaalunosc')
 
@@ -850,6 +866,10 @@ def gerenciaalunosc(request):
                 return redirect('gerenciaalunosc')
 
         if acao == 'cadastrar':
+            if Aluno.objects.filter(rm=rm).exists():
+                messages.error(request, 'Este RM já está cadastrado para outro aluno.')
+                return redirect('gerenciaalunosc')
+
             if User.objects.filter(Q(username__iexact=email) | Q(email__iexact=email)).exists():
                 messages.error(request, 'Este e-mail já está cadastrado.')
                 return redirect('gerenciaalunosc')
@@ -870,7 +890,12 @@ def gerenciaalunosc(request):
                 )
                 perfil = Perfil.objects.create(user=usuario, tipo='aluno')
                 Aluno.objects.create(
-                    perfil=perfil, curso=curso, turma=turma, empresa=empresa
+                    perfil=perfil,
+                    rm=rm,
+                    curso=curso,
+                    serie=serie,
+                    turma=turma,
+                    empresa=empresa
                 )
             messages.success(request, 'Aluno cadastrado com sucesso!')
 
@@ -883,6 +908,11 @@ def gerenciaalunosc(request):
             aluno = get_object_or_404(
                 Aluno.objects.select_related('perfil__user'), pk=int(id_aluno)
             )
+
+            if Aluno.objects.filter(rm=rm).exclude(pk=aluno.pk).exists():
+                messages.error(request, 'Este RM já pertence a outro aluno.')
+                return redirect('gerenciaalunosc')
+
             usuario = aluno.perfil.user
             if User.objects.filter(
                 Q(username__iexact=email) | Q(email__iexact=email)
@@ -904,7 +934,9 @@ def gerenciaalunosc(request):
                 if senha:
                     usuario.set_password(senha)
                 usuario.save()
+                aluno.rm = rm
                 aluno.curso = curso
+                aluno.serie = serie
                 aluno.turma = turma
                 aluno.empresa = empresa
                 aluno.save()
@@ -926,10 +958,14 @@ def gerenciaalunosc(request):
         status = 'Pendente' if tem_atraso else ('Em estágio' if aluno.empresa_id else 'Ativo')
         todos.append({
             'id': aluno.pk,
+            'rm': aluno.rm or '',
             'nome': usuario.get_full_name() or usuario.username,
             'email': usuario.email,
             'curso': aluno.curso,
+            'serie': aluno.serie,
+            'serie_display': aluno.get_serie_display(),
             'turma': aluno.turma,
+            'turma_display': aluno.get_turma_display(),
             'empresa': aluno.empresa.nome if aluno.empresa else None,
             'empresa_id': aluno.empresa_id or '',
             'horas': horas,
@@ -937,7 +973,7 @@ def gerenciaalunosc(request):
         })
 
     alunos = [a for a in todos if (
-        (not pesquisa or pesquisa.lower() in a['nome'].lower() or pesquisa.lower() in a['email'].lower())
+        (not pesquisa or pesquisa.lower() in a['nome'].lower() or pesquisa.lower() in a['email'].lower() or pesquisa in a['rm'])
         and (not status_selecionado or a['status'] == status_selecionado)
     )]
 
@@ -1104,7 +1140,7 @@ def minhasmentoriasa(request):
         {
             'aluno': aluno,
             'proximas': proximas,
-            'realizadas me': realizadas,
+            'realizadas': realizadas,
             'disponiveis': mentorias_disponiveis(aluno, hoje),
             'nome_usuario': nome_do_usuario(request)
         }
@@ -1499,6 +1535,8 @@ def cadastro(request):
         tipo = request.POST.get('tipo', '').strip().lower()
         curso = request.POST.get('curso', '').strip()
         rm = request.POST.get('rm', '').strip()
+        serie = request.POST.get('serie', '1').strip()
+        turma = request.POST.get('turma', 'A').strip().upper()
         tipos_validos = [
             'aluno',
             'professor',
@@ -1518,6 +1556,19 @@ def cadastro(request):
                 'cadastro.html',
                 {'erro': 'Este e-mail já está cadastrado.'}
             )
+        if tipo == 'aluno':
+            if not (rm.isdigit() and len(rm) == 5):
+                return render(
+                    request,
+                    'cadastro.html',
+                    {'erro': 'O RM do aluno deve conter exatamente 5 dígitos.'}
+                )
+            if Aluno.objects.filter(rm=rm).exists():
+                return render(
+                    request,
+                    'cadastro.html',
+                    {'erro': 'Este RM já está cadastrado.'}
+                )
         usuario = User.objects.create_user(
             username=email,
             email=email,
@@ -1531,8 +1582,10 @@ def cadastro(request):
         if tipo == 'aluno':
             Aluno.objects.create(
                 perfil=perfil,
+                rm=rm,
                 curso=curso or 'Não informado',
-                turma=rm or 'Não informado'
+                serie=serie if serie in ('1', '2', '3') else '1',
+                turma=turma if turma in ('A', 'B') else 'A'
             )
         elif tipo == 'professor':
             Professor.objects.create(
@@ -1811,7 +1864,6 @@ def atividadesp(request):
         id_professor=professor_logado
     ).order_by('-data', '-id_mentoria')
 
-    # Busca atividades vinculadas ao professor ou avulsas
     minhas = Atividade.objects.filter(
         Q(id_mentoria__id_professor=professor_logado) | Q(id_mentoria__isnull=True)
     ).distinct()
@@ -1877,7 +1929,7 @@ def atividadesp(request):
 
         if erro is None:
             atividade = editando or Atividade()
-            atividade.id_mentoria = mentoria  # Pode ser None se for avulsa
+            atividade.id_mentoria = mentoria
             atividade.titulo = titulo
             atividade.descricao = descricao
             atividade.data_entrega = data_entrega
