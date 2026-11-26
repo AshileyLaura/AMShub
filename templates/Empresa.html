@@ -1,13 +1,24 @@
-
 {% extends "base.html" %}
 {% load static %}
 
 {% block title %}
-AMS Hub - Empresa
+AMS Hub - Dashboard da Empresa
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'Empresa.css' %}">
+<style>
+    .empresa-container { display: flex; flex-direction: column; gap: 20px; }
+    .resumo-card-empresa { background: #fff; border: 1px solid rgba(109, 40, 217, 0.15); border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 12px rgba(26, 15, 46, 0.03); }
+    .resumo-card-empresa .icone { width: 42px; height: 42px; border-radius: 10px; background: rgba(124, 58, 237, 0.1); color: #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .resumo-card-empresa h3 { font-size: 1.3rem; font-weight: 700; color: #0f0a19; margin: 0; }
+    .resumo-card-empresa p { font-size: 0.8rem; color: #524b66; margin: 0; }
+    
+    .card-secao-empresa { background: #fff; border: 1px solid rgba(109, 40, 217, 0.15); border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(26, 15, 46, 0.03); }
+    .card-secao-empresa h4 { font-size: 1.05rem; font-weight: 700; color: #0f0a19; margin-bottom: 14px; }
+    .lista-compacta .list-group-item { padding: 10px 0; border-color: #f4f2fb; }
+    .lista-compacta strong { font-size: 0.9rem; color: #0f0a19; }
+    .lista-compacta p { font-size: 0.78rem; color: #524b66; margin: 0; }
+</style>
 {% endblock %}
 
 {% block menu %}
@@ -15,31 +26,33 @@ AMS Hub - Empresa
     <li class="active">
         <a href="{% url 'empresa' %}">
             <i class="fa-solid fa-house"></i>
-            <span>Dashboard</span>
+            <span>Início</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'cadastrarmentoriase' %}">
             <i class="fa-solid fa-users"></i>
-            <span>Cadastrar Mentorias</span>
+            <span>Mentorias</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'criartarefase' %}">
             <i class="fa-solid fa-list-check"></i>
-            <span>Criar Tarefas</span>
+            <span>Tarefas</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'oportunidadese' %}">
             <i class="fa-solid fa-briefcase"></i>
             <span>Oportunidades</span>
         </a>
     </li>
-
+    <li>
+        <a href="{% url 'meuperfil' %}">
+            <i class="fa-solid fa-user"></i>
+            <span>Meu Perfil</span>
+        </a>
+    </li>
     <li>
         <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
@@ -50,271 +63,93 @@ AMS Hub - Empresa
 {% endblock %}
 
 {% block saudacao %}
-<h1>Olá, {{ nome_usuario }}!</h1>
+Olá, {{ nome_usuario }}!
 {% endblock %}
 
 {% block descricao %}
-Gerencie mentorias, tarefas e oportunidades de emprego.
+Painel de gestão da empresa parceira.
 {% endblock %}
 
 {% block content %}
+<section class="empresa-container">
 
-<div class="empresa-dashboard">
-
-    <!-- CARDS PRINCIPAIS -->
-    <section class="empresa-cards">
-
-        <a href="{% url 'cadastrarmentoriase' %}"
-           class="empresa-card">
-
-            <div class="empresa-card-icone">
-                <i class="fa-solid fa-users"></i>
-            </div>
-
-            <span class="empresa-card-label">
-                Mentorias Ativas
-            </span>
-
-            <h2>{{ total_mentorias_ativas|default:"0" }}</h2>
-
-            <div class="empresa-card-rodape">
-                <span>Gerenciar mentorias</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </div>
-
-        </a>
-
-        <a href="{% url 'criartarefase' %}"
-           class="empresa-card">
-
-            <div class="empresa-card-icone">
-                <i class="fa-solid fa-list-check"></i>
-            </div>
-
-            <span class="empresa-card-label">
-                Tarefas Criadas
-            </span>
-
-            <h2>{{ total_tarefas|default:"0" }}</h2>
-
-            <div class="empresa-card-rodape">
-                <span>Gerenciar tarefas</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </div>
-
-        </a>
-
-        <a href="{% url 'oportunidadese' %}"
-           class="empresa-card">
-
-            <div class="empresa-card-icone">
-                <i class="fa-solid fa-briefcase"></i>
-            </div>
-
-            <span class="empresa-card-label">
-                Vagas Abertas
-            </span>
-
-            <h2>{{ total_vagas_abertas|default:"0" }}</h2>
-
-            <div class="empresa-card-rodape">
-                <span>Ver oportunidades</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </div>
-
-        </a>
-
-    </section>
-
-    <!-- CONTEÚDO PRINCIPAL -->
-    <section class="empresa-conteudo">
-
-        <!-- OPORTUNIDADES -->
-        <div class="empresa-painel">
-
-            <div class="empresa-painel-cabecalho">
+    <!-- CARDS DE RESUMO COMPACTOS -->
+    <div class="row g-3">
+        <div class="col-xl-4 col-md-6">
+            <div class="resumo-card-empresa">
+                <div class="icone"><i class="fa-solid fa-users"></i></div>
                 <div>
-                    <h2>Oportunidades Publicadas</h2>
-                    <p>Acompanhe as vagas cadastradas pela empresa.</p>
+                    <h3>{{ total_mentorias_ativas|default:"0" }}</h3>
+                    <p>Mentorias Ativas</p>
                 </div>
-
-                <a href="{% url 'oportunidadese' %}">
-                    Ver todas
-                    <i class="fa-solid fa-arrow-right"></i>
-                </a>
             </div>
-
-            <div class="table-responsive">
-
-                <table class="table empresa-tabela align-middle mb-0">
-
-                    <thead>
-                        <tr>
-                            <th>Vaga</th>
-                            <th>Tipo</th>
-                            <th>Modelo</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        {% for vaga in vagas_publicadas %}
-
-                        <tr>
-                            <td>
-                                <strong>{{ vaga.cargo }}</strong>
-                            </td>
-
-                            <td>
-                                {{ vaga.tipo|default:"—" }}
-                            </td>
-
-                            <td>
-                                {{ vaga.modalidade|default:"—" }}
-                            </td>
-
-                            <td>
-                                {% if vaga.aberta %}
-                                    <span class="empresa-status empresa-status-ativo">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                        Aberta
-                                    </span>
-                                {% else %}
-                                    <span class="empresa-status empresa-status-encerrado">
-                                        <i class="fa-solid fa-circle-xmark"></i>
-                                        Encerrada
-                                    </span>
-                                {% endif %}
-                            </td>
-                        </tr>
-
-                        {% empty %}
-
-                        <tr>
-                            <td colspan="4">
-                                <div class="empresa-estado-vazio">
-                                    <i class="fa-regular fa-folder-open"></i>
-                                    <p>Nenhuma oportunidade publicada.</p>
-                                </div>
-                            </td>
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
         </div>
 
-        <!-- COLUNA LATERAL -->
-        <div class="empresa-paineis-laterais">
-
-            <!-- MENTORIAS -->
-            <div class="empresa-painel">
-
-                <div class="empresa-painel-cabecalho">
-                    <div>
-                        <h2>Mentorias Recentes</h2>
-                        <p>Últimas mentorias cadastradas.</p>
-                    </div>
-
-                    <a href="{% url 'cadastrarmentoriase' %}"
-                       aria-label="Ver mentorias">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+        <div class="col-xl-4 col-md-6">
+            <div class="resumo-card-empresa">
+                <div class="icone"><i class="fa-solid fa-list-check"></i></div>
+                <div>
+                    <h3>{{ total_tarefas|default:"0" }}</h3>
+                    <p>Tarefas Cadastradas</p>
                 </div>
-
-                <div class="empresa-lista">
-
-                    {% for mentoria in mentorias_recentes %}
-
-                    <div class="empresa-lista-item">
-
-                        <div class="empresa-lista-icone">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-
-                        <div>
-                            <strong>{{ mentoria.tema }}</strong>
-                            <small>
-                                {{ mentoria.data|date:"d/m/Y" }}
-                            </small>
-                        </div>
-
-                    </div>
-
-                    {% empty %}
-
-                    <div class="empresa-estado-vazio">
-                        <i class="fa-regular fa-calendar"></i>
-                        <p>Nenhuma mentoria cadastrada.</p>
-                    </div>
-
-                    {% endfor %}
-
-                </div>
-
             </div>
+        </div>
 
-            <!-- TAREFAS -->
-            <div class="empresa-painel">
-
-                <div class="empresa-painel-cabecalho">
-                    <div>
-                        <h2>Tarefas Recentes</h2>
-                        <p>Atividades criadas pela empresa.</p>
-                    </div>
-
-                    <a href="{% url 'criartarefase' %}"
-                       aria-label="Ver tarefas">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+        <div class="col-xl-4 col-md-6">
+            <div class="resumo-card-empresa">
+                <div class="icone"><i class="fa-solid fa-briefcase"></i></div>
+                <div>
+                    <h3>{{ total_vagas_abertas|default:"0" }}</h3>
+                    <p>Vagas Abertas</p>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="empresa-lista">
-
-                    {% for tarefa in tarefas_recentes %}
-
-                    <div class="empresa-lista-item">
-
-                        <div class="empresa-lista-icone">
-                            <i class="fa-solid fa-list-check"></i>
+    <!-- LISTAS RECENTES COMPACTAS -->
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="card-secao-empresa h-100">
+                <h4>Vagas Recentes</h4>
+                <div class="list-group list-group-flush lista-compacta">
+                    {% for vaga in vagas_publicadas %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ vaga.cargo }}</strong>
+                            <p>{{ vaga.tipo }} • Prazo: {{ vaga.data_limite|date:"d/m/Y" }}</p>
                         </div>
+                        <span class="badge {% if vaga.aberta %}bg-success{% else %}bg-secondary{% endif %}" style="font-size: 0.7rem;">
+                            {% if vaga.aberta %}Aberta{% else %}Encerrada{% endif %}
+                        </span>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted small py-2">Nenhuma vaga publicada recentemente.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
 
+        <div class="col-lg-6">
+            <div class="card-secao-empresa h-100">
+                <h4>Tarefas Recentes</h4>
+                <div class="list-group list-group-flush lista-compacta">
+                    {% for tarefa in tarefas_recentes %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <strong>{{ tarefa.titulo }}</strong>
-                            <small>
-                                {% if tarefa.concluida %}
-                                    Concluída
-                                {% else %}
-                                    {{ tarefa.status|default:"Cadastrada" }}
-                                {% endif %}
-                            </small>
+                            <p>{{ tarefa.id_mentoria.tema|default:"Avulsa" }}</p>
                         </div>
-
+                        <span class="badge {% if tarefa.concluida %}bg-success{% else %}bg-warning text-dark{% endif %}" style="font-size: 0.7rem;">
+                            {{ tarefa.status }}
+                        </span>
                     </div>
-
                     {% empty %}
-
-                    <div class="empresa-estado-vazio">
-                        <i class="fa-regular fa-clipboard"></i>
-                        <p>Nenhuma tarefa criada.</p>
-                    </div>
-
+                    <p class="text-muted small py-2">Nenhuma tarefa cadastrada recentemente.</p>
                     {% endfor %}
-
                 </div>
-
             </div>
-
         </div>
+    </div>
 
-    </section>
-
-</div>
-
+</section>
 {% endblock %}

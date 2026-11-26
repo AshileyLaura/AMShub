@@ -1,63 +1,63 @@
 {% extends "gestao.html" %}
 {% load static %}
 
-
 {% block title %}
-AMS Hub - Relatórios
+AMS Hub - Relatórios Gerais
 {% endblock %}
-
 
 {% block css_gestao %}
 <link rel="stylesheet" href="{% static 'gestaopaginas.css' %}">
-{% endblock %}
-
-
-{% block saudacao %}
-Relatórios Gerais
-{% endblock %}
-
-
-{% block descricao %}
-Consulte os principais dados e indicadores do programa AMS.
+<style>
+    .relatorios-container { display: flex; flex-direction: column; gap: 24px; }
+    .cards-relatorios { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .card-relatorio-tipo { background: #ffffff; border: 1px solid rgba(109, 40, 217, 0.15); border-radius: 16px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 10px; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(26, 15, 46, 0.04); }
+    .card-relatorio-tipo:hover { transform: translateY(-3px); border-color: #7c3aed; box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12); }
+    .card-relatorio-tipo i { font-size: 1.5rem; color: #7c3aed; }
+    .card-relatorio-tipo h4 { font-size: 1.05rem; font-weight: 700; color: #0f0a19; margin: 0; }
+    .card-relatorio-tipo p { font-size: 0.82rem; color: #524b66; margin: 0; line-height: 1.4; }
+    
+    .tabela-relatorio-box { background: #ffffff; border: 1px solid rgba(109, 40, 217, 0.15); border-radius: 20px; padding: 28px; box-shadow: 0 10px 30px -10px rgba(26, 15, 46, 0.08); }
+    .tabela-relatorio-box h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: #0f0a19; margin-bottom: 6px; }
+    .tabela-relatorio-box p { font-size: 0.88rem; color: #524b66; margin-bottom: 20px; }
+    .table-custom { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .table-custom th { background-color: #f4f2fb; color: #524b66; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; border-bottom: 2px solid rgba(109, 40, 217, 0.1); }
+    .table-custom td { padding: 14px 16px; font-size: 0.9rem; color: #0f0a19; border-bottom: 1px solid #f4f2fb; vertical-align: middle; }
+    .table-custom tr:last-child td { border-bottom: none; }
+</style>
 {% endblock %}
 
 {% block menu %}
 <ul>
     <li>
-        <a href="{% url 'coordenador' %}">
+        <a href="{% if tipo_usuario == 'supervisor' %}{% url 'supervisor' %}{% else %}{% url 'coordenador' %}{% endif %}">
             <i class="fa-solid fa-house"></i>
             <span>Dashboard</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'gerenciaalunosc' %}">
             <i class="fa-solid fa-user-graduate"></i>
             <span>Gerenciar Alunos</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'empresagestao' %}">
             <i class="fa-solid fa-building"></i>
             <span>Empresas</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'mentoriasgestao' %}">
             <i class="fa-solid fa-users"></i>
             <span>Gerenciar Mentorias</span>
         </a>
     </li>
-
     <li class="active">
         <a href="{% url 'relatoriosgestao' %}">
             <i class="fa-solid fa-chart-column"></i>
             <span>Relatórios</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>
@@ -67,271 +67,57 @@ Consulte os principais dados e indicadores do programa AMS.
 </ul>
 {% endblock %}
 
+{% block saudacao %}
+Relatórios Gerais
+{% endblock %}
+
+{% block descricao %}
+Consulte relatórios consolidados e indicadores de desempenho do programa AMS.
+{% endblock %}
+
 {% block content %}
+<section class="relatorios-container">
 
-<section class="pagina-gestao">
+    <!-- SELEÇÃO DE RELATÓRIOS -->
+    <div class="cards-relatorios">
+        <a href="?tipo=horas" class="card-relatorio-tipo {% if relatorio_tipo == 'horas' %}active{% endif %}">
+            <i class="fa-solid fa-clock"></i>
+            <h4>Horas dos Alunos</h4>
+            <p>Acompanhe o total de horas acumuladas e a situação individual.</p>
+        </a>
 
+        <a href="?tipo=estagio" class="card-relatorio-tipo {% if relatorio_tipo == 'estagio' %}active{% endif %}">
+            <i class="fa-solid fa-building-user"></i>
+            <h4>Alunos em Estágio</h4>
+            <p>Lista de alunos vinculados a empresas parceiras.</p>
+        </a>
 
-    <!-- CABEÇALHO -->
+        <a href="?tipo=empresas" class="card-relatorio-tipo {% if relatorio_tipo == 'empresas' %}active{% endif %}">
+            <i class="fa-solid fa-handshake"></i>
+            <h4>Empresas Parceiras</h4>
+            <p>Visão geral de parcerias, mentorias e vagas ativas.</p>
+        </a>
 
-    <div class="pagina-topo">
-
-        <div>
-
-            <h2>Relatórios Gerais</h2>
-
-            <p>
-                Acompanhe informações dos alunos, empresas e mentorias.
-            </p>
-
-        </div>
-
+        <a href="?tipo=desempenho" class="card-relatorio-tipo {% if relatorio_tipo == 'desempenho' %}active{% endif %}">
+            <i class="fa-solid fa-chart-pie"></i>
+            <h4>Desempenho Geral</h4>
+            <p>Indicadores estatísticos consolidados do programa.</p>
+        </a>
     </div>
 
-
-    <!-- RESUMO -->
-
-    <div class="resumo-relatorios row g-4">
-
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="resumo-card">
-
-                <div class="resumo-icon">
-
-                    <i class="fa-solid fa-user-graduate"></i>
-
-                </div>
-
-                <div>
-
-                    <h3>{{ total_alunos }}</h3>
-
-                    <p>Alunos</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="resumo-card">
-
-                <div class="resumo-icon">
-
-                    <i class="fa-solid fa-building"></i>
-
-                </div>
-
-                <div>
-
-                    <h3>{{ total_empresas }}</h3>
-
-                    <p>Empresas</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="resumo-card">
-
-                <div class="resumo-icon">
-
-                    <i class="fa-solid fa-users"></i>
-
-                </div>
-
-                <div>
-
-                    <h3>{{ total_mentorias }}</h3>
-
-                    <p>Mentorias</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="resumo-card">
-
-                <div class="resumo-icon">
-
-                    <i class="fa-solid fa-clock"></i>
-
-                </div>
-
-                <div>
-
-                    <h3>{{ total_horas|floatformat:"-1" }}h</h3>
-
-                    <p>Horas Registradas</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- TIPOS DE RELATÓRIO -->
-
-    <div class="relatorios-lista">
-
-
-        <div class="relatorio-card">
-
-            <div class="relatorio-card-icon">
-
-                <i class="fa-solid fa-clock"></i>
-
-            </div>
-
-
-            <div class="relatorio-card-info">
-
-                <h3>Horas dos Alunos</h3>
-
-                <p>
-                    Consulte as horas registradas e o progresso dos alunos.
-                </p>
-
-            </div>
-
-
-            <a href="{% url 'relatoriosgestao' %}?tipo=horas#relatorio" class="btn-secundario">
-
-                Visualizar
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-            </a>
-
-        </div>
-
-
-        <div class="relatorio-card">
-
-            <div class="relatorio-card-icon">
-
-                <i class="fa-solid fa-user-graduate"></i>
-
-            </div>
-
-
-            <div class="relatorio-card-info">
-
-                <h3>Alunos em Estágio</h3>
-
-                <p>
-                    Consulte os alunos vinculados às empresas.
-                </p>
-
-            </div>
-
-
-            <a href="{% url 'relatoriosgestao' %}?tipo=estagio#relatorio" class="btn-secundario">
-
-                Visualizar
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-            </a>
-
-        </div>
-
-
-        <div class="relatorio-card">
-
-            <div class="relatorio-card-icon">
-
-                <i class="fa-solid fa-building"></i>
-
-            </div>
-
-
-            <div class="relatorio-card-info">
-
-                <h3>Empresas Parceiras</h3>
-
-                <p>
-                    Consulte informações das empresas participantes.
-                </p>
-
-            </div>
-
-
-            <a href="{% url 'relatoriosgestao' %}?tipo=empresas#relatorio" class="btn-secundario">
-
-                Visualizar
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-            </a>
-
-        </div>
-
-
-        <div class="relatorio-card">
-
-            <div class="relatorio-card-icon">
-
-                <i class="fa-solid fa-chart-line"></i>
-
-            </div>
-
-
-            <div class="relatorio-card-info">
-
-                <h3>Desempenho Geral</h3>
-
-                <p>
-                    Consulte uma visão geral do desempenho do programa AMS.
-                </p>
-
-            </div>
-
-
-            <a href="{% url 'relatoriosgestao' %}?tipo=desempenho#relatorio" class="btn-secundario">
-
-                Visualizar
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-            </a>
-
-        </div>
-
-    </div>
-
-    <!-- RELATÓRIO SELECIONADO -->
-
+    <!-- EXIBIÇÃO DO RELATÓRIO SELECIONADO -->
     {% if relatorio_titulo %}
-    <div class="painel-tabela mt-4" id="relatorio">
-
-        <div class="pagina-topo">
+    <div class="tabela-relatorio-box">
+        <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h2>{{ relatorio_titulo }}</h2>
+                <h3>{{ relatorio_titulo }}</h3>
+                <p class="mb-0">Dados atualizados com base nos registros do sistema.</p>
             </div>
-            <a href="{% url 'relatoriosgestao' %}" class="btn-limpar">Fechar</a>
+            <a href="{% url 'relatoriosgestao' %}" class="btn btn-outline-secondary btn-sm">Limpar Filtro</a>
         </div>
 
         <div class="table-responsive">
-            <table class="table align-middle">
+            <table class="table-custom">
                 <thead>
                     <tr>
                         {% for coluna in relatorio_colunas %}
@@ -342,24 +128,28 @@ Consulte os principais dados e indicadores do programa AMS.
                 <tbody>
                     {% for linha in relatorio_linhas %}
                     <tr>
-                        {% for valor in linha %}
-                        <td>{{ valor }}</td>
+                        {% for celula in linha %}
+                        <td>{{ celula }}</td>
                         {% endfor %}
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="{{ relatorio_colunas|length }}" class="text-center py-4">
-                            Nenhum dado encontrado.
+                        <td colspan="{{ relatorio_colunas|length }}" class="text-center py-4 text-muted">
+                            Nenhum registro encontrado para este relatório.
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-
+    </div>
+    {% else %}
+    <div class="tabela-relatorio-box text-center py-5">
+        <i class="fa-solid fa-arrow-up-long-stroke fa-2x mb-3 text-purple" style="color: #7c3aed;"></i>
+        <h3>Selecione um relatório acima</h3>
+        <p class="text-muted">Clique em um dos cards acima para gerar e visualizar os dados detalhados.</p>
     </div>
     {% endif %}
 
 </section>
-
 {% endblock %}

@@ -2,51 +2,56 @@
 {% load static %}
 
 {% block title %}
-AMS Hub - Atividades
+AMS Hub - Atividades do Aluno
 {% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'aluno/atividadesa.css' %}">
+<style>
+    .atividades-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+    .card-atividade { background: #fff; border: 1px solid rgba(109, 40, 217, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(26, 15, 46, 0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 16px; transition: transform 0.2s ease; }
+    .card-atividade:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124, 58, 237, 0.1); }
+    .badge-status { font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 99px; width: fit-content; }
+    .badge-status.pendente { background: #fef9c3; color: #854d0e; }
+    .badge-status.concluida { background: #dcfce7; color: #166534; }
+    .badge-status.atraso { background: #fee2e2; color: #991b1b; }
+    .btn-detalhes { background: #7c3aed; color: #fff; border-radius: 10px; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; text-decoration: none; text-align: center; transition: background 0.2s; }
+    .btn-detalhes:hover { background: #6d28d9; color: #fff; }
+</style>
 {% endblock %}
 
-
 {% block menu %}
-
 <ul>
-
     <li>
         <a href="{% url 'aluno' %}">
             <i class="fa-solid fa-house"></i>
             <span>Início</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'minhasmentoriasa' %}">
             <i class="fa-solid fa-users"></i>
             <span>Mentorias</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'meusportifoliosa' %}">
             <i class="fa-solid fa-folder-open"></i>
             <span>Portfólios</span>
         </a>
     </li>
-
     <li class="active">
-        <i class="fa-solid fa-list-check"></i>
-        <span>Atividades</span>
+        <a href="{% url 'atividadesa' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
     </li>
-
     <li>
         <a href="{% url 'certificadoa' %}">
             <i class="fa-solid fa-award"></i>
             <span>Certificados</span>
         </a>
     </li>
-
     <li>
         <a href="{% url 'pendenciasa' %}">
             <i class="fa-solid fa-circle-exclamation"></i>
@@ -59,281 +64,57 @@ AMS Hub - Atividades
             <span>Sair</span>
         </a>
     </li>
-
 </ul>
-
 {% endblock %}
 
-
 {% block saudacao %}
-<h1>Minhas Atividades</h1>
+Minhas Atividades
 {% endblock %}
 
 {% block descricao %}
-Acompanhe suas tarefas, prazos e atividades.
+Acompanhe os prazos, entregue suas tarefas práticas e consulte suas avaliações.
 {% endblock %}
 
-
 {% block content %}
+<section class="conteudo-container">
 
-<div class="atividades-container">
-
-
-    <!-- RESUMO -->
-
-    <section class="resumo-atividades">
-
-        <div class="resumo-card pendente">
-
-            <div class="icone">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-
-            <div>
-                <span>Pendentes</span>
-                <strong>{{ pendentes|length }}</strong>
-            </div>
-
-        </div>
-
-
-        <div class="resumo-card concluida">
-
-            <div class="icone">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-
-            <div>
-                <span>Concluídas</span>
-                <strong>{{ concluidas|length }}</strong>
-            </div>
-
-        </div>
-
-
-        <div class="resumo-card atraso">
-
-            <div class="icone">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-
-            <div>
-                <span>Em atraso</span>
-                <strong>{{ atrasadas|length }}</strong>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ATIVIDADES PENDENTES -->
-
-    <section class="lista-atividades">
-
-        <div class="titulo-secao">
-
-            <div>
-                <h2>Atividades Pendentes</h2>
-
-                <p>
-                    Atividades que ainda precisam ser realizadas.
-                </p>
-            </div>
-
-            <span class="contador pendente">
-                {{ pendentes|length }} atividade{{ pendentes|length|pluralize }}
-            </span>
-
-        </div>
-
+    <h3 class="fw-bold mb-3">Atividades Pendentes e em Andamento</h3>
+    <div class="atividades-grid">
         {% for atividade in pendentes %}
-        <div class="atividade-card">
-
-            <div class="status-icon pendente">
-                <i class="fa-solid fa-clock"></i>
+        <div class="card-atividade">
+            <div>
+                <span class="badge-status pendente mb-2">Pendente</span>
+                <h4 class="fw-bold fs-5 mb-1">{{ atividade.titulo }}</h4>
+                <p class="text-muted small mb-3">{{ atividade.descricao|truncatechars:90 }}</p>
             </div>
-
-            <div class="atividade-info">
-
-                <h3>{{ atividade.titulo }}</h3>
-
-                {% if atividade.descricao %}
-                <p>{{ atividade.descricao|truncatechars:140 }}</p>
-                {% endif %}
-
-                <div class="atividade-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar"></i>
-                        {% if atividade.data_entrega %}
-                            Entrega: {{ atividade.data_entrega|date:"d/m/Y" }}
-                        {% else %}
-                            Sem prazo definido
-                        {% endif %}
-                    </span>
-
-                    <span>
-                        <i class="fa-solid fa-users"></i>
-                        {{ atividade.id_mentoria.tema }}
-                    </span>
-
-                </div>
-
+            <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                <small class="text-muted"><i class="fa-regular fa-calendar me-1"></i> Prazo: {{ atividade.data_entrega|date:"d/m/Y"|default:"Sem prazo" }}</small>
+                <a href="{% url 'detalhesdaatividadea' atividade.id_atividade %}" class="btn-detalhes">Ver Detalhes</a>
             </div>
-
-            <span class="status pendente">
-                Pendente
-            </span>
-
-            <a href="{% url 'detalhesdaatividadea' atividade.id_atividade %}" class="btn-atividade">
-                Ver tarefa
-            </a>
-
         </div>
         {% empty %}
-        <p>Nenhuma atividade pendente.</p>
+        <p class="text-muted">Nenhuma atividade pendente no momento.</p>
         {% endfor %}
+    </div>
 
-    </section>
-
-
-    <!-- ATIVIDADES CONCLUÍDAS -->
-
-    <section class="lista-atividades">
-
-        <div class="titulo-secao">
-
-            <div>
-                <h2>Atividades Concluídas</h2>
-
-                <p>
-                    Atividades que você já finalizou.
-                </p>
-            </div>
-
-            <span class="contador concluida">
-                {{ concluidas|length }} atividade{{ concluidas|length|pluralize }}
-            </span>
-
-        </div>
-
+    <h3 class="fw-bold mt-5 mb-3">Atividades Concluídas</h3>
+    <div class="atividades-grid">
         {% for atividade in concluidas %}
-        <div class="atividade-card">
-
-            <div class="status-icon concluida">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-
-            <div class="atividade-info">
-
-                <h3>{{ atividade.titulo }}</h3>
-
-                {% if atividade.descricao %}
-                <p>{{ atividade.descricao|truncatechars:140 }}</p>
-                {% endif %}
-
-                <div class="atividade-detalhes">
-
-                    {% if atividade.data_entrega %}
-                    <span>
-                        <i class="fa-solid fa-calendar-check"></i>
-                        Prazo: {{ atividade.data_entrega|date:"d/m/Y" }}
-                    </span>
-                    {% endif %}
-
-                    <span>
-                        <i class="fa-solid fa-users"></i>
-                        {{ atividade.id_mentoria.tema }}
-                    </span>
-
-                </div>
-
-            </div>
-
-            <span class="status concluida">
-                Concluída
-            </span>
-
-            <a href="{% url 'detalhesdaatividadea' atividade.id_atividade %}" class="btn-atividade">
-                Ver tarefa
-            </a>
-
-        </div>
-        {% empty %}
-        <p>Nenhuma atividade concluída ainda.</p>
-        {% endfor %}
-
-    </section>
-
-
-    <!-- ATIVIDADES EM ATRASO -->
-
-    <section class="lista-atividades">
-
-        <div class="titulo-secao">
-
+        <div class="card-atividade">
             <div>
-                <h2>Atividades em Atraso</h2>
-
-                <p>
-                    Atividades que passaram do prazo de entrega.
-                </p>
+                <span class="badge-status concluida mb-2">Concluída</span>
+                <h4 class="fw-bold fs-5 mb-1">{{ atividade.titulo }}</h4>
+                <p class="text-muted small mb-3">{{ atividade.descricao|truncatechars:90 }}</p>
             </div>
-
-            <span class="contador atraso">
-                {{ atrasadas|length }} atividade{{ atrasadas|length|pluralize }}
-            </span>
-
-        </div>
-
-        {% for atividade in atrasadas %}
-        <div class="atividade-card">
-
-            <div class="status-icon atraso">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                <small class="text-muted"><i class="fa-solid fa-check me-1"></i> Entregue</small>
+                <a href="{% url 'detalhesdaatividadea' atividade.id_atividade %}" class="btn-detalhes" style="background: #4b5563;">Visualizar</a>
             </div>
-
-            <div class="atividade-info">
-
-                <h3>{{ atividade.titulo }}</h3>
-
-                {% if atividade.descricao %}
-                <p>{{ atividade.descricao|truncatechars:140 }}</p>
-                {% endif %}
-
-                <div class="atividade-detalhes">
-
-                    <span>
-                        <i class="fa-solid fa-calendar-xmark"></i>
-                        Prazo: {{ atividade.data_entrega|date:"d/m/Y" }}
-                    </span>
-
-                    <span>
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        Prazo excedido
-                    </span>
-
-                </div>
-
-            </div>
-
-            <span class="status atraso">
-                Em atraso
-            </span>
-
-            <a href="{% url 'detalhesdaatividadea' atividade.id_atividade %}" class="btn-atividade atraso">
-                Ver tarefa
-            </a>
-
         </div>
         {% empty %}
-        <p>Nenhuma atividade em atraso.</p>
+        <p class="text-muted">Nenhuma atividade concluída ainda.</p>
         {% endfor %}
+    </div>
 
-    </section>
-
-
-</div>
-
+</section>
 {% endblock %}

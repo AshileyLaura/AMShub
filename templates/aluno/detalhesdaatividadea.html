@@ -6,7 +6,35 @@ AMS Hub - Detalhes da Atividade
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'aluno/detalhesdaatividadea.css' %}">
+<style>
+    :root {
+        --roxo: #6d28d9;
+        --roxo-vibrante: #7c3aed;
+        --roxo-hover: #5b21b6;
+        --roxo-neon: #a78bfa;
+        --roxo-borda: rgba(109, 40, 217, 0.18);
+        --preto: #0f0a19;
+        --branco: #ffffff;
+        --fundo: #f4f2fb;
+        --texto-secundario: #524b66;
+    }
+    .atividade-detalhe-container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+    .card-detalhe { background: var(--branco); border: 1px solid var(--roxo-borda); border-radius: 20px; padding: 32px; box-shadow: 0 10px 30px -10px rgba(26, 15, 46, 0.05); }
+    .card-detalhe h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--preto); margin-bottom: 12px; }
+    .card-detalhe p { color: var(--texto-secundario); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
+    .badge-situacao { font-size: 0.78rem; font-weight: 600; padding: 6px 12px; border-radius: 99px; display: inline-block; margin-bottom: 16px; }
+    .badge-situacao.pendente { background: #fef9c3; color: #854d0e; }
+    .badge-situacao.concluida { background: #dcfce7; color: #166534; }
+    .badge-situacao.atraso { background: #fee2e2; color: #991b1b; }
+    .form-envio { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+    .form-envio label { font-size: 0.88rem; font-weight: 600; color: var(--preto); }
+    .form-control, .form-select { width: 100%; padding: 12px 16px; border: 1px solid var(--roxo-borda); border-radius: 12px; background-color: #faf9fe; font-family: 'Inter', sans-serif; font-size: 0.92rem; outline: none; transition: all 0.18s ease; }
+    .form-control:focus, .form-select:focus { background-color: var(--branco); border-color: var(--roxo-vibrante); box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14); }
+    .btn-enviar { padding: 12px 24px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--roxo-vibrante) 0%, var(--roxo) 100%); color: var(--branco); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 6px 18px -4px rgba(109, 40, 217, 0.4); width: fit-content; }
+    .btn-enviar:hover { background: linear-gradient(135deg, var(--roxo) 0%, var(--roxo-hover) 100%); transform: translateY(-1px); }
+    .meta-info { display: flex; gap: 24px; font-size: 0.85rem; color: var(--texto-secundario); border-top: 1px solid #f4f2fb; padding-top: 16px; margin-top: 16px; }
+    .meta-info i { color: var(--roxo-vibrante); margin-right: 6px; }
+</style>
 {% endblock %}
 
 {% block menu %}
@@ -57,180 +85,106 @@ AMS Hub - Detalhes da Atividade
 {% endblock %}
 
 {% block saudacao %}
-<h1>Detalhes da Atividade</h1>
+Detalhes da Atividade
 {% endblock %}
 
 {% block descricao %}
-Visualize as informações da atividade e realize seu envio.
+Consulte as instruções e envie a sua resposta ou arquivo correspondente.
 {% endblock %}
 
 {% block content %}
-<div class="detalhes-atividade-container">
+<section class="atividade-detalhe-container">
 
+    <!-- MENSAGENS -->
     {% if messages %}
         {% for message in messages %}
-        <div class="aviso">
-            <i class="fa-solid fa-circle-info"></i>
-            <span>{{ message }}</span>
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show mb-4" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
     {% endif %}
 
-    <!-- BOTÃO VOLTAR -->
-    <a href="{% url 'atividadesa' %}" class="voltar">
-        <i class="fa-solid fa-arrow-left"></i>
-        Voltar para atividades
-    </a>
+    <!-- CARD DE INFORMAÇÕES DA ATIVIDADE -->
+    <div class="card-detalhe">
+        <span class="badge-situacao {{ situacao }}">{{ situacao_texto }}</span>
+        <h2>{{ atividade.titulo }}</h2>
+        <p>{{ atividade.descricao }}</p>
 
-    <!-- CABEÇALHO DA ATIVIDADE -->
-    <section class="atividade-header">
-        <div class="atividade-titulo">
-            <div class="atividade-icon">
-                <i class="fa-solid fa-list-check"></i>
-            </div>
-            <div>
-                <span class="categoria">Atividade</span>
-                <h2>{{ atividade.titulo }}</h2>
-                <p>
-                    {% if mentoria %}
-                        Atividade referente à mentoria {{ mentoria.tema }}.
-                    {% else %}
-                        Atividade Avulsa.
-                    {% endif %}
-                </p>
-            </div>
+        <div class="meta-info">
+            <div><i class="fa-regular fa-calendar"></i> Prazo: <strong>{{ atividade.data_entrega|date:"d/m/Y"|default:"Sem prazo definido" }}</strong></div>
+            <div><i class="fa-solid fa-clock"></i> Carga Horária: <strong>{{ atividade.horas }}h</strong></div>
+            <div><i class="fa-solid fa-book"></i> Mentoria: <strong>{{ mentoria.tema|default:"Atividade Avulsa" }}</strong></div>
         </div>
+    </div>
 
-        <span class="status {{ situacao }}">
-            {{ situacao_texto }}
-        </span>
-    </section>
-
-    <!-- INFORMAÇÕES -->
-    <section class="informacoes-atividade">
-        {% if mentoria.id_professor %}
-        <div class="info-item">
-            <i class="fa-solid fa-user"></i>
-            <div>
-                <span>Professor</span>
-                <strong>{{ mentoria.id_professor.perfil.user.get_full_name|default:mentoria.id_professor.perfil.user.username }}</strong>
-            </div>
-        </div>
-        {% endif %}
-
-        {% if mentoria.id_supervisor %}
-        <div class="info-item">
-            <i class="fa-solid fa-user-tie"></i>
-            <div>
-                <span>Supervisor</span>
-                <strong>{{ mentoria.id_supervisor.perfil.user.get_full_name|default:mentoria.id_supervisor.perfil.user.username }}</strong>
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="info-item">
-            <i class="fa-solid fa-users"></i>
-            <div>
-                <span>Mentoria</span>
-                <strong>{% if mentoria %}{{ mentoria.tema }}{% else %}Avulsa{% endif %}</strong>
-            </div>
-        </div>
-
-        <div class="info-item">
-            <i class="fa-solid fa-hourglass-half"></i>
-            <div>
-                <span>Horas da atividade</span>
-                <strong>{{ atividade.horas|floatformat:"-2" }}h</strong>
-            </div>
-        </div>
-
-        <div class="info-item prazo">
-            <i class="fa-solid fa-calendar-xmark"></i>
-            <div>
-                <span>Prazo de entrega</span>
-                <strong>
-                    {% if atividade.data_entrega %}
-                        {{ atividade.data_entrega|date:"d/m/Y" }}
-                    {% else %}
-                        Sem prazo definido
-                    {% endif %}
-                </strong>
-            </div>
-        </div>
-    </section>
-
-    <!-- DESCRIÇÃO -->
-    <section class="conteudo-card">
-        <h2>Descrição da atividade</h2>
-        {% if atividade.descricao %}
-            {{ atividade.descricao|linebreaks }}
-        {% else %}
-            <p>Esta atividade não possui descrição.</p>
-        {% endif %}
-    </section>
-
-    <!-- FORMULÁRIO DE ENTREGA DA ATIVIDADE -->
-    <section class="conteudo-card">
-        <h2>Enviar Resposta</h2>
-
-        <form method="POST" enctype="multipart/form-data" class="form-entrega">
+    <!-- CARD DE ENVIO DE RESPOSTA -->
+    <div class="card-detalhe">
+        <h3 class="fw-bold mb-3" style="font-size: 1.2rem; color: var(--preto);">Enviar Resposta</h3>
+        
+        <form method="POST" enctype="multipart/form-data" class="form-envio">
             {% csrf_token %}
 
-            <div class="campo">
-                <label for="tipoEnvio">Tipo de Envio</label>
-                <select name="tipo_envio" id="tipoEnvio" onchange="alternarTipoEnvio()" required>
-                    <option value="texto">Texto (Digitado)</option>
-                    <option value="link">Link Externo</option>
-                    <option value="arquivo">Anexo de Arquivo</option>
+            <div>
+                <label for="tipo_envio" class="form-label">Tipo de Envio</label>
+                <select name="tipo_envio" id="tipo_envio" class="form-select" required onchange="alternarCampoEnvio(this.value)">
+                    <option value="texto">Resposta em Texto</option>
+                    <option value="link">Link (GitHub, Drive, etc.)</option>
+                    <option value="arquivo">Arquivo (Documento / Imagem)</option>
                 </select>
             </div>
 
-            <div class="campo" id="campoTexto">
-                <label for="texto_resposta">Sua Resposta</label>
-                <textarea name="texto_resposta" id="texto_resposta" rows="4" placeholder="Digite a resposta ou explicação da atividade..."></textarea>
+            <div id="blocoTexto">
+                <label for="texto_resposta" class="form-label">Sua Resposta</label>
+                <textarea name="texto_resposta" id="texto_resposta" rows="5" class="form-control" placeholder="Escreva sua resposta detalhada aqui..."></textarea>
             </div>
 
-            <div class="campo" id="campoLink" style="display: none;">
-                <label for="link">Link da Atividade</label>
-                <input type="url" name="link" id="link" placeholder="https://...">
+            <div id="blocoLink" style="display: none;">
+                <label for="link" class="form-label">Link do Trabalho</label>
+                <input type="url" name="link" id="link" class="form-control" placeholder="https://exemplo.com">
             </div>
 
-            <div class="campo" id="campoArquivo" style="display: none;">
-                <label for="arquivo">Anexar Ficheiro</label>
-                <input type="file" name="arquivo" id="arquivo">
+            <div id="blocoArquivo" style="display: none;">
+                <label for="arquivo" class="form-label">Selecionar Arquivo</label>
+                <input type="file" name="arquivo" id="arquivo" class="form-control">
             </div>
 
-            <button type="submit" class="btn-adicionar">
-                <i class="fa-solid fa-paper-plane"></i>
-                Entregar atividade
+            <button type="submit" class="btn-enviar mt-2">
+                <i class="fa-solid fa-paper-plane me-2"></i> Enviar Atividade
             </button>
         </form>
-    </section>
+    </div>
 
+    <!-- ENTREGAS ANTERIORES -->
     {% if entregas %}
-    <section class="conteudo-card">
-        <h2>Entregas Realizadas</h2>
-        <div class="lista-entregas">
+    <div class="card-detalhe">
+        <h3 class="fw-bold mb-3" style="font-size: 1.2rem; color: var(--preto);">Histórico de Entregas</h3>
+        <ul class="list-group list-group-flush">
             {% for entrega in entregas %}
-            <div class="item-entrega">
-                <span class="data-envio"><i class="fa-solid fa-clock"></i> Enviado em {{ entrega.data_envio|date:"d/m/Y H:i" }}</span>
-                {% if entrega.texto_resposta %}<p><strong>Resposta:</strong> {{ entrega.texto_resposta|linebreaks }}</p>{% endif %}
-                {% if entrega.link %}<p><strong>Link:</strong> <a href="{{ entrega.link }}" target="_blank">{{ entrega.link }}</a></p>{% endif %}
-                {% if entrega.arquivo %}<p><strong>Arquivo:</strong> <a href="{{ entrega.arquivo.url }}" target="_blank" class="link-download"><i class="fa-solid fa-download"></i> Baixar documento</a></p>{% endif %}
-            </div>
+            <li class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-muted"><i class="fa-solid fa-clock-rotate-left me-1"></i> Enviado em: {{ entrega.data_envio|date:"d/m/Y H:i" }}</small>
+                    {% if entrega.texto_resposta %}
+                        <p class="mb-0 mt-1">{{ entrega.texto_resposta }}</p>
+                    {% elif entrega.link %}
+                        <p class="mb-0 mt-1"><a href="{{ entrega.link }}" target="_blank" class="text-purple text-decoration-underline">{{ entrega.link }}</a></p>
+                    {% elif entrega.arquivo %}
+                        <p class="mb-0 mt-1"><a href="{{ entrega.arquivo.url }}" target="_blank" class="text-purple text-decoration-underline">Baixar arquivo enviado</a></p>
+                    {% endif %}
+                </div>
+            </li>
             {% endfor %}
-        </div>
-    </section>
+        </ul>
+    </div>
     {% endif %}
 
-</div>
+</section>
 
 <script>
-function alternarTipoEnvio() {
-    const tipo = document.getElementById('tipoEnvio').value;
-    document.getElementById('campoTexto').style.display = tipo === 'texto' ? 'block' : 'none';
-    document.getElementById('campoLink').style.display = tipo === 'link' ? 'block' : 'none';
-    document.getElementById('campoArquivo').style.display = tipo === 'arquivo' ? 'block' : 'none';
-}
+    function alternarCampoEnvio(tipo) {
+        document.getElementById('blocoTexto').style.display = tipo === 'texto' ? 'block' : 'none';
+        document.getElementById('blocoLink').style.display = tipo === 'link' ? 'block' : 'none';
+        document.getElementById('blocoArquivo').style.display = tipo === 'arquivo' ? 'block' : 'none';
+    }
 </script>
 {% endblock %}
