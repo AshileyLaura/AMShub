@@ -423,6 +423,7 @@ def registrar_presenca_p(request, id_mentoria):
             presenca_key = f'presenca_{participacao.pk}'
             horas_key = f'horas_{participacao.pk}'
             
+            # Atualiza se a presença foi marcada/aprovada pelo professor
             participacao.presenca = presenca_key in request.POST
             
             horas_valor = request.POST.get(horas_key, '0').strip()
@@ -433,7 +434,7 @@ def registrar_presenca_p(request, id_mentoria):
 
             participacao.save()
 
-        messages.success(request, f'Presença e horas da mentoria "{mentoria.tema}" atualizadas!')
+        messages.success(request, f'Participações da mentoria "{mentoria.tema}" atualizadas com sucesso!')
         return redirect('mentoriasp')
 
     contexto = {
@@ -443,7 +444,6 @@ def registrar_presenca_p(request, id_mentoria):
         'participacoes': participacoes,
     }
     return render(request, 'professor/registrar_presenca.html', contexto)
-
 def professor(request):
     professor_logado = obter_professor(request)
     hoje = timezone.localdate()
