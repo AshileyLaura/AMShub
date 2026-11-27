@@ -95,13 +95,7 @@ class Aluno(models.Model):
         related_name='aluno'
     )
 
-    rm = models.CharField(
-        max_length=5,
-        unique=True,
-        null=True,
-        blank=True,
-        verbose_name="RM"
-    )
+    rm = models.CharField(max_length=50, blank=True, null=True, unique=True)
 
     curso = models.CharField(
         max_length=200,

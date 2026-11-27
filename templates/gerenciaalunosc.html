@@ -27,12 +27,20 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
         </a>
     </li>
 
+    {% if tipo_usuario != 'supervisor' %}
+    <li>
+        <a href="{% url 'aprovar_certificados' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Aprovar Certificados</span>
+        </a>
+    </li>
     <li class="active">
         <a href="{% url 'gerenciaalunosc' %}">
             <i class="fa-solid fa-user-graduate"></i>
             <span>Gerenciar Alunos</span>
         </a>
     </li>
+    {% endif %}
 
     <li>
         <a href="{% url 'empresagestao' %}">
@@ -362,7 +370,7 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">RM (5 dígitos) *</label>
+                            <label class="form-label">RM (5 dígitos)</label>
                             <input
                                 type="text"
                                 name="rm"
@@ -372,7 +380,6 @@ Consulte, acompanhe e gerencie os alunos cadastrados no programa AMS.
                                 minlength="5"
                                 pattern="\d{5}"
                                 placeholder="Ex: 12345"
-                                required
                             >
                         </div>
 

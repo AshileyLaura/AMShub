@@ -34,12 +34,22 @@ AMS Hub - Relatórios Gerais
             <span>Dashboard</span>
         </a>
     </li>
+
+    {% if tipo_usuario != 'supervisor' %}
+    <li>
+        <a href="{% url 'aprovar_certificados' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Aprovar Certificados</span>
+        </a>
+    </li>
     <li>
         <a href="{% url 'gerenciaalunosc' %}">
             <i class="fa-solid fa-user-graduate"></i>
             <span>Gerenciar Alunos</span>
         </a>
     </li>
+    {% endif %}
+
     <li>
         <a href="{% url 'empresagestao' %}">
             <i class="fa-solid fa-building"></i>

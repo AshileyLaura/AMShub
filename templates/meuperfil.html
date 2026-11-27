@@ -12,18 +12,150 @@ AMS Hub - Meu Perfil
 {% block menu %}
 <ul>
     <li>
-        <a href="{% url pagina_inicial %}">
+        <a href="{% if tipo_usuario == 'supervisor' %}{% url 'supervisor' %}{% else %}{% url 'coordenador' %}{% endif %}">
             <i class="fa-solid fa-house"></i>
             <span>Dashboard</span>
         </a>
     </li>
 
-    <li class="active">
-        <a href="{% url 'meuperfil' %}">
-            <i class="fa-solid fa-user"></i>
-            <span>Meu Perfil</span>
+    {% if tipo_usuario == 'empresa' or 'Empresa' in cargo_usuario %}
+    <li>
+        <a href="{% url 'cadastrarmentoriase' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
         </a>
     </li>
+    <li>
+        <a href="{% url 'criartarefase' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Tarefas</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'oportunidadese' %}">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Oportunidades</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'gerenciaalunosc' %}">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Gerenciar Alunos</span>
+        </a>
+    </li>
+    {% elif tipo_usuario == 'aluno' or 'Aluno' in cargo_usuario %}
+    <li>
+        <a href="{% url 'minhasmentoriasa' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'meusportifoliosa' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'atividadesa' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'certificadoa' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Certificados</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'pendenciasa' %}">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Pendências</span>
+        </a>
+    </li>
+    {% elif tipo_usuario == 'coordenador' or 'Coordenador' in cargo_usuario %}
+    <li>
+        <a href="{% url 'aprovar_certificados' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Aprovar Certificados</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'gerenciaalunosc' %}">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Gerenciar Alunos</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'empresagestao' %}">
+            <i class="fa-solid fa-building"></i>
+            <span>Empresas</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'mentoriasgestao' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Gerenciar Mentorias</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'relatoriosgestao' %}">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Relatórios</span>
+        </a>
+    </li>
+    {% elif tipo_usuario == 'supervisor' or 'Supervisor' in cargo_usuario %}
+    <li>
+        <a href="{% url 'empresagestao' %}">
+            <i class="fa-solid fa-building"></i>
+            <span>Empresas</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'mentoriasgestao' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Gerenciar Mentorias</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'relatoriosgestao' %}">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Relatórios</span>
+        </a>
+    </li>
+    {% elif tipo_usuario == 'professor' or 'Professor' in cargo_usuario %}
+    <li>
+        <a href="{% url 'portfoliosp' %}">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Portfólios</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'avaliacoesp' %}">
+            <i class="fa-solid fa-star"></i>
+            <span>Avaliações</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'mentoriasp' %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Mentorias</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'atividadesp' %}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Atividades</span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'agendap' %}">
+            <i class="fa-solid fa-calendar"></i>
+            <span>Agenda</span>
+        </a>
+    </li>
+    {% endif %}
 
     <li>
         <a href="{% url 'logout' %}">

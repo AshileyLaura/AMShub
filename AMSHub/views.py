@@ -423,7 +423,6 @@ def registrar_presenca_p(request, id_mentoria):
             presenca_key = f'presenca_{participacao.pk}'
             horas_key = f'horas_{participacao.pk}'
             
-            # Atualiza se a presença foi marcada/aprovada pelo professor
             participacao.presenca = presenca_key in request.POST
             
             horas_valor = request.POST.get(horas_key, '0').strip()
@@ -444,6 +443,7 @@ def registrar_presenca_p(request, id_mentoria):
         'participacoes': participacoes,
     }
     return render(request, 'professor/registrar_presenca.html', contexto)
+
 def professor(request):
     professor_logado = obter_professor(request)
     hoje = timezone.localdate()
@@ -488,7 +488,6 @@ def coordenador(request):
 
 @tipos_permitidos('coordenador')
 def aprovar_certificados(request):
-    """Permite ao coordenador visualizar detalhes e aprovar/recusar certificados dos alunos."""
     if request.method == 'POST':
         id_certificado = request.POST.get('id_certificado', '').strip()
         acao = request.POST.get('acao', '').strip()
@@ -825,13 +824,14 @@ def gerenciaalunosc(request):
             messages.error(request, 'Operação inválida.')
             return redirect('gerenciaalunosc')
 
-        if not nome or not email or not rm or not curso or not serie or not turma:
+        if not nome or not email or not curso or not serie or not turma:
             messages.error(request, 'Preencha todos os campos obrigatórios.')
             return redirect('gerenciaalunosc')
 
-        if not (rm.isdigit() and len(rm) == 5):
-            messages.error(request, 'O RM deve conter exatamente 5 números.')
-            return redirect('gerenciaalunosc')
+        if rm:
+            if not (rm.isdigit() and len(rm) == 5):
+                messages.error(request, 'O RM deve conter exatamente 5 números.')
+                return redirect('gerenciaalunosc')
 
         if serie not in ('1', '2', '3'):
             messages.error(request, 'Selecione uma série/módulo válido (1º, 2º ou 3º).')
@@ -866,7 +866,7 @@ def gerenciaalunosc(request):
                 return redirect('gerenciaalunosc')
 
         if acao == 'cadastrar':
-            if Aluno.objects.filter(rm=rm).exists():
+            if rm and Aluno.objects.filter(rm=rm).exists():
                 messages.error(request, 'Este RM já está cadastrado para outro aluno.')
                 return redirect('gerenciaalunosc')
 
@@ -891,7 +891,7 @@ def gerenciaalunosc(request):
                 perfil = Perfil.objects.create(user=usuario, tipo='aluno')
                 Aluno.objects.create(
                     perfil=perfil,
-                    rm=rm,
+                    rm=rm if rm else None,
                     curso=curso,
                     serie=serie,
                     turma=turma,
@@ -909,7 +909,7 @@ def gerenciaalunosc(request):
                 Aluno.objects.select_related('perfil__user'), pk=int(id_aluno)
             )
 
-            if Aluno.objects.filter(rm=rm).exclude(pk=aluno.pk).exists():
+            if rm and Aluno.objects.filter(rm=rm).exclude(pk=aluno.pk).exists():
                 messages.error(request, 'Este RM já pertence a outro aluno.')
                 return redirect('gerenciaalunosc')
 
@@ -934,7 +934,7 @@ def gerenciaalunosc(request):
                 if senha:
                     usuario.set_password(senha)
                 usuario.save()
-                aluno.rm = rm
+                aluno.rm = rm if rm else None
                 aluno.curso = curso
                 aluno.serie = serie
                 aluno.turma = turma
@@ -1557,18 +1557,19 @@ def cadastro(request):
                 {'erro': 'Este e-mail já está cadastrado.'}
             )
         if tipo == 'aluno':
-            if not (rm.isdigit() and len(rm) == 5):
-                return render(
-                    request,
-                    'cadastro.html',
-                    {'erro': 'O RM do aluno deve conter exatamente 5 dígitos.'}
-                )
-            if Aluno.objects.filter(rm=rm).exists():
-                return render(
-                    request,
-                    'cadastro.html',
-                    {'erro': 'Este RM já está cadastrado.'}
-                )
+            if rm:
+                if not (rm.isdigit() and len(rm) == 5):
+                    return render(
+                        request,
+                        'cadastro.html',
+                        {'erro': 'O RM do aluno deve conter exatamente 5 dígitos.'}
+                    )
+                if Aluno.objects.filter(rm=rm).exists():
+                    return render(
+                        request,
+                        'cadastro.html',
+                        {'erro': 'Este RM já está cadastrado.'}
+                    )
         usuario = User.objects.create_user(
             username=email,
             email=email,
@@ -1582,7 +1583,7 @@ def cadastro(request):
         if tipo == 'aluno':
             Aluno.objects.create(
                 perfil=perfil,
-                rm=rm,
+                rm=rm if rm else None,
                 curso=curso or 'Não informado',
                 serie=serie if serie in ('1', '2', '3') else '1',
                 turma=turma if turma in ('A', 'B') else 'A'

@@ -23,36 +23,32 @@ AMS Hub - Dashboard da Empresa
 
 {% block menu %}
 <ul>
-    <li class="active">
+    <li class="{% if request.resolver_match.url_name == 'empresa' %}active{% endif %}">
         <a href="{% url 'empresa' %}">
             <i class="fa-solid fa-house"></i>
             <span>Início</span>
         </a>
     </li>
-    <li>
+    <li class="{% if 'mentoria' in request.resolver_match.url_name %}active{% endif %}">
         <a href="{% url 'cadastrarmentoriase' %}">
             <i class="fa-solid fa-users"></i>
             <span>Mentorias</span>
         </a>
     </li>
-    <li>
+    <li class="{% if 'tarefa' in request.resolver_match.url_name %}active{% endif %}">
         <a href="{% url 'criartarefase' %}">
             <i class="fa-solid fa-list-check"></i>
             <span>Tarefas</span>
         </a>
     </li>
-    <li>
+    <li class="{% if 'oportunidade' in request.resolver_match.url_name %}active{% endif %}">
         <a href="{% url 'oportunidadese' %}">
             <i class="fa-solid fa-briefcase"></i>
             <span>Oportunidades</span>
         </a>
     </li>
-    <li>
-        <a href="{% url 'meuperfil' %}">
-            <i class="fa-solid fa-user"></i>
-            <span>Meu Perfil</span>
-        </a>
-    </li>
+
+
     <li>
         <a href="{% url 'logout' %}">
             <i class="fa-solid fa-right-from-bracket"></i>

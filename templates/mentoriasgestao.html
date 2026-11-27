@@ -20,18 +20,26 @@ Acompanhe as mentorias realizadas pelas empresas parceiras.
 {% block menu %}
 <ul>
     <li>
-        <a href="{% url 'coordenador' %}">
+        <a href="{% if tipo_usuario == 'supervisor' %}{% url 'supervisor' %}{% else %}{% url 'coordenador' %}{% endif %}">
             <i class="fa-solid fa-house"></i>
             <span>Dashboard</span>
         </a>
     </li>
 
+    {% if tipo_usuario != 'supervisor' %}
+    <li>
+        <a href="{% url 'aprovar_certificados' %}">
+            <i class="fa-solid fa-award"></i>
+            <span>Aprovar Certificados</span>
+        </a>
+    </li>
     <li>
         <a href="{% url 'gerenciaalunosc' %}">
             <i class="fa-solid fa-user-graduate"></i>
             <span>Gerenciar Alunos</span>
         </a>
     </li>
+    {% endif %}
 
     <li>
         <a href="{% url 'empresagestao' %}">
@@ -40,7 +48,7 @@ Acompanhe as mentorias realizadas pelas empresas parceiras.
         </a>
     </li>
 
-    <li class="active">
+    <li>
         <a href="{% url 'mentoriasgestao' %}">
             <i class="fa-solid fa-users"></i>
             <span>Gerenciar Mentorias</span>
